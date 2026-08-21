@@ -1,0 +1,33 @@
+\subsection{Các đối tượng chính}
+
+Các đối tượng liên quan đến cơ sở dữ liệu OctaPoint gồm:
+
+\begin{enumerate}
+    \item \textbf{Merchant}: Doanh nghiệp sử dụng nền tảng để quản lý chương trình điểm thưởng.
+    \item \textbf{Customer}: Khách hàng nhận, sử dụng và tra cứu credit.
+    \item \textbf{Merchant User}: Nhân viên hoặc người quản trị của merchant.
+    \item \textbf{Administrator}: Người quản trị toàn bộ nền tảng.
+\end{enumerate}
+
+\subsection{Vai trò và nhu cầu dữ liệu}
+
+\begin{itemize}
+    \item \textbf{Merchant}: quản lý thông tin doanh nghiệp, khách hàng, campaign, credit và giao dịch.
+    \item \textbf{Customer}: tra cứu thông tin tài khoản, số dư và lịch sử giao dịch.
+    \item \textbf{Merchant User}: thực hiện các nghiệp vụ theo quyền được cấp.
+    \item \textbf{Administrator}: quản lý tenant, người dùng, quyền truy cập, giám sát và đối soát dữ liệu.
+\end{itemize}
+
+\subsection{Đối tượng hệ thống bên ngoài}
+
+Một số thành phần bên ngoài có trao đổi dữ liệu với CSDL hoặc sử dụng dữ liệu từ CSDL:
+
+\begin{itemize}
+    \item API Gateway.
+    \item Developer SDK.
+    \item MCP Server.
+    \item Sui Blockchain.
+    \item Hệ thống thanh toán và dịch vụ lưu trữ liên quan.
+\end{itemize}
+
+Các thành phần trên không được xem là người dùng trực tiếp của CSDL mà là các hệ thống tích hợp.

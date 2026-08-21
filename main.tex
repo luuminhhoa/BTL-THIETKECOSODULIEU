@@ -1,0 +1,69 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc} %tiếng Việt
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{\textbf{BÁO CÁO THIẾT KẾ CƠ SỞ DỮ LIỆU}\\Dự án OctaPoint: Nền tảng dịch vụ tín dụng cho doanh nghiệp}
+\author{Thành viên:
+\\Lưu Minh Hoà
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ==========================================
+% CHƯƠNG 1
+% ==========================================
+\section{Phân tích yêu cầu}
+\input{chuong/chuong1_yeu_cau/1.1_tong_quan.tex}
+\input{chuong/chuong1_yeu_cau/1.2_doi_tuong_su_dung.tex}
+\input{chuong/chuong1_yeu_cau/1.3_yeu_cau_du_lieu.tex}
+\input{chuong/chuong1_yeu_cau/1.4_quy_tac_nghiep_vu.tex}
+
+\newpage
+% ==========================================
+% CHƯƠNG 2
+% ==========================================
+\section{Thiết kế quan niệm của Cơ sở dữ liệu}
+\input{chuong/chuong2_quan_niem/2.1_thuc_the.tex}
+\input{chuong/chuong2_quan_niem/2.2_thuoc_tinh.tex}
+\input{chuong/chuong2_quan_niem/2.3_moi_quan_he.tex}
+\input{chuong/chuong2_quan_niem/2.4_so_do_thuc_the_lien_ket.tex}
+
+\newpage
+% ==========================================
+% CHƯƠNG 3
+% ==========================================
+\section{Thiết kế logic của Cơ sở dữ liệu}
+\input{chuong/chuong3_logic/3.1_chuyen_doi_mo_hinh.tex}
+\input{chuong/chuong3_logic/3.2_chuan_hoa_du_lieu.tex}
+\input{chuong/chuong3_logic/3.3_so_do_logic.tex}
+\input{chuong/chuong3_logic/3.4_tu_dien_du_lieu.tex}
+
+\newpage
+% ==========================================
+% CHƯƠNG 4
+% ==========================================
+\section{Thiết kế vật lý của Cơ sở dữ liệu}
+\input{chuong/chuong4_vat_ly/4.1_chon_he_quan_tri.tex}
+\input{chuong/chuong4_vat_ly/4.2_kieu_du_lieu_va_rang_buoc.tex}
+\input{chuong/chuong4_vat_ly/4.3_danh_chi_muc.tex}
+\input{chuong/chuong4_vat_ly/4.4_ma_lenh_tao_bang.tex}
+
+\newpage
+% ==========================================
+% TỔNG KẾT
+% ==========================================
+\section*{Tổng kết}
+\addcontentsline{toc}{section}{Tổng kết}
+\input{chuong/tong_ket/5.1_ket_qua_dat_duoc.tex}
+\input{chuong/tong_ket/5.2_han_che_va_phat_trien.tex}
+
+\end{document}

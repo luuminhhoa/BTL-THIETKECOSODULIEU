@@ -1,0 +1,37 @@
+Các quy tắc nghiệp vụ chính:
+
+\begin{enumerate}
+    \item Mỗi merchant thuộc một tenant và phải có thông tin định danh duy nhất trong phạm vi quản lý.
+
+    \item Một merchant có thể quản lý nhiều customer và nhiều campaign.
+
+    \item Một customer có thể tham gia chương trình điểm thưởng của nhiều merchant.
+
+    \item Mỗi credit phải xác định được customer, merchant, giá trị, trạng thái và thời hạn sử dụng nếu có.
+
+    \item Credit chỉ được phát hành bởi actor hoặc hệ thống đã được cấp quyền.
+
+    \item Mọi nghiệp vụ phát hành, đổi hoặc điều chỉnh credit phải tạo giao dịch tương ứng.
+
+    \item Credit không được redeem khi đã hết hạn, bị khóa hoặc không đủ số dư.
+
+    \item Một campaign thuộc một merchant và có thời gian hiệu lực xác định.
+
+    \item Mỗi campaign có thể có một hoặc nhiều reward rule để xác định cách tích, đổi hoặc nhân điểm.
+
+    \item Một user có thể có một hoặc nhiều role; một role có thể được cấp nhiều permission.
+
+    \item API credential phải thuộc về merchant và không được trùng giá trị định danh.
+
+    \item Các thao tác quan trọng trên dữ liệu phải được ghi nhận trong audit log.
+
+    \item Các sự kiện có dấu hiệu gian lận phải được ghi nhận để phục vụ kiểm tra và xử lý.
+
+    \item Một merchant có thể có subscription theo một pricing plan tại từng thời điểm.
+
+    \item Mọi invoice hoặc payment phải gắn với subscription hoặc merchant tương ứng.
+
+    \item Thông tin giao dịch Blockchain được lưu dưới dạng tham chiếu để đối soát với dữ liệu on-chain.
+
+    \item Dữ liệu giữa các bảng phải tuân thủ toàn vẹn tham chiếu; không cho phép tạo bản ghi con khi bản ghi cha không tồn tại.
+\end{enumerate}

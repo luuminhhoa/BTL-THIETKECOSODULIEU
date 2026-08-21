@@ -1,0 +1,36 @@
+\subsection{Bối cảnh}
+
+OctaPoint là nền tảng dịch vụ tín dụng và điểm thưởng cho doanh nghiệp, sử dụng Blockchain Sui để tăng tính minh bạch, an toàn và khả năng kiểm toán. Hướng đến các doanh nghiệp như siêu thị, trung tâm thương mại, khu vui chơi và chuỗi F\&B.
+
+\subsection{Mục tiêu}
+
+Cơ sở dữ liệu được thiết kế nhằm:
+
+\begin{itemize}
+    \item Quản lý tập trung và có cấu trúc các dữ liệu nghiệp vụ.
+    \item Đảm bảo tính toàn vẹn và nhất quán của dữ liệu.
+    \item Hỗ trợ tra cứu số dư, lịch sử giao dịch và chiến dịch điểm thưởng.
+    \item Lưu vết các hoạt động quan trọng phục vụ kiểm toán.
+    \item Có khả năng mở rộng khi số lượng doanh nghiệp và giao dịch tăng.
+\end{itemize}
+
+\subsection{Phạm vi}
+
+Phạm vi cơ sở dữ liệu gồm các nhóm dữ liệu chính:
+
+\begin{itemize}
+    \item Doanh nghiệp và tenant.
+    \item Người dùng, vai trò và quyền truy cập.
+    \item Khách hàng.
+    \item Credit và giao dịch credit.
+    \item Chiến dịch và quy tắc điểm thưởng.
+    \item Thông tin xác thực tích hợp.
+    \item Nhật ký kiểm toán và sự kiện gian lận.
+    \item Gói dịch vụ, đăng ký và thanh toán.
+\end{itemize}
+
+Các thành phần giao diện, SDK, MCP Server và smart contract được xem là các thành phần sử dụng hoặc trao đổi dữ liệu với CSDL, không thuộc phạm vi thiết kế chi tiết của CSDL trong bài này.
+
+\subsection{Định hướng thiết kế}
+
+CSDL được thiết kế theo mô hình quan hệ, chú trọng khóa chính, khóa ngoại, ràng buộc toàn vẹn và chuẩn hóa dữ liệu. Dữ liệu phát sinh trên Blockchain được lưu tham chiếu cần thiết trong CSDL để phục vụ tra cứu và đối soát.

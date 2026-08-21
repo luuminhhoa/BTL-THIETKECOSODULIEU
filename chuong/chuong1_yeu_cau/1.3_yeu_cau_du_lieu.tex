@@ -1,0 +1,42 @@
+\subsection{Yêu cầu chức năng}
+
+Cơ sở dữ liệu phải đáp ứng các yêu cầu dữ liệu sau:
+
+\begin{description}
+    \item[FR-DB-01] Quản lý thông tin tenant và merchant.
+    \item[FR-DB-02] Quản lý người dùng, vai trò và quyền truy cập.
+    \item[FR-DB-03] Quản lý thông tin khách hàng theo merchant.
+    \item[FR-DB-04] Quản lý credit, số dư, trạng thái và thời hạn sử dụng.
+    \item[FR-DB-05] Quản lý lịch sử phát hành, đổi và điều chỉnh credit.
+    \item[FR-DB-06] Quản lý campaign và các quy tắc tích, đổi điểm.
+    \item[FR-DB-07] Lưu thông tin tham chiếu của giao dịch Blockchain phục vụ đối soát.
+    \item[FR-DB-08] Quản lý API credential và thông tin tích hợp cần thiết.
+    \item[FR-DB-09] Lưu audit log và các sự kiện có dấu hiệu gian lận.
+    \item[FR-DB-10] Quản lý gói dịch vụ, subscription, hóa đơn và thanh toán.
+    \item[FR-DB-11] Cung cấp dữ liệu phục vụ thống kê credit, giao dịch và hoạt động merchant.
+\end{description}
+
+\subsection{Yêu cầu phi chức năng}
+
+\begin{description}
+    \item[NFR-DB-01] \textbf{Toàn vẹn dữ liệu:} bảo đảm PK, FK và các ràng buộc dữ liệu.
+    \item[NFR-DB-02] \textbf{Nhất quán:} dữ liệu giữa các bảng phải được duy trì nhất quán sau mỗi giao dịch.
+    \item[NFR-DB-03] \textbf{Bảo mật:} chỉ người dùng có quyền mới được truy cập hoặc thay đổi dữ liệu phù hợp.
+    \item[NFR-DB-04] \textbf{Hiệu năng:} hỗ trợ truy vấn nhanh đối với số dư, giao dịch và campaign.
+    \item[NFR-DB-05] \textbf{Khả năng mở rộng:} đáp ứng sự gia tăng về merchant, customer và transaction.
+    \item[NFR-DB-06] \textbf{Auditability:} các thay đổi quan trọng phải có khả năng truy vết.
+    \item[NFR-DB-07] \textbf{Tính sẵn sàng:} dữ liệu phải được duy trì ổn định và có khả năng phục hồi khi xảy ra sự cố.
+    \item[NFR-DB-08] \textbf{Khả năng bảo trì:} cấu trúc dữ liệu phải rõ ràng, chuẩn hóa và dễ mở rộng.
+\end{description}
+
+\subsection{Các nhóm dữ liệu cần quản lý}
+
+\begin{itemize}
+    \item Dữ liệu tổ chức: Tenant, Merchant.
+    \item Dữ liệu người dùng: User, Role, Permission.
+    \item Dữ liệu khách hàng: Customer.
+    \item Dữ liệu loyalty: Credit, Campaign, Reward Rule.
+    \item Dữ liệu giao dịch: Credit Transaction.
+    \item Dữ liệu bảo mật và kiểm toán: API Credential, Audit Log, Fraud Event.
+    \item Dữ liệu thương mại: Pricing Plan, Subscription, Invoice, Payment.
+\end{itemize}

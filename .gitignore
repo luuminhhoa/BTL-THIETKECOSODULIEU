@@ -12,3 +12,11 @@
 *.bcf
 *.blg
 *.run.xml
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.toc
+.DS_Store

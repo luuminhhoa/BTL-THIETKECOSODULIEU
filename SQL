@@ -98,4 +98,54 @@ To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
 [7mrm -rf chuong[27m[K
 [7mgit add -A[27m[K
 [7mgit commit -m "refactor(c3-c4): reorganize logic, physical design modules and clean legacy folder"[27m[K
-[7mgit push origin main[27m[K[6A[37C[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m3[27m_[27ml[27mo[27mg[27mi[27mc[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m3[1B[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[
+[7mgit push origin main[27m[K[6A[37C[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m3[27m_[27ml[27mo[27mg[27mi[27mc[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m3[1B[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m4[27m_[27mv[27ma[27mt[27m_[27ml[27my[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m4[1B[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mi[27mm[27ma[27mg[27me[27ms[27m/[27m*[27m [27mi[27mm[27ma[27mg[27me[27ms[27m/[27m [27m2[27m>[27m/[27md[27me[27mv[27m/[27mn[27mu[27ml[27ml[27m [27m|[27m|[27m [27mt[27mr[27mu[27me[1B[27mr[27mm[27m [27m-[27mr[27mf[27m [27mc[27mh[27mu[27mo[27mn[27mg[1B[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27m-[27mA[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27mr[27me[27mf[27ma[27mc[27mt[27mo[27mr[27m([27mc[27m3[27m-[27mc[27m4[27m)[27m:[27m [27mr[27me[27mo[27mr[27mg[27ma[27mn[27mi[27mz[27me[27m [27ml[27mo[27mg[27mi[27mc[27m,[27m [27mp[27mh[27my[27ms[27mi[27mc[27ma[27ml[27m [27md[27me[27ms[27mi[27mg[27mn[27m [27mm[27mo[27md[27mu[27ml[27me[27ms[27m [27ma[27mn[27md[27m [27mc[27ml[27me[27ma[27mn[27m [27ml[27me[27mg[27ma[27mc[27my[27m [27mf[27mo[27ml[27md[27me[27mr[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
+zsh: no matches found: chuong/images/*
+[main fa7163d] refactor(c3-c4): reorganize logic, physical design modules and clean legacy folder
+ 11 files changed, 34 insertions(+), 1 deletion(-)
+ delete mode 100644 chuong/tong_ket/5.1_ket_qua_dat_duoc.tex
+ delete mode 100644 chuong/tong_ket/5.2_han_che_va_phat_trien.tex
+ rename {chuong/chuong3_logic => chuong3}/3.1_chuyen_doi_mo_hinh.tex (100%)
+ rename {chuong/chuong3_logic => chuong3}/3.2_chuan_hoa_du_lieu.tex (100%)
+ rename {chuong/chuong3_logic => chuong3}/3.3_so_do_logic.tex (100%)
+ rename {chuong/chuong3_logic => chuong3}/3.4_tu_dien_du_lieu.tex (100%)
+ rename {chuong/chuong4_vat_ly => chuong4}/4.1_chon_he_quan_tri.tex (100%)
+ rename {chuong/chuong4_vat_ly => chuong4}/4.2_kieu_du_lieu_va_rang_buoc.tex (100%)
+ rename {chuong/chuong4_vat_ly => chuong4}/4.3_danh_chi_muc.tex (100%)
+ rename {chuong/chuong4_vat_ly => chuong4}/4.4_ma_lenh_tao_bang.tex (100%)
+Enumerating objects: 7, done.
+Counting objects:  14% (1/7)Counting objects:  28% (2/7)Counting objects:  42% (3/7)Counting objects:  57% (4/7)Counting objects:  71% (5/7)Counting objects:  85% (6/7)Counting objects: 100% (7/7)Counting objects: 100% (7/7), done.
+Delta compression using up to 8 threads
+Compressing objects:  20% (1/5)Compressing objects:  40% (2/5)Compressing objects:  60% (3/5)Compressing objects:  80% (4/5)Compressing objects: 100% (5/5)Compressing objects: 100% (5/5), done.
+Writing objects:  20% (1/5)Writing objects:  40% (2/5)Writing objects:  60% (3/5)Writing objects:  80% (4/5)Writing objects: 100% (5/5)Writing objects: 100% (5/5), 1.52 KiB | 1.52 MiB/s, done.
+Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas:   0% (0/2)[Kremote: Resolving deltas:  50% (1/2)[Kremote: Resolving deltas: 100% (2/2)[Kremote: Resolving deltas: 100% (2/2), completed with 2 local objects.[K
+To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
+   af8ee27..fa7163d  main -> main
+[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add main.tex[27m
+[7mgit commit -m "build: update main document includes matching modular chapter structure"[27m[K
+[7mgit push origin main[27m[K[A[A[37C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mm[27ma[27mi[27mn[27m.[27mt[27me[27mx[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27mb[27mu[27mi[27ml[27md[27m:[27m [27mu[27mp[27md[27ma[27mt[27me[27m [27mm[27ma[27mi[27mn[27m [27md[27mo[27mc[27mu[27mm[27me[27mn[27mt[27m [27mi[27mn[27mc[27ml[27mu[27md[27me[27ms[27m [27mm[27ma[27mt[27mc[27mh[27mi[27mn[27mg[27m [27mm[27mo[27md[27mu[27ml[27ma[27mr[27m [27mc[27mh[27ma[27mp[27mt[27me[27mr[27m [27ms[27mt[27mr[27mu[27mc[27mt[27mu[27mr[27me[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	[31mmodified:   SQL[m
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Everything up-to-date
+[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add SQL/[27m
+[7mgit commit -m "style: organize database scripts directory"[27m[K
+[7mgit push origin main[27m[K[A[A[37C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mS[27mQ[27mL[27m/[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27ms[27mt[27my[27ml[27me[27m:[27m [27mo[27mr[27mg[27ma[27mn[27mi[27mz[27me[27m [27md[27ma[27mt[27ma[27mb[27ma[27ms[27me[27m [27ms[27mc[27mr[27mi[27mp[27mt[27ms[27m [27md[27mi[27mr[27me[27mc[27mt[27mo[27mr[27my[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
+fatal: pathspec 'SQL/' did not match any files
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	[31mmodified:   SQL[m
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Everything up-to-date
+[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h

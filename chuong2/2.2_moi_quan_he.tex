@@ -1,0 +1,33 @@
+\begin{table}[H]
+    \centering
+    \caption{Bảng tổng hợp các mối quan hệ trong sơ đồ ERD}
+    \label{tab:moi_quan_he}
+    \vspace{0.2cm}
+    \renewcommand{\arraystretch}{1.4}
+    % Câu thần chú ép bảng vừa khít 100% chiều ngang khổ giấy
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|c|>{\bfseries}l|c|>{\bfseries}l|>{\raggedright\arraybackslash}p{7cm}|}
+        \hline
+        \textbf{STT} & \textbf{Thực thể A} & \textbf{Quan hệ (A:B)} & \textbf{Thực thể B} & \textbf{Ý nghĩa nghiệp vụ} \\
+        \hline
+        1 & Tenant & 1 : N & Merchant & Một hệ thống gốc (Tenant) có thể cấp phát cho nhiều Doanh nghiệp (Merchant). \\
+        \hline
+        2 & Merchant & 1 : N & User & Một Doanh nghiệp sở hữu nhiều tài khoản nhân sự quản trị. \\
+        \hline
+        3 & Merchant & 1 : N & Campaign & Một Doanh nghiệp có thể khởi tạo và chạy nhiều Chiến dịch. \\
+        \hline
+        4 & Campaign & 1 : N & RewardRule & Một Chiến dịch bao gồm nhiều quy tắc tích/đổi điểm khác nhau. \\
+        \hline
+        5 & Merchant & 1 : N & APICredential & Một Doanh nghiệp có thể tạo nhiều cặp khóa API để tích hợp. \\
+        \hline
+        6 & Merchant & 1 : N & Credit & Một Doanh nghiệp quản lý nhiều ví điểm của các khách hàng khác nhau. \\
+        \hline
+        7 & Customer & 1 : N & Credit & Một Khách hàng có thể sở hữu nhiều ví điểm tại các Doanh nghiệp khác nhau. \\
+        \hline
+        8 & Credit & 1 : N & CreditTransaction & Một ví điểm phát sinh nhiều lịch sử giao dịch cộng/trừ. \\
+        \hline
+        9 & Campaign & 1 : N & CreditTransaction & Một Chiến dịch có thể tạo ra nhiều giao dịch phát hành điểm. \\
+        \hline
+    \end{tabular}%
+    }
+\end{table}

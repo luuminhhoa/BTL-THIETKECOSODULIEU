@@ -1,7 +1,0 @@
-\subsection{Xác định Mối quan hệ (Relationships)}
-\begin{itemize}
-    \item \textbf{Tạo (Merchant - Campaign):} Một Merchant có thể tạo nhiều (N) Campaign khác nhau. Một Campaign chỉ thuộc về một (1) Merchant duy nhất. \textit{(Quan hệ 1-N)}.
-    \item \textbf{Thuộc về (Transaction - Campaign):} Một Campaign có thể phát sinh nhiều (N) Transaction. Một Transaction bắt buộc phải thuộc về một (1) Campaign cụ thể để biết tỷ lệ quy đổi. \textit{(Quan hệ 1-N)}.
-    \item \textbf{Thực hiện (EndUser - Transaction):} Một EndUser có thể thực hiện nhiều (N) Transaction. Mỗi Transaction chỉ do một (1) EndUser thực hiện. \textit{(Quan hệ 1-N)}.
-    \item \textbf{Ánh xạ (Transaction - SuiObject):} Mỗi Transaction (lưu Off-chain) sẽ được ánh xạ chính xác với một (1) SuiObject (lưu On-chain) để đảm bảo minh bạch dữ liệu. \textit{(Quan hệ 1-1)}.
-\end{itemize}

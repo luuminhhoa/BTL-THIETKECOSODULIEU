@@ -1,0 +1,78 @@
+\section{Sơ đồ Thực thể Kết hợp (ERD)}
+Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, sơ đồ ERD ở mức quan niệm được thiết kế theo ký pháp chuẩn (Entities dạng hình chữ nhật, Relationships dạng hình thoi). Sơ đồ độc lập với hệ quản trị CSDL vật lý.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+    \begin{tikzpicture}[
+        >=latex,
+        node distance=1.5cm and 1.5cm,
+        entity/.style={rectangle, draw=black!80, thick, fill=blue!10, minimum width=3cm, minimum height=1.2cm, font=\bfseries\small, align=center},
+        rel/.style={diamond, draw=black!80, thick, fill=orange!15, minimum width=2.5cm, minimum height=1.5cm, aspect=1.3, font=\itshape\small, align=center},
+        line/.style={draw, thick, -}
+    ]
+    
+    % --- Hàng 1 ---
+    \node[entity] (Tenant) {Tenant};
+    
+    % --- Hàng 2 ---
+    \node[rel] (has1) [below=1.2cm of Tenant] {Cấp phát};
+    \node[entity] (Merchant) [below=1.2cm of has1] {Merchant};
+    
+    % --- Các node xung quanh Merchant ---
+    \node[rel] (has2) [left=1.5cm of Merchant] {Quản lý};
+    \node[entity] (User) [left=1.5cm of has2] {User};
+    
+    \node[rel] (has3) [right=1.5cm of Merchant] {Khởi tạo};
+    \node[entity] (Campaign) [right=1.5cm of has3] {Campaign};
+    
+    \node[rel] (has4) [right=1.5cm of Campaign] {Bao gồm};
+    \node[entity] (Rule) [right=1.5cm of has4] {RewardRule};
+    
+    % --- Hàng dưới Merchant ---
+    \node[rel] (has5) [below=1.5cm of Merchant] {Phát hành};
+    \node[entity] (Credit) [below=1.5cm of has5] {Credit};
+    
+    \node[rel] (has6) [left=2cm of Credit] {Sở hữu};
+    \node[entity] (Customer) [left=2cm of has6] {Customer};
+    
+    \node[rel] (has7) [right=2cm of Credit] {Tạo khóa};
+    \node[entity] (API) [right=2cm of has7] {APICredential};
+    
+    % --- Hàng dưới cùng ---
+    \node[rel] (has8) [below=1.5cm of Credit] {Ghi nhận};
+    \node[entity] (Transaction) [below=1.5cm of has8] {CreditTransaction};
+    
+    % --- Vẽ đường nối và Ghi bản số (1, N) ---
+    \draw[line] (Tenant) -- (has1) node[midway, right] {1};
+    \draw[line] (has1) -- (Merchant) node[midway, right] {N};
+    
+    \draw[line] (Merchant) -- (has2) node[midway, above] {1};
+    \draw[line] (has2) -- (User) node[midway, above] {N};
+    
+    \draw[line] (Merchant) -- (has3) node[midway, above] {1};
+    \draw[line] (has3) -- (Campaign) node[midway, above] {N};
+    
+    \draw[line] (Campaign) -- (has4) node[midway, above] {1};
+    \draw[line] (has4) -- (Rule) node[midway, above] {N};
+    
+    \draw[line] (Merchant) -- (has5) node[midway, right] {1};
+    \draw[line] (has5) -- (Credit) node[midway, right] {N};
+    
+    \draw[line] (Customer) -- (has6) node[midway, above] {1};
+    \draw[line] (has6) -- (Credit) node[midway, above] {N};
+    
+    \draw[line] (Merchant) -- (has7) node[midway, right] {1};
+    \draw[line] (has7) -- (API) node[midway, right] {N};
+    
+    \draw[line] (Credit) -- (has8) node[midway, right] {1};
+    \draw[line] (has8) -- (Transaction) node[midway, right] {N};
+    
+    % Nối Campaign với Transaction
+    \draw[line] (Campaign) |- (has8) node[pos=0.75, right] {1};
+    
+    \end{tikzpicture}
+    }
+    \caption{Sơ đồ Thực thể Kết hợp (ERD) mức quan niệm hệ thống OctaPoint CaaS}
+    \label{fig:erd}
+\end{figure}

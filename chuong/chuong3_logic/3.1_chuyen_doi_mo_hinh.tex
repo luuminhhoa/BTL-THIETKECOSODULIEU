@@ -1,0 +1,10 @@
+\section{Chuyển đổi từ Mô hình Quan niệm sang Lược đồ Logic}
+
+Các bảng dữ liệu được phân rã và tổ chức thành 5 phân hệ chức năng:
+\begin{itemize}
+    \item **Phân hệ Tổ chức \& Đa doanh nghiệp (Multi-tenant):** Quản lý cấu trúc phân cấp từ Tập đoàn/Tổ chức (\texttt{Tenants}) đến các Chi nhánh/Cửa hàng (\texttt{Merchants}).
+    \item **Phân hệ Khách hàng \& Phân quyền:** Quản lý tài khoản doanh nghiệp (\texttt{Users}), phân quyền RBAC (\texttt{Roles}, \texttt{UserRoles}) và thông tin khách hàng/ví (\texttt{Customers}).
+    \item **Phân hệ Điểm thưởng \& Quy tắc:** Quản lý các chiến dịch (\texttt{Campaigns}) và quy tắc tích/đổi điểm (\texttt{RewardRules}).
+    \item **Phân hệ Giao dịch \& Sui Blockchain:** Lưu vết giao dịch real-time/offline (\texttt{CreditTransactions}) và tham chiếu đối soát On-chain (\texttt{SuiObjects}).
+    \item **Phân hệ Bảo mật, Kiểm toán \& Thanh toán:** Lưu khóa API (\texttt{APICredentials}), vết hệ thống bất biến (\texttt{AuditLogs}) và các gói cước (\texttt{Subscriptions}).
+\end{itemize}

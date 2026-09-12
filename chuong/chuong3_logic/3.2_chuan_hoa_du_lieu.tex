@@ -1,0 +1,33 @@
+\section{Chuẩn hóa Dữ liệu và Đánh giá Dạng chuẩn}
+
+
+\subsection{Đánh giá Dạng chuẩn BCNF / 3NF}
+Toàn bộ 13 bảng trong CSDL OctaPoint đều đạt dạng chuẩn BCNF (Boyce-Codd Normal Form) do thỏa mãn các điều kiện sau:
+\begin{enumerate}
+    \item **Đạt 1NF:** Tất cả các thuộc tính đều chứa các giá trị nguyên tố (atomic values), không chứa thuộc tính đa trị hay thuộc tính phức hợp.
+    \item **Đạt 2NF \& 3NF:** Không tồn tại phụ thuộc hàm một phần (partial dependency) vào một phần của khóa chính và không tồn tại phụ thuộc hàm bắc cầu (transitive dependency).
+    \item **Đạt BCNF:** Với mọi phụ thuộc hàm không tầm thường $X \rightarrow Y$ tồn tại trong các bảng, vế trái $X$ đều là một siêu khóa (Superkey) hoặc khóa chính (Primary Key).
+\end{enumerate}
+
+\subsection{Cấu trúc các bảng sau khi chuẩn hóa}
+\begin{table}[H]
+\centering
+\caption{Tổng hợp các bảng sau khi chuẩn hóa đạt dạng chuẩn BCNF}
+\begin{tabular}{|c|l|p{7.5cm}|c|}
+\hline
+\textbf{STT} & \textbf{Tên bảng} & \textbf{Mô tả nghiệp vụ} & \textbf{Dạng chuẩn} \\ \hline
+1 & Tenants & Quản lý các tập đoàn/tổ chức đăng ký nền tảng. & BCNF \\ \hline
+2 & Merchants & Quản lý thông tin chi nhánh/cửa hàng trực thuộc Tenant. & BCNF \\ \hline
+3 & Users & Tài khoản quản trị và nhân viên của Merchant. & BCNF \\ \hline
+4 & Customers & Thông tin khách hàng tích điểm và ví Sui zkLogin. & BCNF \\ \hline
+5 & Roles & Định nghĩa các vai trò phân quyền hệ thống. & BCNF \\ \hline
+6 & UserRoles & Bảng trung gian phân quyền Người dùng - Vai trò. & BCNF \\ \hline
+7 & Campaigns & Các chiến dịch điểm thưởng của Merchant. & BCNF \\ \hline
+8 & RewardRules & Quy tắc tỷ lệ tích và đổi điểm của chiến dịch. & BCNF \\ \hline
+9 & CreditTransactions & Nhật ký giao dịch tích/đổi điểm thời gian thực và offline. & BCNF \\ \hline
+10 & SuiObjects & Đối soát dữ liệu giao dịch On-chain trên Sui Network. & BCNF \\ \hline
+11 & APICredentials & Lưu trữ API Key mã hóa cho máy POS kết nối Gateway. & BCNF \\ \hline
+12 & AuditLogs & Nhật ký bất biến lưu vết mọi thao tác hệ thống. & BCNF \\ \hline
+13 & Subscriptions & Quản lý gói cước dịch vụ và hạn dùng của Tenant. & BCNF \\ \hline
+\end{tabular}
+\end{table}

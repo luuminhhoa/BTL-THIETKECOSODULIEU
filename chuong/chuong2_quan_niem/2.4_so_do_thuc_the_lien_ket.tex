@@ -2,39 +2,9 @@
 
 Dưới đây là sơ đồ Thực thể - Liên kết mức quan niệm cho hệ thống OctaPoint, thể hiện các thực thể, mối quan hệ và bản số (Cardinality).
 
-\begin{center}
-\begin{tikzpicture}[
-    node distance=2.5cm and 3cm,
-    entity/.style={rectangle, draw, thick, minimum width=3cm, minimum height=1cm, text centered, font=\bfseries},
-    relationship/.style={diamond, draw, thick, minimum width=3cm, minimum height=1cm, text centered},
-    line/.style={draw, thick, -}
-]
-
-% Vẽ các Thực thể (Entities)
-\node[entity] (merchant) {Merchant};
-\node[entity] (campaign) [right=of merchant, xshift=2cm] {Campaign};
-\node[entity] (transaction) [below=of campaign, yshift=-2cm] {Transaction};
-\node[entity] (enduser) [left=of transaction, xshift=-2cm] {EndUser};
-\node[entity] (suiobject) [right=of transaction, xshift=1.5cm] {SuiObject};
-
-% Vẽ các Mối quan hệ (Relationships)
-\node[relationship] (tao) [right=of merchant, xshift=-0.5cm] {Tạo};
-\node[relationship] (thuocve) [below=of campaign, yshift=-0.5cm] {Thuộc về};
-\node[relationship] (thuchien) [left=of transaction, xshift=-0.5cm] {Thực hiện};
-\node[relationship] (anhxa) [right=of transaction, xshift=-0.2cm] {Ánh xạ};
-
-% Vẽ các đường nối kèm Bản số (Cardinalities)
-\draw[line] (merchant) -- node[above, near start] {1} (tao);
-\draw[line] (tao) -- node[above, near end] {N} (campaign);
-
-\draw[line] (campaign) -- node[right, near start] {1} (thuocve);
-\draw[line] (thuocve) -- node[right, near end] {N} (transaction);
-
-\draw[line] (enduser) -- node[above, near start] {1} (thuchien);
-\draw[line] (thuchien) -- node[above, near end] {N} (transaction);
-
-\draw[line] (transaction) -- node[above, near start] {1} (anhxa);
-\draw[line] (anhxa) -- node[above, near end] {1} (suiobject);
-
-\end{tikzpicture}
-\end{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/OctaPoint_ERD_Conceptual.png}
+    \caption{Sơ đồ ERD khái niệm (Conceptual ERD)}
+    \label{fig:erd_conceptual}
+\end{figure}

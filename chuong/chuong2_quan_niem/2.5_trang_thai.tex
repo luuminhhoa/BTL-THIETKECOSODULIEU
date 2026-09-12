@@ -9,28 +9,9 @@ Tương tự như vòng đời của một phiếu mượn, mỗi giao dịch t�
     \item \textbf{Failed (Thất bại):} Giao dịch bị từ chối do gian lận (Anti-fraud), sai chữ ký, hoặc lỗi mạng.
 \end{itemize}
 
-\begin{center}
-\begin{tikzpicture}[->, >=stealth, auto, node distance=3cm, thick,
-    state/.style={rectangle, rounded corners, draw, thick, minimum width=3cm, minimum height=1cm, text centered, font=\bfseries}]
-
-% Các node trạng thái
-\node[state] (pending) {Pending};
-\node[state] (processing) [below=of pending] {Processing};
-\node[state] (completed) [below left=of processing, xshift=-1cm] {Completed};
-\node[state] (failed) [below right=of processing, xshift=1cm] {Failed};
-
-% Điểm bắt đầu và kết thúc
-\node[circle, fill=black, inner sep=2pt, label=above:Tạo giao dịch] (start) [above=1cm of pending] {};
-\node[circle, draw, double, inner sep=2pt] (end1) [below=1cm of completed] {};
-\node[circle, draw, double, inner sep=2pt] (end2) [below=1cm of failed] {};
-
-% Các đường mũi tên nối trạng thái
-\draw (start) -- (pending);
-\draw (pending) -- node[right] {Có kết nối mạng} (processing);
-\draw (processing) -- node[above left] {Sui Node xác nhận} (completed);
-\draw (processing) -- node[above right] {Lỗi bảo mật / Hủy} (failed);
-\draw (completed) -- (end1);
-\draw (failed) -- (end2);
-
-\end{tikzpicture}
-\end{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{images/OctaPoint_Transaction_StateMachine.png}
+    \caption{Biểu đồ trạng thái của Giao dịch (Transaction State Machine)}
+    \label{fig:transaction_state_machine}
+\end{figure}

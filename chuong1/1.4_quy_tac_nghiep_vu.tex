@@ -1,37 +1,41 @@
-Các quy tắc nghiệp vụ chính:
+\subsection{Quy tắc nghiệp vụ trọng yếu và Ánh xạ dữ liệu}
 
-\begin{enumerate}
-    \item Mỗi merchant thuộc một tenant và phải có thông tin định danh duy nhất trong phạm vi quản lý.
+\subsubsection{Các quy tắc nghiệp vụ (Business Rules)}
+Các quy tắc nghiệp vụ dưới đây có tác động trực tiếp đến việc xác định các thực thể, bản số mối quan hệ và các ràng buộc toàn vẹn trong ERD.
 
-    \item Một merchant có thể quản lý nhiều customer và nhiều campaign.
+\begin{description}
+    \item[BR-1] \textbf{Ràng buộc sở hữu Chiến dịch:} Một Doanh nghiệp (Merchant) có thể quản lý nhiều Chiến dịch (Campaign). Tuy nhiên, mỗi Chiến dịch bắt buộc phải thuộc về duy nhất một Doanh nghiệp (Quan hệ 1:N).
+    \item[BR-2] \textbf{Ràng buộc độc lập Số dư:} Số dư (Credit Balance) của một Khách hàng (Customer) được tính độc lập trên từng Merchant. Một Customer có thể có nhiều ví điểm tương ứng với các Merchant khác nhau.
+    \item[BR-3] \textbf{Quy tắc Bất biến Giao dịch (Ledger Immutability):} Bất kỳ sự thay đổi số dư nào đều sinh ra một bản ghi giao dịch (Credit Transaction) mới. Hệ thống không cho phép sửa đổi hoặc xóa giao dịch đã hoàn tất.
+    \item[BR-4] \textbf{Ràng buộc Miền giá trị (Domain Constraints):} Tỷ lệ quy đổi, hạn mức và số lượng credit bắt buộc phải là số thực dương ($>0$). Trạng thái chiến dịch phải thuộc tập giá trị định trước (DRAFT, ACTIVE, EXPIRED).
+    \item[BR-5] \textbf{Ràng buộc Mã băm Blockchain:} Giao dịch đã đồng bộ On-chain phải lưu trữ mã băm đối soát (\texttt{sui\_tx\_digest}) và ID đối tượng (\texttt{sui\_object\_id}) dưới dạng duy nhất (\texttt{UNIQUE}).
+\end{description}
 
-    \item Một customer có thể tham gia chương trình điểm thưởng của nhiều merchant.
+\subsubsection{Ánh xạ Yêu cầu vào Đối tượng Dữ liệu chính}
+Dựa trên các yêu cầu chức năng (FR-DB) và nhóm dữ liệu cần quản lý, bảng dưới đây tổng hợp ánh xạ sang các thực thể CSDL cốt lõi:
 
-    \item Mỗi credit phải xác định được customer, merchant, giá trị, trạng thái và thời hạn sử dụng nếu có.
-
-    \item Credit chỉ được phát hành bởi actor hoặc hệ thống đã được cấp quyền.
-
-    \item Mọi nghiệp vụ phát hành, đổi hoặc điều chỉnh credit phải tạo giao dịch tương ứng.
-
-    \item Credit không được redeem khi đã hết hạn, bị khóa hoặc không đủ số dư.
-
-    \item Một campaign thuộc một merchant và có thời gian hiệu lực xác định.
-
-    \item Mỗi campaign có thể có một hoặc nhiều reward rule để xác định cách tích, đổi hoặc nhân điểm.
-
-    \item Một user có thể có một hoặc nhiều role; một role có thể được cấp nhiều permission.
-
-    \item API credential phải thuộc về merchant và không được trùng giá trị định danh.
-
-    \item Các thao tác quan trọng trên dữ liệu phải được ghi nhận trong audit log.
-
-    \item Các sự kiện có dấu hiệu gian lận phải được ghi nhận để phục vụ kiểm tra và xử lý.
-
-    \item Một merchant có thể có subscription theo một pricing plan tại từng thời điểm.
-
-    \item Mọi invoice hoặc payment phải gắn với subscription hoặc merchant tương ứng.
-
-    \item Thông tin giao dịch Blockchain được lưu dưới dạng tham chiếu để đối soát với dữ liệu on-chain.
-
-    \item Dữ liệu giữa các bảng phải tuân thủ toàn vẹn tham chiếu; không cho phép tạo bản ghi con khi bản ghi cha không tồn tại.
-\end{enumerate}
+\vspace{0.3cm}
+\begin{table}[H]
+    \centering
+    \caption{Ánh xạ Yêu cầu và Nhóm dữ liệu vào Thực thể}
+    \label{tab:anh_xa_du_lieu}
+    \vspace{0.2cm}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{8cm}|}
+        \hline
+        \textbf{Nhóm Dữ liệu} & \textbf{Mã Yêu cầu} & \textbf{Thực thể quản lý \& Vai trò} \\
+        \hline
+        Tổ chức \& Dân cư & FR-DB-01, 03 & \texttt{Tenant}, \texttt{Merchant}, \texttt{Customer}: Quản lý định danh và hồ sơ đối tác, khách hàng. \\
+        \hline
+        Phân quyền & FR-DB-02 & \texttt{User}, \texttt{Role}, \texttt{Permission}: Kiểm soát truy cập RBAC. \\
+        \hline
+        Loyalty & FR-DB-04, 06 & \texttt{Credit}, \texttt{Campaign}, \texttt{RewardRule}: Quy tắc tích điểm, đổi thưởng và thời hạn. \\
+        \hline
+        Giao dịch On/Off & FR-DB-05, 07 & \texttt{CreditTransaction}: Ghi nhận biến động số dư và tham chiếu mã băm Blockchain. \\
+        \hline
+        Bảo mật \& Audit & FR-DB-08, 09 & \texttt{APICredential}, \texttt{AuditLog}, \texttt{FraudEvent}: Quản lý API Key, nhật ký hệ thống và chống gian lận. \\
+        \hline
+        Thương mại & FR-DB-10 & \texttt{PricingPlan}, \texttt{Subscription}, \texttt{Invoice}: Quản lý gói cước và thanh toán của Merchant. \\
+        \hline
+    \end{tabular}
+\end{table}

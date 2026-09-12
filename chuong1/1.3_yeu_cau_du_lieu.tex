@@ -1,42 +1,45 @@
-\subsection{Yêu cầu chức năng}
-
-Cơ sở dữ liệu phải đáp ứng các yêu cầu dữ liệu sau:
-
-\begin{description}
-    \item[FR-DB-01] Quản lý thông tin tenant và merchant.
-    \item[FR-DB-02] Quản lý người dùng, vai trò và quyền truy cập.
-    \item[FR-DB-03] Quản lý thông tin khách hàng theo merchant.
-    \item[FR-DB-04] Quản lý credit, số dư, trạng thái và thời hạn sử dụng.
-    \item[FR-DB-05] Quản lý lịch sử phát hành, đổi và điều chỉnh credit.
-    \item[FR-DB-06] Quản lý campaign và các quy tắc tích, đổi điểm.
-    \item[FR-DB-07] Lưu thông tin tham chiếu của giao dịch Blockchain phục vụ đối soát.
-    \item[FR-DB-08] Quản lý API credential và thông tin tích hợp cần thiết.
-    \item[FR-DB-09] Lưu audit log và các sự kiện có dấu hiệu gian lận.
-    \item[FR-DB-10] Quản lý gói dịch vụ, subscription, hóa đơn và thanh toán.
-    \item[FR-DB-11] Cung cấp dữ liệu phục vụ thống kê credit, giao dịch và hoạt động merchant.
-\end{description}
-
-\subsection{Yêu cầu phi chức năng}
+\subsection{Yêu cầu phi chức năng và Tác động đến thiết kế CSDL}
+Các yêu cầu phi chức năng (Non-Functional Requirements - NFR) quy định ràng buộc về chất lượng vận hành của hệ thống CaaS. Đối với khía cạnh Thiết kế Cơ sở dữ liệu, các yêu cầu này định hướng trực tiếp đến việc lựa chọn kiểu dữ liệu, thiết kế chỉ mục (indexing) và chiến lược quản lý giao dịch.
 
 \begin{description}
-    \item[NFR-DB-01] \textbf{Toàn vẹn dữ liệu:} bảo đảm PK, FK và các ràng buộc dữ liệu.
-    \item[NFR-DB-02] \textbf{Nhất quán:} dữ liệu giữa các bảng phải được duy trì nhất quán sau mỗi giao dịch.
-    \item[NFR-DB-03] \textbf{Bảo mật:} chỉ người dùng có quyền mới được truy cập hoặc thay đổi dữ liệu phù hợp.
-    \item[NFR-DB-04] \textbf{Hiệu năng:} hỗ trợ truy vấn nhanh đối với số dư, giao dịch và campaign.
-    \item[NFR-DB-05] \textbf{Khả năng mở rộng:} đáp ứng sự gia tăng về merchant, customer và transaction.
-    \item[NFR-DB-06] \textbf{Auditability:} các thay đổi quan trọng phải có khả năng truy vết.
-    \item[NFR-DB-07] \textbf{Tính sẵn sàng:} dữ liệu phải được duy trì ổn định và có khả năng phục hồi khi xảy ra sự cố.
-    \item[NFR-DB-08] \textbf{Khả năng bảo trì:} cấu trúc dữ liệu phải rõ ràng, chuẩn hóa và dễ mở rộng.
+    \item[NFR-DB-01] \textbf{Toàn vẹn dữ liệu \& Nhất quán (Integrity \& Consistency):} Dữ liệu giữa các bảng phải được duy trì nhất quán sau mỗi giao dịch.
+    \begin{itemize}
+        \item \textit{Hàm ý CSDL:} Bảo đảm thiết lập đầy đủ Khóa chính (PK), Khóa ngoại (FK) với chính sách tham chiếu (\texttt{CASCADE}, \texttt{RESTRICT}) và các ràng buộc dữ liệu (\texttt{CHECK}, \texttt{UNIQUE}). Sử dụng khối giao dịch (Transaction) để đồng bộ với Programmable Transaction Blocks (PTBs) trên Sui.
+    \end{itemize}
+
+    \item[NFR-DB-02] \textbf{Bảo mật \& Khả năng truy vết (Security \& Auditability):} Chỉ người dùng có quyền mới được truy cập dữ liệu. Các thay đổi quan trọng phải có khả năng truy vết.
+    \begin{itemize}
+        \item \textit{Hàm ý CSDL:} Lưu mã băm API Credential (HMAC-SHA256). Các bảng \texttt{CreditTransaction} và \texttt{AuditLog} phải được thiết kế dưới dạng sổ cái bất biến (Immutable Ledger), chỉ cho phép \texttt{INSERT}, tuyệt đối cấm \texttt{UPDATE}/\texttt{DELETE}.
+    \end{itemize}
+
+    \item[NFR-DB-03] \textbf{Hiệu năng \& Khả năng mở rộng (Performance \& Scalability):} Hỗ trợ truy vấn nhanh đối với số dư, giao dịch; đáp ứng sự gia tăng về merchant, customer.
+    \begin{itemize}
+        \item \textit{Hàm ý CSDL:} Tối ưu hóa chỉ mục (B+ Tree Index) trên các bảng cốt lõi để đảm bảo độ trễ truy vấn dưới 100ms (Sub-100ms). Lược đồ phải hỗ trợ kiến trúc Multi-tenant phân tách dữ liệu an toàn.
+    \end{itemize}
+
+    \item[NFR-DB-04] \textbf{Tính sẵn sàng \& Khả năng bảo trì (Availability \& Maintainability):} Dữ liệu duy trì ổn định, cấu trúc rõ ràng, chuẩn hóa và dễ mở rộng.
+    \begin{itemize}
+        \item \textit{Hàm ý CSDL:} Hệ thống CSDL phải đạt tối thiểu Dạng chuẩn 3 (3NF) hoặc Boyce-Codd (BCNF) nhằm triệt tiêu hoàn toàn dị thường dữ liệu (anomalies) khi thêm, sửa, xóa.
+    \end{itemize}
 \end{description}
 
-\subsection{Các nhóm dữ liệu cần quản lý}
-
-\begin{itemize}
-    \item Dữ liệu tổ chức: Tenant, Merchant.
-    \item Dữ liệu người dùng: User, Role, Permission.
-    \item Dữ liệu khách hàng: Customer.
-    \item Dữ liệu loyalty: Credit, Campaign, Reward Rule.
-    \item Dữ liệu giao dịch: Credit Transaction.
-    \item Dữ liệu bảo mật và kiểm toán: API Credential, Audit Log, Fraud Event.
-    \item Dữ liệu thương mại: Pricing Plan, Subscription, Invoice, Payment.
-\end{itemize}
+\begin{table}[H]
+    \centering
+    \caption{Tổng hợp yêu cầu phi chức năng ảnh hưởng đến CSDL}
+    \label{tab:yeu_cau_pcn}
+    \vspace{0.2cm}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|l|>{\raggedright\arraybackslash}p{8.5cm}|}
+        \hline
+        \textbf{Mã} & \textbf{Thuộc tính} & \textbf{Yêu cầu CSDL \& Cấu hình vật lý} \\
+        \hline
+        NFR-DB-03 & Hiệu năng & Tối ưu B+ Tree Index cho độ trễ truy vấn điểm $<$ 100ms \\
+        \hline
+        NFR-DB-02 & Bảo mật & Lưu mã băm API Secret, thiết kế phân quyền RBAC đa khách thuê \\
+        \hline
+        NFR-DB-01 & Tính toàn vẹn & Bảng \texttt{CreditTransaction} bất biến, lưu \texttt{tx\_digest} từ blockchain \\
+        \hline
+        NFR-DB-04 & Khả năng mở rộng & Lược đồ chuẩn 3NF/BCNF hỗ trợ Multi-tenant không gây thắt nút cổ chai \\
+        \hline
+    \end{tabular}
+\end{table}

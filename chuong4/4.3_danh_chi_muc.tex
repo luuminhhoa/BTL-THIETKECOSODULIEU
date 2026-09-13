@@ -1,0 +1,26 @@
+\section{Chiến lược Đánh chỉ mục (Indexing)}
+
+Chỉ mục (Index) là cấu trúc phụ giúp DBMS tìm khối dữ liệu cần đọc nhanh chóng mà không phải quét toàn bộ bảng[cite: 1]. Tuy nhiên, việc lạm dụng chỉ mục sẽ gây tốn không gian lưu trữ và làm chậm các thao tác chèn/cập nhật dữ liệu[cite: 1].
+
+\subsection{Cơ sở lý thuyết và Thuật toán lựa chọn}
+Dựa trên \textbf{Algorithm 4.1 (Quyết định tạo chỉ mục)}[cite: 1], dự án áp dụng các nguyên tắc sau:
+\begin{enumerate}
+    \item \textbf{Ưu tiên Khóa:} Luôn xem xét tạo chỉ mục trên Khóa chính (PK) và Khóa ngoại (FK) trước[cite: 1].
+    \item \textbf{Đánh giá Độ chọn lọc (Selectivity):} Chỉ mục cây B+ chỉ hiệu quả khi cột có độ chọn lọc cao (càng nhiều giá trị phân biệt càng tốt)[cite: 1]. Công thức tính độ chọn lọc được định nghĩa là:
+    $$selectivity(A)=\frac{NDV(A)}{|R|}$$
+    Trong đó, $NDV(A)$ là số giá trị phân biệt của cột $A$, và $|R|$ là tổng số dòng của bảng[cite: 1].
+    \item \textbf{Chi phí ghi:} Hạn chế tối đa việc tạo chỉ mục phụ trên bảng \texttt{CREDIT\_TRANSACTION} vì đây là bảng có tải công việc ghi liên tục (Write-heavy workload)[cite: 1].
+\end{enumerate}
+
+\subsection{Thiết kế Chỉ mục cho OctaPoint CaaS}
+Từ các nguyên tắc trên, hệ thống triển khai các loại chỉ mục cụ thể như sau:
+
+\begin{itemize}
+    \item \textbf{Chỉ mục Cụm (Clustered Index):} Được MySQL tự động tạo trên Khóa chính của tất cả các bảng. Dữ liệu vật lý được tổ chức theo cấu trúc Cây B+ (B+ Tree), hỗ trợ tìm kiếm chính xác và tìm kiếm theo khoảng (Range Query) với chi phí $O(\log_p N)$[cite: 1].
+    
+    \item \textbf{Chỉ mục Phụ (Nonclustered Index) trên Khóa ngoại:} Tạo chỉ mục cho các cột FK như \texttt{MerchantID}, \texttt{CreditID}, \texttt{CampaignID} nhằm tối ưu hóa chi phí cho thuật toán kết nối lồng nhau (Nested-Loop Join) khi thực hiện các truy vấn thống kê nhiều bảng[cite: 1].
+    
+    \item \textbf{Chỉ mục Phụ trên cột có Độ chọn lọc cao:} Tạo Index cho cột \texttt{Email} (bảng USER) để tăng tốc độ đăng nhập. Vì $NDV(Email) \approx |USER|$, độ chọn lọc xấp xỉ 1 (rất cao), nên chỉ mục B+ hoạt động vô cùng hiệu quả[cite: 1].
+    
+    \item \textbf{Cột KHÔNG tạo chỉ mục:} Các cột như \texttt{Status} (chỉ có Active/Inactive) hay \texttt{TransactionType} (chỉ có Earn/Burn/Refund) có độ chọn lọc cực thấp[cite: 1]. Theo lý thuyết, việc dùng B+ tree cho các cột này không đáng giá vì mỗi giá trị trả về quá nhiều dòng[cite: 1]. Dự án quyết định không đánh chỉ mục trên các cột này để tiết kiệm dung lượng lưu trữ và tối ưu tốc độ ghi dữ liệu.
+\end{itemize}

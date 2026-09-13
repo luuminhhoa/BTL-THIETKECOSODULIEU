@@ -1,0 +1,97 @@
+\section{Mã lệnh tạo bảng (DDL - Data Definition Language)}
+
+Dựa trên từ điển dữ liệu (Chương 3) và chiến lược thiết kế vật lý, dưới đây là mã lệnh SQL (DDL) sử dụng để khởi tạo cấu trúc cơ sở dữ liệu. Hệ quản trị CSDL được cấu hình sử dụng Engine \texttt{InnoDB} nhằm đảm bảo tính ACID cho các giao dịch. Mã lệnh tuân thủ nghiêm ngặt thứ tự khởi tạo: bảng độc lập (nhánh 1) tạo trước, bảng phụ thuộc (nhánh N) tạo sau.
+
+\begin{lstlisting}[style=sqlstyle]
+-- ====================================================
+-- 1. BANG DOC LAP (Khong chua khoa ngoai)
+-- ====================================================
+
+CREATE TABLE TENANT (
+    TenantID VARCHAR(36) PRIMARY KEY,
+    TenantName VARCHAR(255) NOT NULL,
+    SystemConfig JSON
+) ENGINE=InnoDB;
+
+CREATE TABLE CUSTOMER (
+    CustomerID VARCHAR(36) PRIMARY KEY,
+    WalletAddress VARCHAR(100),
+    Email VARCHAR(255)
+) ENGINE=InnoDB;
+
+-- ====================================================
+-- 2. BANG PHU THUOC CAP 1
+-- ====================================================
+
+CREATE TABLE MERCHANT (
+    MerchantID VARCHAR(36) PRIMARY KEY,
+    TenantID VARCHAR(36) NOT NULL,
+    BusinessName VARCHAR(255) NOT NULL,
+    Status VARCHAR(20) NOT NULL,
+    CONSTRAINT FK_Merchant_Tenant FOREIGN KEY (TenantID) REFERENCES TENANT(TenantID)
+) ENGINE=InnoDB;
+
+-- ====================================================
+-- 3. BANG PHU THUOC CAP 2
+-- ====================================================
+
+CREATE TABLE USER (
+    UserID VARCHAR(36) PRIMARY KEY,
+    MerchantID VARCHAR(36) NOT NULL,
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    RoleID INT NOT NULL,
+    CONSTRAINT FK_User_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID)
+) ENGINE=InnoDB;
+
+CREATE TABLE API_CREDENTIAL (
+    KeyID VARCHAR(36) PRIMARY KEY,
+    MerchantID VARCHAR(36) NOT NULL,
+    ApiKey VARCHAR(255) NOT NULL,
+    SecretHash VARCHAR(255) NOT NULL,
+    CONSTRAINT FK_API_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID)
+) ENGINE=InnoDB;
+
+CREATE TABLE CAMPAIGN (
+    CampaignID VARCHAR(36) PRIMARY KEY,
+    MerchantID VARCHAR(36) NOT NULL,
+    CampaignName VARCHAR(255) NOT NULL,
+    StartDate DATETIME NOT NULL,
+    EndDate DATETIME NOT NULL,
+    Status VARCHAR(20) NOT NULL,
+    CONSTRAINT FK_Campaign_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID)
+) ENGINE=InnoDB;
+
+CREATE TABLE CREDIT (
+    CreditID VARCHAR(36) PRIMARY KEY,
+    CustomerID VARCHAR(36) NOT NULL,
+    MerchantID VARCHAR(36) NOT NULL,
+    AvailableBalance DECIMAL(18,2) NOT NULL DEFAULT 0,
+    CONSTRAINT FK_Credit_Customer FOREIGN KEY (CustomerID) REFERENCES CUSTOMER(CustomerID),
+    CONSTRAINT FK_Credit_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID)
+) ENGINE=InnoDB;
+
+-- ====================================================
+-- 4. BANG PHU THUOC CAP 3
+-- ====================================================
+
+CREATE TABLE REWARD_RULE (
+    RuleID VARCHAR(36) PRIMARY KEY,
+    CampaignID VARCHAR(36) NOT NULL,
+    ActionType VARCHAR(50) NOT NULL,
+    PointsMultiplier DECIMAL(5,2) NOT NULL,
+    CONSTRAINT FK_Rule_Campaign FOREIGN KEY (CampaignID) REFERENCES CAMPAIGN(CampaignID)
+) ENGINE=InnoDB;
+
+CREATE TABLE CREDIT_TRANSACTION (
+    TransactionID VARCHAR(36) PRIMARY KEY,
+    CreditID VARCHAR(36) NOT NULL,
+    CampaignID VARCHAR(36),
+    Amount DECIMAL(18,2) NOT NULL,
+    TransactionType VARCHAR(50) NOT NULL,
+    SuiTxDigest VARCHAR(100) UNIQUE,
+    CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT FK_Trans_Credit FOREIGN KEY (CreditID) REFERENCES CREDIT(CreditID),
+    CONSTRAINT FK_Trans_Campaign FOREIGN KEY (CampaignID) REFERENCES CAMPAIGN(CampaignID)
+) ENGINE=InnoDB;
+\end{lstlisting}

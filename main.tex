@@ -6,15 +6,35 @@
 \usepackage[hidelinks]{hyperref} % Xóa viền đỏ mục lục
 \usepackage{geometry}
 \usepackage{array}
+\usepackage{amsmath}
 \geometry{a4paper, margin=1in}
+\usepackage{listings}
+\usepackage{xcolor}
 
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    backgroundcolor=\color{gray!5},
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    breaklines=true,
+    frame=single,
+    showstringspaces=false
+}
 \renewcommand{\tablename}{Bảng}
 \renewcommand{\contentsname}{MỤC LỤC}
 
 % Gói vẽ sơ đồ
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning, automata}
-
+\renewcommand{\chaptername}{Chương}
+\renewcommand{\figurename}{Hình}
+\renewcommand{\tablename}{Bảng}
+\renewcommand{\contentsname}{Mục lục}
 \begin{document}
 
 % ================= TRANG BÌA =================
@@ -57,7 +77,7 @@
 
 \include{chuong1}
 \include{chuong2} 
-% \include{chuong3}
-% \include{chuong4}
+\include{chuong3}
+\include{chuong4}
 
 \end{document}

@@ -1,0 +1,62 @@
+\section{Các truy vấn dữ liệu tiêu biểu (Workload Queries)}
+
+Để chứng minh tính ứng dụng và hiệu năng của lược đồ vật lý, dưới đây là các câu lệnh truy vấn (SQL) đại diện cho các nghiệp vụ lõi (workload) thường xuyên được thực thi trên hệ thống OctaPoint CaaS.
+
+\subsection{Truy vấn 1: Tra cứu lịch sử biến động điểm của một Khách hàng tại một Cửa hàng}
+\textbf{Nghiệp vụ:} Khách hàng mở app và muốn xem lại lịch sử cộng/trừ điểm của mình tại cửa hàng "Highlands Coffee". Truy vấn cần JOIN qua bảng trung gian \texttt{CREDIT}.
+
+\begin{lstlisting}[style=sqlstyle]
+SELECT 
+    ct.TransactionID, 
+    ct.TransactionType, 
+    ct.Amount, 
+    ct.CreatedAt
+FROM 
+    CREDIT_TRANSACTION ct
+JOIN 
+    CREDIT c ON ct.CreditID = c.CreditID
+WHERE 
+    c.CustomerID = 'CUST_UUID_001' 
+    AND c.MerchantID = 'MERCH_UUID_002'
+ORDER BY 
+    ct.CreatedAt DESC;
+\end{lstlisting}
+
+\subsection{Truy vấn 2: Thống kê tổng điểm hiện có của Khách hàng trên toàn hệ thống}
+\textbf{Nghiệp vụ:} Xem tổng quan số dư (Available Balance) của một khách hàng gom nhóm theo từng Merchant.
+
+\begin{lstlisting}[style=sqlstyle]
+SELECT 
+    m.BusinessName, 
+    c.AvailableBalance
+FROM 
+    CREDIT c
+JOIN 
+    MERCHANT m ON c.MerchantID = m.MerchantID
+WHERE 
+    c.CustomerID = 'CUST_UUID_001'
+    AND m.Status = 'Active'
+ORDER BY 
+    c.AvailableBalance DESC;
+\end{lstlisting}
+
+\subsection{Truy vấn 3: Báo cáo hiệu quả Chiến dịch (Dành cho Quản lý Cửa hàng)}
+\textbf{Nghiệp vụ:} Thống kê tổng số lượng điểm đã phát hành (cộng cho khách) và số lượt giao dịch, nhóm theo từng Chiến dịch trong tháng hiện tại.
+
+\begin{lstlisting}[style=sqlstyle]
+SELECT 
+    camp.CampaignName,
+    COUNT(ct.TransactionID) AS TotalTransactions,
+    SUM(ct.Amount) AS TotalPointsIssued
+FROM 
+    CREDIT_TRANSACTION ct
+JOIN 
+    CAMPAIGN camp ON ct.CampaignID = camp.CampaignID
+WHERE 
+    camp.MerchantID = 'MERCH_UUID_002'
+    AND ct.TransactionType = 'Earn'
+    AND MONTH(ct.CreatedAt) = MONTH(CURRENT_DATE())
+    AND YEAR(ct.CreatedAt) = YEAR(CURRENT_DATE())
+GROUP BY 
+    camp.CampaignID, camp.CampaignName;
+\end{lstlisting}

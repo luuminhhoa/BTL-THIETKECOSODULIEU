@@ -1,33 +1,23 @@
-\begin{table}[H]
-    \centering
-    \caption{Bảng tổng hợp các mối quan hệ trong sơ đồ ERD}
-    \label{tab:moi_quan_he}
-    \vspace{0.2cm}
-    \renewcommand{\arraystretch}{1.4}
-    % Câu thần chú ép bảng vừa khít 100% chiều ngang khổ giấy
-    \resizebox{\textwidth}{!}{%
-    \begin{tabular}{|c|>{\bfseries}l|c|>{\bfseries}l|>{\raggedright\arraybackslash}p{7cm}|}
-        \hline
-        \textbf{STT} & \textbf{Thực thể A} & \textbf{Quan hệ (A:B)} & \textbf{Thực thể B} & \textbf{Ý nghĩa nghiệp vụ} \\
-        \hline
-        1 & Tenant & 1 : N & Merchant & Một hệ thống gốc (Tenant) có thể cấp phát cho nhiều Doanh nghiệp (Merchant). \\
-        \hline
-        2 & Merchant & 1 : N & User & Một Doanh nghiệp sở hữu nhiều tài khoản nhân sự quản trị. \\
-        \hline
-        3 & Merchant & 1 : N & Campaign & Một Doanh nghiệp có thể khởi tạo và chạy nhiều Chiến dịch. \\
-        \hline
-        4 & Campaign & 1 : N & RewardRule & Một Chiến dịch bao gồm nhiều quy tắc tích/đổi điểm khác nhau. \\
-        \hline
-        5 & Merchant & 1 : N & APICredential & Một Doanh nghiệp có thể tạo nhiều cặp khóa API để tích hợp. \\
-        \hline
-        6 & Merchant & 1 : N & Credit & Một Doanh nghiệp quản lý nhiều ví điểm của các khách hàng khác nhau. \\
-        \hline
-        7 & Customer & 1 : N & Credit & Một Khách hàng có thể sở hữu nhiều ví điểm tại các Doanh nghiệp khác nhau. \\
-        \hline
-        8 & Credit & 1 : N & CreditTransaction & Một ví điểm phát sinh nhiều lịch sử giao dịch cộng/trừ. \\
-        \hline
-        9 & Campaign & 1 : N & CreditTransaction & Một Chiến dịch có thể tạo ra nhiều giao dịch phát hành điểm. \\
-        \hline
-    \end{tabular}%
-    }
-\end{table}
+\section{Xác định các mối quan hệ (Relationships)}
+
+Dựa trên quy trình nghiệp vụ của hệ thống OctaPoint CaaS, các mối quan hệ (Relationships) giữa các thực thể được xác định và phân tích bản số (Cardinality) chi tiết như sau:
+
+\begin{itemize}
+    \item \textbf{Tenant - Merchant (1:N):} Một đơn vị thuê bao (Tenant) có thể cấp phát hệ thống cho nhiều doanh nghiệp/cửa hàng (Merchant). Ngược lại, mỗi Merchant chỉ trực thuộc duy nhất một Tenant.
+    
+    \item \textbf{Merchant - User (1:N):} Một Merchant có thể tạo và quản lý nhiều tài khoản nhân sự (User) để phân quyền vận hành cửa hàng. Mỗi tài khoản User chỉ thuộc quyền quản lý của một Merchant định danh.
+    
+    \item \textbf{Merchant - Campaign (1:N):} Mỗi Merchant có thể khởi tạo và chạy nhiều chiến dịch khuyến mãi (Campaign) cùng lúc hoặc qua các thời kỳ, nhưng một chiến dịch cụ thể chỉ do một Merchant duy nhất phát hành.
+    
+    \item \textbf{Campaign - RewardRule (1:N):} Một chiến dịch (Campaign) có thể bao gồm nhiều quy tắc thưởng (RewardRule) khác nhau (ví dụ: quy định điểm thưởng khi mua hàng, điểm thưởng khi check-in). Mỗi quy tắc chỉ được áp dụng cho một chiến dịch cụ thể.
+    
+    \item \textbf{Customer - Credit (1:N) và Merchant - Credit (1:N):} Một Khách hàng (Customer) có thể sở hữu nhiều Ví điểm (Credit) ở các cửa hàng khác nhau. Đồng thời, một Merchant cũng quản lý Ví điểm của rất nhiều Customer. Đây chính là bước phân rã mối quan hệ Nhiều - Nhiều (M:N) nguyên thủy giữa Khách hàng và Cửa hàng thông qua thực thể trung gian (Associative Entity) là Ví điểm.
+    
+    \item \textbf{Merchant - APICredential (1:N):} Một Merchant có thể tạo ra nhiều bộ khóa API (APICredential) để phục vụ việc tích hợp đa hệ thống (ví dụ: máy POS, website bán hàng). Mỗi bộ khóa chỉ gắn liền với một Merchant.
+    
+    \item \textbf{Credit - CreditTransaction (1:N):} Một Ví điểm (Credit) sẽ ghi nhận nhiều biến động giao dịch (CreditTransaction) theo thời gian thực (như cộng điểm, trừ điểm). Mỗi giao dịch lịch sử này bắt buộc phải tham chiếu về một Ví điểm duy nhất.
+    
+    \item \textbf{Campaign - CreditTransaction (1:N):} Các giao dịch cộng điểm (CreditTransaction) có thể được sinh ra từ việc áp dụng một chiến dịch (Campaign) cụ thể. Một chiến dịch thành công sẽ tạo ra rất nhiều giao dịch điểm cho khách hàng.
+\end{itemize}
+
+Các mối kết hợp trên cùng với bản số tương ứng sẽ là cơ sở nền tảng để xây dựng Sơ đồ Thực thể Kết hợp (ERD) hoàn chỉnh ở mục tiếp theo.

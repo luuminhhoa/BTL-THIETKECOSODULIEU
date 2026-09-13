@@ -1,0 +1,48 @@
+\section{Phụ thuộc hàm và Khóa ứng viên}
+
+Dựa trên lý thuyết thiết kế cơ sở dữ liệu quan hệ, để đảm bảo hệ thống OctaPoint không gặp phải các dị thường dữ liệu (Anomalies) khi Thêm, Xóa, Sửa, chúng ta cần phân tích tập Phụ thuộc hàm và tiến hành chuẩn hóa dữ liệu.
+
+\subsection{Xác định Tập Phụ thuộc hàm (Functional Dependencies)}
+Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dựa trên các quy tắc nghiệp vụ của mô hình CaaS (đã trình bày ở Chương 1), ta xác định được tập Phụ thuộc hàm $F$ cốt lõi như sau:
+
+\begin{align*}
+    \text{TenantID} &\rightarrow \text{TenantName, SystemConfig} \tag{F1} \\
+    \text{MerchantID} &\rightarrow \text{TenantID, BusinessName, Status} \tag{F2} \\
+    \text{UserID} &\rightarrow \text{MerchantID, Email, PasswordHash, RoleID} \tag{F3} \\
+    \text{Email} &\rightarrow \text{UserID, MerchantID, PasswordHash, RoleID} \tag{F4} \\
+    \text{CampaignID} &\rightarrow \text{MerchantID, CampaignName, StartDate, EndDate, Status} \tag{F5} \\
+    \text{CreditID} &\rightarrow \text{CustomerID, MerchantID, AvailableBalance} \tag{F6} \\
+    \text{TransactionID} &\rightarrow \text{CreditID, CampaignID, Amount, TransactionType, SuiTxDigest} \tag{F7}
+\end{align*}
+
+\textit{Giải thích nghiệp vụ:} Phụ thuộc hàm (F4) tồn tại vì email đăng nhập của người dùng quản trị (User) bắt buộc phải là duy nhất trên toàn hệ thống, do đó nó có khả năng định danh ngược lại UserID.
+
+\subsection{Tính Bao đóng và Tìm khóa ứng viên}
+Tiến hành kiểm tra việc tìm khóa cho lược đồ \texttt{User(UserID, MerchantID, Email, PasswordHash, RoleID)} bằng thuật toán tính Bao đóng:
+Tập thuộc tính của lược đồ: $U_{User} = \{\text{UserID, MerchantID, Email, PasswordHash, RoleID}\}$.
+
+\textbf{Bước 1: Chọn tập thuộc tính ban đầu} \\
+Thử nghiệm với thuộc tính \texttt{UserID}. Khởi tạo $X = \{\text{UserID}\}$. Tính $X^+$.
+
+\textbf{Bước 2: Quét qua tập Phụ thuộc hàm} \\
+Áp dụng (F3): $\text{UserID} \rightarrow \text{MerchantID, Email, PasswordHash, RoleID}$. \\
+Ta có vế trái $\text{UserID} \subseteq X^+$. 
+Do đó: $X^+ = X^+ \cup \{\text{MerchantID, Email, PasswordHash, RoleID}\} = U_{User}$.
+
+\textbf{Kết luận:} Vì $\{\text{UserID}\}^+ = U_{User}$, nên \textbf{UserID là một Siêu khóa (Superkey)}. Hơn nữa, do tập $\{\text{UserID}\}$ chỉ có một phần tử duy nhất, không thể loại bỏ thêm phần tử nào mà vẫn giữ nguyên tính chất siêu khóa. Suy ra \textbf{UserID là một Khóa ứng viên}.
+
+Thực hiện tương tự với $\{\text{Email}\}^+$ qua (F4), ta thu được $\{\text{Email}\}^+ = U_{User}$. Suy ra \textbf{Email cũng là một Khóa ứng viên}. 
+Hệ thống chọn \texttt{UserID} làm Khóa chính (Primary Key).
+
+\section{Chuẩn hóa Dữ liệu (Normalization)}
+\subsection{Kiểm chứng Dạng chuẩn Boyce-Codd (BCNF)}
+Theo định nghĩa, một lược đồ đạt chuẩn BCNF nếu mọi phụ thuộc hàm không tầm thường $X \rightarrow Y$ thì $X$ phải là một Siêu khóa.
+Trong quan hệ \texttt{User}, hai phụ thuộc hàm tồn tại đều có vế trái (\texttt{UserID} và \texttt{Email}) là Khóa ứng viên (và cũng là Siêu khóa). Do đó, lược đồ \texttt{User} \textbf{đạt chuẩn BCNF}.
+
+Áp dụng phương pháp phân tích bao đóng tương tự cho các lược đồ còn lại, ta nhận thấy:
+\begin{itemize}
+    \item Mọi phụ thuộc hàm $X \rightarrow Y$ đều có vế trái $X$ là Siêu khóa (dạng UUID hoặc mã tự tăng).
+    \item Không tồn tại các phụ thuộc bắc cầu (Transitive Dependency) hay phụ thuộc từng phần (Partial Dependency), thỏa mãn điều kiện 3NF.
+\end{itemize}
+
+Mô hình logic sơ bộ đã thiết kế triệt tiêu được dị thường cập nhật và chính thức đạt Dạng chuẩn BCNF.

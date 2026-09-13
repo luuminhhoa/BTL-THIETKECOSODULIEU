@@ -1,0 +1,31 @@
+\section{Chuyển đổi từ Mô hình Quan niệm sang Lược đồ Logic}
+
+Dựa trên sơ đồ thực thể kết hợp (ERD) và các quy tắc nghiệp vụ đã phân tích ở Chương 2, tiến hành chuyển đổi mô hình thực thể quan niệm sang mô hình quan hệ (Relational Schema). Quá trình này được thực hiện thông qua việc áp dụng nghiêm ngặt các thuật toán ánh xạ ER sang quan hệ.
+
+\subsection{Các quy tắc chuyển đổi áp dụng}
+Quá trình ánh xạ từ ERD sang Lược đồ Logic tuân thủ các quy tắc cốt lõi sau:
+
+\begin{itemize}
+    \item \textbf{Quy tắc 1 (Ánh xạ Thực thể mạnh):} Mỗi thực thể (Entity) mạnh trong ERD được chuyển thành một quan hệ (Bảng - Table) trong Lược đồ Logic. Các thuộc tính đơn trở thành các cột (Columns) của bảng. Khóa định danh của thực thể trở thành Khóa chính (Primary Key - PK).
+    
+    \item \textbf{Quy tắc 2 (Ánh xạ mối kết hợp 1:N):} Đối với các mối kết hợp một-nhiều (ví dụ: \texttt{Merchant} - \texttt{Campaign}, \texttt{Customer} - \texttt{Credit}), đưa khóa chính của bảng phía "1" sang bảng phía "N" làm khóa ngoại (Foreign Key - FK).
+    
+    \item \textbf{Quy tắc 3 (Ánh xạ mối kết hợp M:N):} Tạo một quan hệ trung gian cho mối kết hợp nhiều-nhiều (ví dụ quá trình ghi nhận giao dịch điểm). Đưa khóa của hai thực thể vào làm khóa ngoại. Khóa chính thường là tổ hợp của các khóa ngoại này cùng với thuộc tính định danh riêng (nếu có).
+\end{itemize}
+
+\subsection{Danh sách Lược đồ Quan hệ sơ bộ}
+Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc trên, ta thu được tập hợp các lược đồ quan hệ sơ bộ như sau. (Quy ước: Thuộc tính gạch chân là Khóa chính - PK, thuộc tính in nghiêng là Khóa ngoại - FK).
+
+\begin{description}
+    \item[\texttt{Tenant}] (\underline{TenantID}, TenantName, SystemConfig)
+    \item[\texttt{Merchant}] (\underline{MerchantID}, \textit{TenantID}, BusinessName, Status)
+    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, RoleID)
+    \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{MerchantID}, CampaignName, StartDate, EndDate, Status)
+    \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier)
+    \item[\texttt{Customer}] (\underline{CustomerID}, WalletAddress, Email)
+    \item[\texttt{Credit}] (\underline{CreditID}, \textit{CustomerID}, \textit{MerchantID}, AvailableBalance)
+    \item[\texttt{CreditTransaction}] (\underline{TransactionID}, \textit{CreditID}, \textit{CampaignID}, Amount, TransactionType, SuiTxDigest, CreatedAt)
+    \item[\texttt{APICredential}] (\underline{KeyID}, \textit{MerchantID}, ApiKey, SecretHash)
+\end{description}
+
+Tập quan hệ này sẽ làm đầu vào cho mô hình toán học để tìm tập phụ thuộc hàm và chứng minh đạt dạng chuẩn ở phần tiếp theo.

@@ -21,6 +21,7 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
         \node[entity] (tenant) at (0, 12) {Tenant};
         \node[entity] (merchant) at (0, 8) {Merchant};
         \node[entity] (user) at (-8, 8) {User};
+        \node[entity] (role) at (-12, 11) {Role}; % Thêm thực thể ROLE
         \node[entity] (campaign) at (8, 8) {Campaign};
         \node[entity] (rule) at (15, 8) {RewardRule};
         \node[entity] (customer) at (-8, 3) {Customer};
@@ -31,6 +32,8 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
         % 3. MỐI KẾT HỢP
         \node[relationship] (capphat) at (0, 10) {Cấp phát};
         \node[relationship] (quanly) at (-4, 8) {Quản lý};
+        \node[relationship] (phanquyen) at (-10, 9.5) {Phân quyền}; % Quan hệ Role - User
+        \node[relationship] (sếpnhanvien) at (-10.5, 6.5) {Sếp-NV}; % Quan hệ tự tham chiếu User - User
         \node[relationship] (khoitao) at (4, 8) {Khởi tạo};
         \node[relationship] (baogom) at (11.5, 8) {Bao gồm};
         \node[relationship] (phathanh) at (0, 5.5) {Phát hành};
@@ -42,6 +45,9 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
         % 4. NỐI MỐI KẾT HỢP (Nhãn 1-N)
         \draw (tenant) -- node[right] {1} (capphat) -- node[right] {N} (merchant);
         \draw (user) -- node[above] {N} (quanly) -- node[above] {1} (merchant);
+        \draw (role) -- node[left] {1} (phanquyen) -- node[right] {N} (user);
+        \draw (user.west) -- (sếpnhanvien);
+        \draw (sếpnhanvien.south) |- (user.south west); % Vòng tự tham chiếu ManagerID
         \draw (merchant) -- node[above] {1} (khoitao) -- node[above] {N} (campaign);
         \draw (campaign) -- node[above] {1} (baogom) -- node[above] {N} (rule);
         \draw (merchant) -- node[right] {1} (phathanh) -- node[right] {N} (credit);
@@ -64,12 +70,18 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
         \node[attribute] (m3) at (-2, 6.5) {Status};
         \draw (merchant) -- (m1); \draw (merchant) -- (m2); \draw (merchant) -- (m3);
 
-        % User
-        \node[attribute] (u1) at (-10.5, 9.5) {\underline{UserID}};
-        \node[attribute] (u2) at (-8, 9.5) {Email};
-        \node[attribute] (u3) at (-5.5, 9.5) {RoleID};
-        \node[attribute] (u4) at (-10.5, 6.5) {PasswordHash};
-        \draw (user) -- (u1); \draw (user) -- (u2); \draw (user) -- (u3); \draw (user) -- (u4);
+        % Role
+        \node[attribute] (role1) at (-14, 11.5) {\underline{RoleID}};
+        \node[attribute] (role2) at (-14, 10.5) {RoleName};
+        \draw (role) -- (role1); \draw (role) -- (role2);
+
+        % User (cập nhật thêm RoleID và ManagerID)
+        \node[attribute] (u1) at (-12.5, 8.5) {\underline{UserID}};
+        \node[attribute] (u2) at (-10.5, 8.5) {Email};
+        \node[attribute] (u3) at (-6.5, 9.5) {RoleID};
+        \node[attribute] (u4) at (-10.5, 5.5) {PasswordHash};
+        \node[attribute] (u5) at (-6.5, 6.5) {ManagerID};
+        \draw (user) -- (u1); \draw (user) -- (u2); \draw (user) -- (u3); \draw (user) -- (u4); \draw (user) -- (u5);
 
         % Campaign
         \node[attribute] (c1) at (6, 9.5) {\underline{CampaignID}};
@@ -91,7 +103,7 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
         \node[attribute] (a3) at (11, 3.5) {SecretHash};
         \draw (api) -- (a1); \draw (api) -- (a2); \draw (api) -- (a3);
 
-        % Customer
+        % Customer (Cập nhật chuẩn Walletless Auth)
         \node[attribute] (cus1) at (-10.5, 4.5) {\underline{CustomerID}};
         \node[attribute] (cus2) at (-8, 4.5) {Email};
         \node[attribute] (cus3) at (-5.5, 4.5) {WalletAddress};
@@ -115,7 +127,6 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
     \caption{Sơ đồ Thực thể Kết hợp (ERD) mức quan niệm hệ thống OctaPoint CaaS}
     \label{fig:erd_tikz}
 \end{figure}
-
 % =========================================================
 % TÙY CHỌN 2: CHÈN ẢNH DRAW.IO (KHI NÀO VẼ XONG THÌ DÙNG)
 % Hướng dẫn:

@@ -1,6 +1,6 @@
 \section{Đặc tả Workload và Chọn tổ chức lưu trữ}
 
-Thiết kế vật lý bắt buộc phải dựa vào tải công việc (workload) thực tế của hệ thống để đưa ra quyết định tổ chức tập tin cơ bản (Heap, Sorted hay Hash)[cite: 1].
+Thiết kế vật lý bắt buộc phải dựa vào tải công việc (workload) thực tế của hệ thống để đưa ra quyết định tổ chức tập tin cơ bản (Heap, Sorted hay Hash).
 
 \subsection{Đặc tả tải công việc (Workload)}
 Hệ thống OctaPoint CaaS có đặc thù tải công việc như sau:
@@ -10,11 +10,11 @@ Hệ thống OctaPoint CaaS có đặc thù tải công việc như sau:
 \end{itemize}
 
 \subsection{Lựa chọn tổ chức lưu trữ (Storage Organization)}
-Dựa trên yêu cầu workload, nếu sử dụng tổ chức Heap (dữ liệu chèn ở cuối) sẽ làm chậm quá trình tìm kiếm, trong khi tổ chức Hash chỉ phù hợp tìm kiếm chính xác ($O(1)$) nhưng không hỗ trợ tìm kiếm theo khoảng[cite: 1]. 
+Dựa trên yêu cầu workload, nếu sử dụng tổ chức Heap (dữ liệu chèn ở cuối) sẽ làm chậm quá trình tìm kiếm, trong khi tổ chức Hash chỉ phù hợp tìm kiếm chính xác ($O(1)$) nhưng không hỗ trợ tìm kiếm theo khoảng. 
 
 Do đó, dự án quyết định lựa chọn \textbf{MySQL (Storage Engine InnoDB)} vì các đặc tính vật lý sau:
 \begin{itemize}
-    \item \textbf{Tổ chức Clustered Index (B+ Tree):} InnoDB lưu trữ dữ liệu các bảng theo cấu trúc cây B+ (B+ Tree) dựa trên Khóa chính. Điều này hỗ trợ truy vấn theo khoảng cực kỳ hiệu quả nhờ các nút lá được nối tiếp nhau[cite: 1].
+    \item \textbf{Tổ chức Clustered Index (B+ Tree):} InnoDB lưu trữ dữ liệu các bảng theo cấu trúc cây B+ (B+ Tree) dựa trên Khóa chính. Điều này hỗ trợ truy vấn theo khoảng cực kỳ hiệu quả nhờ các nút lá được nối tiếp nhau.
     \item \textbf{Tính toàn vẹn (ACID):} Đảm bảo an toàn tuyệt đối cho các giao dịch điểm thưởng nhiều bước.
-    \item \textbf{Lưu trữ theo khối (Block/Page):} Tối ưu hóa hệ số chặn (Blocking factor - $bfr$) khi nạp dữ liệu từ đĩa cứng vào bộ đệm (Buffer pool), giúp giảm số lần I/O[cite: 1].
+    \item \textbf{Lưu trữ theo khối (Block/Page):} Tối ưu hóa hệ số chặn (Blocking factor - $bfr$) khi nạp dữ liệu từ đĩa cứng vào bộ đệm (Buffer pool), giúp giảm số lần I/O.
 \end{itemize}

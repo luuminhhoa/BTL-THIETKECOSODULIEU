@@ -19,7 +19,8 @@ Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc trên, ta thu đ
 \begin{description}
     \item[\texttt{Tenant}] (\underline{TenantID}, TenantName, SystemConfig)
     \item[\texttt{Merchant}] (\underline{MerchantID}, \textit{TenantID}, BusinessName, Status)
-    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, RoleID)
+    \item[\texttt{Role}] (\underline{RoleID}, RoleName)
+    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID})
     \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{MerchantID}, CampaignName, StartDate, EndDate, Status)
     \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier)
     \item[\texttt{Customer}] (\underline{CustomerID}, WalletAddress, Email)
@@ -27,5 +28,3 @@ Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc trên, ta thu đ
     \item[\texttt{CreditTransaction}] (\underline{TransactionID}, \textit{CreditID}, \textit{CampaignID}, Amount, TransactionType, SuiTxDigest, CreatedAt)
     \item[\texttt{APICredential}] (\underline{KeyID}, \textit{MerchantID}, ApiKey, SecretHash)
 \end{description}
-
-Tập quan hệ này sẽ làm đầu vào cho mô hình toán học để tìm tập phụ thuộc hàm và chứng minh đạt dạng chuẩn ở phần tiếp theo.

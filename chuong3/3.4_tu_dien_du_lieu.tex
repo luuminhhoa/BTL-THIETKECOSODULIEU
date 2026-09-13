@@ -50,6 +50,19 @@ Quản lý tài khoản đăng nhập của nhân viên thuộc các Merchant.
     \end{tabular}
 \end{table}
 
+\subsubsection{Bảng ROLE (Vai trò)}
+Lưu trữ thông tin các nhóm quyền hạn để phân quyền người dùng trong hệ thống.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|p{5cm}|}
+\hline
+\textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
+RoleID & INT & PK, NOT NULL & Mã định danh vai trò. \\ \hline
+RoleName & NVARCHAR(50) & NOT NULL & Tên hiển thị của vai trò (VD: Admin, Staff). \\ \hline
+\end{tabular}
+\end{table}
+
 \subsection{Bảng CREDIT\_TRANSACTION (Sổ cái giao dịch điểm)}
 Lưu vết toàn bộ các giao dịch cộng/trừ điểm thưởng, có lưu băm trên blockchain.
 

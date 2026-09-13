@@ -1,6 +1,6 @@
 \section{Tối ưu hóa truy xuất dữ liệu}
 
-Dựa trên pipeline xử lý truy vấn của hệ quản trị CSDL, việc viết câu lệnh SQL là chưa đủ. Hệ thống cần tối ưu hóa cây truy vấn (Query Tree) thông qua các luật biến đổi tương đương để giảm thiểu chi phí bộ nhớ và I/O trước khi lập kế hoạch thực thi (Execution Plan)[cite: 1].
+Dựa trên pipeline xử lý truy vấn của hệ quản trị CSDL, việc viết câu lệnh SQL là chưa đủ. Hệ thống cần tối ưu hóa cây truy vấn (Query Tree) thông qua các luật biến đổi tương đương để giảm thiểu chi phí bộ nhớ và I/O trước khi lập kế hoạch thực thi (Execution Plan).
 
 \subsection{Bài toán truy vấn}
 \textbf{Yêu cầu:} Lấy ra Mã giao dịch (\texttt{TransactionID}) và Số điểm (\texttt{Amount}) của các giao dịch cộng điểm lớn hơn 500, thuộc về các Chiến dịch (\texttt{CAMPAIGN}) đang ở trạng thái hoạt động (\texttt{'Active'}).
@@ -10,7 +10,7 @@ $$ \pi_{TransactionID, Amount} ( \sigma_{Amount > 500 \wedge Status = \text{'Act
 
 \subsection{Cây truy vấn trước và sau khi tối ưu}
 
-Theo luật biến đổi tương đương, phép chọn (Selection - $\sigma$) nếu được đẩy xuống trước phép kết nối (Join - $\bowtie$) sẽ giúp giảm thiểu đáng kể kích thước dữ liệu trung gian[cite: 1].
+Theo luật biến đổi tương đương, phép chọn (Selection - $\sigma$) nếu được đẩy xuống trước phép kết nối (Join - $\bowtie$) sẽ giúp giảm thiểu đáng kể kích thước dữ liệu trung gian.
 
 \begin{figure}[H]
     \centering
@@ -60,6 +60,6 @@ Theo luật biến đổi tương đương, phép chọn (Selection - $\sigma$) 
 \end{figure}
 
 \subsection{Đánh giá thuật toán kết nối (Join Algorithm)}
-Bằng việc đẩy phép chọn xuống dưới, kích thước của 2 bảng trước khi thực hiện phép Join đã bị thu hẹp đáng kể[cite: 1]. 
+Bằng việc đẩy phép chọn xuống dưới, kích thước của 2 bảng trước khi thực hiện phép Join đã bị thu hẹp đáng kể. 
 
-Khi đó, hệ thống sẽ ưu tiên sử dụng thuật toán \textbf{Nested-Loop Join} nhờ việc bảng \texttt{CAMPAIGN} (bảng trong) đã trở nên rất nhỏ và có thể nạp toàn bộ vào bộ nhớ đệm (Buffer pool)[cite: 1]. Nếu kích thước bảng trung gian lớn và không có thứ tự, hệ thống có thể cân nhắc chuyển sang \textbf{Hash Join} để đạt chi phí $O(b_R + b_S)$[cite: 1].
+Khi đó, hệ thống sẽ ưu tiên sử dụng thuật toán \textbf{Nested-Loop Join} nhờ việc bảng \texttt{CAMPAIGN} (bảng trong) đã trở nên rất nhỏ và có thể nạp toàn bộ vào bộ nhớ đệm (Buffer pool). Nếu kích thước bảng trung gian lớn và không có thứ tự, hệ thống có thể cân nhắc chuyển sang \textbf{Hash Join} để đạt chi phí $O(b_R + b_S)$.

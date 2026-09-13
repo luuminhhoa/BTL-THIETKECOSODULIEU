@@ -43,3 +43,13 @@ Các yêu cầu phi chức năng (Non-Functional Requirements - NFR) quy định
         \hline
     \end{tabular}
 \end{table}
+\subsection{Giới hạn phạm vi đồ án}
+Mặc dù hệ thống thực tế yêu cầu quản lý đa dạng các luồng thông tin, tuy nhiên trong khuôn khổ của môn học Thiết kế Cơ sở dữ liệu, mô hình thiết kế sẽ tập trung sâu vào các thực thể cốt lõi phục vụ nghiệp vụ chính bao gồm: \textbf{Tổ chức/RBAC} (Tenant, Merchant, User, Role, API\_Credential) và \textbf{Khách hàng thân thiết} (Customer, Credit, Campaign, Reward\_Rule, Credit\_Transaction).
+
+Các nhóm dữ liệu mở rộng như:
+\begin{itemize}
+    \item Phân quyền chi tiết (Permission)
+    \item Nhật ký hệ thống và Cảnh báo gian lận (AuditLog, FraudEvent)
+    \item Quản lý gói cước (PricingPlan, Subscription, Invoice)
+\end{itemize}
+thuộc phạm vi mở rộng của hệ thống. Các thực thể này được xác định ở mức yêu cầu tổng quan nhưng sẽ được giản lược khỏi Mô hình quan niệm (ERD) và Mô hình logic nhằm tập trung làm rõ luồng giao dịch tích/tiêu điểm chính của hệ thống CaaS.

@@ -24,13 +24,15 @@ Dựa trên các phân hệ chức năng và quy tắc nghiệp vụ đã khảo
         \item \texttt{Status} (NOT NULL): Trạng thái hoạt động (Active/Suspended).
     \end{itemize}
     
-    \item \textbf{Thực thể User (Tài khoản nhân sự):}
+    \item \textbf{USER (Người dùng/Nhân viên):}
     \begin{itemize}
-        \item \texttt{UserID} (PK): Mã định danh người dùng hệ thống.
-        \item \texttt{MerchantID} (FK, NULL): Thuộc doanh nghiệp nào (Nếu NULL là Admin tổng).
-        \item \texttt{Email} (NOT NULL, UNIQUE): Email đăng nhập.
-        \item \texttt{PasswordHash} (NOT NULL): Mật khẩu băm.
-    \end{itemize}
+    \item \texttt{UserID} (PK): Mã định danh nhân viên.
+    \item \texttt{MerchantID} (FK, NOT NULL): Mã cửa hàng trực thuộc.
+    \item \texttt{RoleID} (FK, NOT NULL): Mã phân quyền (Tham chiếu đến thực thể ROLE).
+    \item \texttt{ManagerID} (FK, NULL): Mã người quản lý trực tiếp (Tham chiếu tự thân đến một User khác). Nếu NULL nghĩa là quản lý cấp cao nhất (Không có sếp).
+    \item \texttt{Email} (UNIQUE): Email đăng nhập hệ thống.
+    \item \texttt{PasswordHash}: Mật khẩu đã được mã hóa.
+\end{itemize}
     
     \item \textbf{Thực thể Role (Vai trò):}
     \begin{itemize}
@@ -47,7 +49,7 @@ Dựa trên các phân hệ chức năng và quy tắc nghiệp vụ đã khảo
         \item \texttt{MerchantID} (FK, NOT NULL): Doanh nghiệp sở hữu chiến dịch.
         \item \texttt{CampaignName} (NOT NULL): Tên chiến dịch.
         \item \texttt{StartDate} (NOT NULL): Ngày bắt đầu.
-        \item \texttt{EndDate} (NULL): Ngày kết thúc.
+        \item \texttt{EndDate} (NULL): Thời điểm kết thúc chiến dịch (Có thể để trống nếu chiến dịch chạy vô thời hạn).
         \item \texttt{Status} (NOT NULL): Trạng thái (Draft/Active/Expired).
     \end{itemize}
     
@@ -59,11 +61,11 @@ Dựa trên các phân hệ chức năng và quy tắc nghiệp vụ đã khảo
         \item \texttt{PointsMultiplier} (NOT NULL): Hệ số nhân điểm.
     \end{itemize}
     
-    \item \textbf{Thực thể Customer (Khách hàng / Người dùng cuối):}
+    \item \textbf{CUSTOMER (Khách hàng):}
     \begin{itemize}
-        \item \texttt{CustomerID} (PK): Mã định danh ví Web3 (zkLogin Address).
-        \item \texttt{WalletAddress} (NOT NULL, UNIQUE): Địa chỉ ví Sui.
-        \item \texttt{Email} (NULL): Email định danh Web2.
+    \item \texttt{CustomerID} (PK): Mã định danh khách hàng nội bộ của hệ thống.
+    \item \texttt{WalletAddress} (UNIQUE): Địa chỉ blockchain (Sui Network) được hệ thống sử dụng để định danh thông qua cơ chế Walletless Authentication.
+    \item \texttt{Email}: Địa chỉ email (Định danh Web2).
     \end{itemize}
     
     \item \textbf{Thực thể Credit (Số dư ví điểm):}

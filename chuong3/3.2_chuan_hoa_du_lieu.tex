@@ -8,7 +8,7 @@ Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dự
 \begin{align*}
     \text{TenantID} &\rightarrow \text{TenantName, SystemConfig} \tag{F1} \\
     \text{MerchantID} &\rightarrow \text{TenantID, BusinessName, Status} \tag{F2} \\
-    \text{UserID} &\rightarrow \text{MerchantID, Email, PasswordHash, RoleID} \tag{F3} \\
+    \text{UserID} &\rightarrow \text{MerchantID, Email, PasswordHash, RoleID, ManagerID} \tag{F3} \\
     \text{Email} &\rightarrow \text{UserID, MerchantID, PasswordHash, RoleID} \tag{F4} \\
     \text{CampaignID} &\rightarrow \text{MerchantID, CampaignName, StartDate, EndDate, Status} \tag{F5} \\
     \text{CreditID} &\rightarrow \text{CustomerID, MerchantID, AvailableBalance} \tag{F6} \\
@@ -18,16 +18,16 @@ Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dự
 \textit{Giải thích nghiệp vụ:} Phụ thuộc hàm (F4) tồn tại vì email đăng nhập của người dùng quản trị (User) bắt buộc phải là duy nhất trên toàn hệ thống, do đó nó có khả năng định danh ngược lại UserID.
 
 \subsection{Tính Bao đóng và Tìm khóa ứng viên}
-Tiến hành kiểm tra việc tìm khóa cho lược đồ \texttt{User(UserID, MerchantID, Email, PasswordHash, RoleID)} bằng thuật toán tính Bao đóng:
-Tập thuộc tính của lược đồ: $U_{User} = \{\text{UserID, MerchantID, Email, PasswordHash, RoleID}\}$.
+Tiến hành kiểm tra việc tìm khóa cho lược đồ \texttt{User(UserID, MerchantID, Email, PasswordHash, RoleID, ManagerID)} bằng thuật toán tính Bao đóng:
+Tập thuộc tính của lược đồ: $U_{User} = \{\text{UserID, MerchantID, Email, PasswordHash, RoleID,  ManagerID}\}$.
 
 \textbf{Bước 1: Chọn tập thuộc tính ban đầu} \\
 Thử nghiệm với thuộc tính \texttt{UserID}. Khởi tạo $X = \{\text{UserID}\}$. Tính $X^+$.
 
 \textbf{Bước 2: Quét qua tập Phụ thuộc hàm} \\
-Áp dụng (F3): $\text{UserID} \rightarrow \text{MerchantID, Email, PasswordHash, RoleID}$. \\
+Áp dụng (F3): $\text{UserID} \rightarrow \text{MerchantID, Email, PasswordHash, RoleID,  ManagerID}$. \\
 Ta có vế trái $\text{UserID} \subseteq X^+$. 
-Do đó: $X^+ = X^+ \cup \{\text{MerchantID, Email, PasswordHash, RoleID}\} = U_{User}$.
+Do đó: $X^+ = X^+ \cup \{\text{MerchantID, Email, PasswordHash, RoleID,  ManagerID}\} = U_{User}$.
 
 \textbf{Kết luận:} Vì $\{\text{UserID}\}^+ = U_{User}$, nên \textbf{UserID là một Siêu khóa (Superkey)}. Hơn nữa, do tập $\{\text{UserID}\}$ chỉ có một phần tử duy nhất, không thể loại bỏ thêm phần tử nào mà vẫn giữ nguyên tính chất siêu khóa. Suy ra \textbf{UserID là một Khóa ứng viên}.
 

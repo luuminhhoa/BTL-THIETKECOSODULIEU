@@ -30,6 +30,8 @@ ORDER BY c.AvailableBalance DESC;
 
 \subsection{Truy vấn 3: Thống kê tổng số điểm đã phát hành của một chiến dịch trong tháng hiện tại}
 \begin{lstlisting}[style=sqlstyle]
+DECLARE @MonthStart DATETIME = DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1);
+
 SELECT 
     camp.CampaignName,
     COUNT(ct.TransactionID) AS TotalTransactions,
@@ -38,7 +40,8 @@ FROM CREDIT_TRANSACTION ct
 JOIN CAMPAIGN camp ON ct.CampaignID = camp.CampaignID
 WHERE camp.MerchantID = 'MERCH_UUID_002'
   AND ct.TransactionType = 'Earn'
-  AND MONTH(ct.CreatedAt) = MONTH(GETDATE())
-  AND YEAR(ct.CreatedAt) = YEAR(GETDATE())
+  AND ct.CreatedAt >= @MonthStart
+  AND ct.CreatedAt < DATEADD(MONTH, 1, @MonthStart)
 GROUP BY camp.CampaignID, camp.CampaignName;
 \end{lstlisting}
+Khoảng thời gian nửa kín ở truy vấn 3 giữ cột CreatedAt nguyên dạng để bộ tối ưu có thể tận dụng chỉ mục phù hợp. Truy vấn hiện có chưa bảo đảm kế hoạch seek; cần kiểm tra execution plan.

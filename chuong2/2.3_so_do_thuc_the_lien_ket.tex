@@ -27,7 +27,7 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
         \node[entity] (customer) at (-8, 3) {Customer};
         \node[entity] (credit) at (0, 3) {Credit};
         \node[entity] (api) at (8, 4.5) {APICredential};
-        \node[weak_entity] (transaction) at (0, -3) {CreditTransaction};
+        \node[entity] (transaction) at (0, -3) {CreditTransaction};
 
         % 3. MỐI KẾT HỢP
         \node[relationship] (capphat) at (0, 10) {Cấp phát};
@@ -39,22 +39,22 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
         \node[relationship] (phathanh) at (0, 5.5) {Phát hành};
         \node[relationship] (sohuu) at (-4, 3) {Sở hữu};
         \node[relationship] (taokhoa) at (4, 6.25) {Tạo khóa};
-        \node[weak_relationship] (ghinhan) at (0, 0) {Ghi nhận}; 
+        \node[relationship] (ghinhan) at (0, 0) {Ghi nhận};
         \node[relationship] (apdung) at (8, 0) {Áp dụng}; 
 
         % 4. NỐI MỐI KẾT HỢP (Nhãn 1-N)
         \draw (tenant) -- node[right] {1} (capphat) -- node[right] {N} (merchant);
         \draw (user) -- node[above] {N} (quanly) -- node[above] {1} (merchant);
         \draw (role) -- node[left] {1} (phanquyen) -- node[right] {N} (user);
-        \draw (user.west) -- (sếpnhanvien);
-        \draw (sếpnhanvien.south) |- (user.south west); % Vòng tự tham chiếu ManagerID
+        \draw (user.west) -- node[above] {0..1} (sếpnhanvien);
+        \draw (sếpnhanvien.south) |- node[below, pos=0.75] {N} (user.south west); % Vòng tự tham chiếu ManagerID
         \draw (merchant) -- node[above] {1} (khoitao) -- node[above] {N} (campaign);
         \draw (campaign) -- node[above] {1} (baogom) -- node[above] {N} (rule);
         \draw (merchant) -- node[right] {1} (phathanh) -- node[right] {N} (credit);
         \draw (customer) -- node[above] {1} (sohuu) -- node[above] {N} (credit);
         \draw (merchant) -- node[above, pos=0.8] {1} (taokhoa) -- node[above, pos=0.8] {N} (api);
         \draw (credit) -- node[right] {1} (ghinhan) -- node[right] {N} (transaction);
-        \draw (campaign) -- node[right, pos=0.4] {1} (apdung);
+        \draw (campaign) -- node[right, pos=0.4] {0..1} (apdung);
         \draw (apdung.south) |- node[above, pos=0.9] {N} (transaction.east);
 
         % 5. VẼ THUỘC TÍNH (Tỏa đều ra không đè nét)
@@ -141,3 +141,4 @@ Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, s
 %     \caption{Sơ đồ Thực thể Kết hợp (ERD) mức quan niệm hệ thống OctaPoint CaaS}
 %     \label{fig:erd_drawio}
 % \end{figure}
+CreditTransaction có khóa TransactionID riêng nên là thực thể mạnh, dù phụ thuộc tồn tại vào Credit. Quan hệ Ghi nhận không phải quan hệ định danh của thực thể yếu. Các nhãn 0..1 biểu diễn người quản lý và chiến dịch tùy chọn; mỗi cặp Customer--Merchant có tối đa một Credit.

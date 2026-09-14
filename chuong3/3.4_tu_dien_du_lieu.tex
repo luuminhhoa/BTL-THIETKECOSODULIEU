@@ -12,8 +12,8 @@ Lưu trữ thông tin về các đơn vị khách hàng lớn thuê hệ thống
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         TenantID & VARCHAR(36) & PK, NOT NULL & Mã định danh duy nhất (UUID). \\ \hline
-        TenantName & VARCHAR(255) & NOT NULL & Tên định danh của đơn vị thuê bao. \\ \hline
-        SystemConfig & JSON & Tùy chọn & Cấu hình hệ thống riêng của Tenant. \\ \hline
+        TenantName & NVARCHAR(255) & NOT NULL & Tên định danh của đơn vị thuê bao. \\ \hline
+        SystemConfig & NVARCHAR(MAX) & NULL, CHECK & Cấu hình hệ thống riêng của Tenant. \\ \hline
     \end{tabular}
 \end{table}
 
@@ -28,8 +28,8 @@ Lưu trữ thông tin các doanh nghiệp/cửa hàng trực thuộc một Tenan
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         MerchantID & VARCHAR(36) & PK, NOT NULL & Mã định danh duy nhất của Merchant. \\ \hline
         TenantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng TENANT. \\ \hline
-        BusinessName & VARCHAR(255) & NOT NULL & Tên thương hiệu/doanh nghiệp. \\ \hline
-        Status & VARCHAR(20) & NOT NULL & Trạng thái hoạt động (Active, Inactive). \\ \hline
+        BusinessName & NVARCHAR(255) & NOT NULL & Tên thương hiệu/doanh nghiệp. \\ \hline
+        Status & VARCHAR(20) & NOT NULL & Trạng thái hoạt động (Active, Suspended). \\ \hline
     \end{tabular}
 \end{table}
 
@@ -44,9 +44,9 @@ Quản lý tài khoản đăng nhập của nhân viên thuộc các Merchant.
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         UserID & VARCHAR(36) & PK, NOT NULL & Mã định danh tài khoản. \\ \hline
         MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng MERCHANT. \\ \hline
-        Email & VARCHAR(255) & UNIQUE & Email đăng nhập (duy nhất). \\ \hline
+        Email & VARCHAR(255) & UNIQUE, NOT NULL & Email đăng nhập (duy nhất). \\ \hline
         PasswordHash & VARCHAR(255) & NOT NULL & Chuỗi băm mật khẩu bảo mật. \\ \hline
-        RoleID & INT & NOT NULL & Mã quyền hạn của người dùng. \\ \hline
+        RoleID & INT & FK, NOT NULL & Mã quyền hạn của người dùng. \\ \hline
         ManagerID & VARCHAR(36) & FK, NULL & Mã người quản lý trực tiếp (tham chiếu đến UserID). \\ \hline
     \end{tabular}
 \end{table}
@@ -74,7 +74,7 @@ Quản lý thông tin định danh của khách hàng tích điểm.
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         CustomerID & VARCHAR(36) & PK, NOT NULL & Mã định danh khách hàng nội bộ. \\ \hline
-        WalletAddress & VARCHAR(100) & UNIQUE, NULL & Địa chỉ ví blockchain (Sui) dùng cho Walletless Auth. \\ \hline
+        WalletAddress & VARCHAR(100) & UNIQUE*, NULL & Địa chỉ ví blockchain (Sui) dùng cho Walletless Auth. \\ \hline
         Email & VARCHAR(255) & NULL & Địa chỉ email (Định danh Web2). \\ \hline
     \end{tabular}
 \end{table}
@@ -93,7 +93,7 @@ Quản lý các chương trình khuyến mãi, tích/đổi điểm.
         CampaignName & NVARCHAR(255) & NOT NULL & Tên chiến dịch. \\ \hline
         StartDate & DATETIME & NOT NULL & Thời gian bắt đầu. \\ \hline
         EndDate & DATETIME & NULL & Thời điểm kết thúc (NULL nếu vô thời hạn). \\ \hline
-        Status & VARCHAR(20) & NOT NULL & Trạng thái (Active, Paused, Ended). \\ \hline
+        Status & VARCHAR(20) & NOT NULL & Trạng thái (Draft, Active, Expired). \\ \hline
     \end{tabular}
 \end{table}
 
@@ -108,12 +108,52 @@ Lưu vết toàn bộ các giao dịch cộng/trừ điểm thưởng, có lưu 
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         TransactionID & VARCHAR(36) & PK, NOT NULL & Mã giao dịch định danh. \\ \hline
         CreditID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến ví điểm. \\ \hline
-        CampaignID & VARCHAR(36) & FK & Tham chiếu đến chiến dịch. \\ \hline
-        Amount & DECIMAL(18,2) & NOT NULL & Số lượng điểm biến động. \\ \hline
-        TransactionType & VARCHAR(50) & NOT NULL & Loại giao dịch (Earn, Burn, Refund). \\ \hline
-        SuiTxDigest & VARCHAR(100) & UNIQUE & Mã băm giao dịch trên mạng lưới Sui. \\ \hline
+        CampaignID & VARCHAR(36) & FK, NULL & Tham chiếu đến chiến dịch. \\ \hline
+        Amount & DECIMAL(18,2) & NOT NULL & Biến động có dấu: Earn $>0$, Redeem $<0$, Refund khác 0. \\ \hline
+        TransactionType & VARCHAR(50) & NOT NULL & Loại giao dịch (Earn, Redeem, Refund). \\ \hline
+        SuiTxDigest & VARCHAR(100) & UNIQUE*, NULL & Mã băm giao dịch trên mạng lưới Sui. \\ \hline
         CreatedAt & DATETIME & NOT NULL & Thời gian phát sinh giao dịch. \\ \hline
     \end{tabular}
 \end{table}
 
-\textit{Ghi chú:} Các bảng còn lại (REWARD\_RULE, CREDIT, API\_CREDENTIAL) được thiết kế với cấu trúc kiểu dữ liệu tương tự, đảm bảo tuân thủ chặt chẽ các ràng buộc tham chiếu khóa ngoại đã định nghĩa ở Sơ đồ Logic (Mục 3.3).
+\subsection{Bảng CREDIT}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3cm}|p{3cm}|p{2.5cm}|p{5cm}|}
+\hline
+Thuộc tính & Kiểu dữ liệu & Ràng buộc & Mô tả \\ \hline
+CreditID & VARCHAR(36) & PK, NOT NULL & Định danh ví. \\ \hline
+CustomerID & VARCHAR(36) & FK, NOT NULL & Tham chiếu CUSTOMER. \\ \hline
+MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu MERCHANT. \\ \hline
+AvailableBalance & DECIMAL(18,2) & NOT NULL, CHECK & Số dư không âm, mặc định 0. \\ \hline
+\end{tabular}
+\end{table}
+\subsection{Bảng REWARD\_RULE}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3cm}|p{3cm}|p{2.5cm}|p{5cm}|}
+\hline
+Thuộc tính & Kiểu dữ liệu & Ràng buộc & Mô tả \\ \hline
+RuleID & VARCHAR(36) & PK, NOT NULL & Định danh quy tắc. \\ \hline
+CampaignID & VARCHAR(36) & FK, NOT NULL & Tham chiếu CAMPAIGN. \\ \hline
+ActionType & VARCHAR(50) & NOT NULL & Mã hành động mở rộng, ví dụ Purchase, Birthday. \\ \hline
+PointsMultiplier & DECIMAL(5,2) & NOT NULL, CHECK & Hệ số lớn hơn 0. \\ \hline
+\end{tabular}
+\end{table}
+\subsection{Bảng API\_CREDENTIAL}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|p{3cm}|p{3cm}|p{2.5cm}|p{5cm}|}
+\hline
+Thuộc tính & Kiểu dữ liệu & Ràng buộc & Mô tả \\ \hline
+KeyID & VARCHAR(36) & PK, NOT NULL & Định danh bản ghi khóa. \\ \hline
+MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu MERCHANT. \\ \hline
+ApiKey & VARCHAR(255) & UNIQUE, NOT NULL & Mã khóa công khai duy nhất. \\ \hline
+SecretHash & VARCHAR(255) & NOT NULL & Giá trị băm của secret. \\ \hline
+\end{tabular}
+\end{table}
+
+\textit{Ràng buộc bổ sung:} UNIQUE* nghĩa là duy nhất khi khác NULL, được triển khai bằng chỉ mục có điều kiện. CREDIT có UNIQUE(CustomerID, MerchantID). EndDate phải không trước StartDate khi có giá trị; các miền Status và TransactionType có CHECK. SystemConfig phải là JSON object/array hợp lệ khi khác NULL. CreatedAt mặc định GETDATE(). ManagerID tham chiếu USER và không bằng UserID của chính dòng. Nội dung đầy đủ nằm trong \texttt{database/schema.sql}.

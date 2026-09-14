@@ -1,20 +1,13 @@
-\section{Đặc tả Workload và Chọn tổ chức lưu trữ}
+\section{Đặc tả Workload và Chọn hệ quản trị}
 
-Thiết kế vật lý bắt buộc phải dựa vào tải công việc (workload) thực tế của hệ thống để đưa ra quyết định tổ chức tập tin cơ bản (Heap, Sorted hay Hash).
+\subsection{Đặc tả tải công việc}
+Bảng \texttt{CREDIT\_TRANSACTION} nhận nhiều thao tác ghi khi khách hàng tích/tiêu điểm. Các truy vấn chính gồm tìm ví theo khách hàng và Merchant, xem lịch sử theo thời gian và thống kê theo chiến dịch. Đây là giả định thiết kế; chưa có số liệu tải thực tế để chứng minh độ trễ.
 
-\subsection{Đặc tả tải công việc (Workload)}
-Hệ thống OctaPoint CaaS có đặc thù tải công việc như sau:
+\subsection{Lựa chọn SQL Server}
+Đồ án thống nhất sử dụng \textbf{Microsoft SQL Server 2016 trở lên}, ngôn ngữ \textbf{T-SQL}, phù hợp với DDL và truy vấn mẫu.
 \begin{itemize}
-    \item \textbf{Ghi liên tục (Write-heavy):} Bảng \texttt{CREDIT\_TRANSACTION} liên tục nhận dữ liệu mới khi khách hàng giao dịch điểm.
-    \item \textbf{Tra cứu chính xác và theo khoảng (Range Query):} Việc tra cứu số dư ví điểm (\texttt{CREDIT}) hoặc liệt kê các chiến dịch (\texttt{CAMPAIGN}) diễn ra trong một khoảng thời gian nhất định chiếm tần suất cao.
+    \item Các bảng dùng rowstore với \texttt{PRIMARY KEY CLUSTERED} khai báo rõ trong DDL. Cấu trúc B+ tree hỗ trợ tìm theo khóa và khoảng trên khóa chỉ mục.
+    \item Giao dịch SQL hỗ trợ tính ACID cho các thay đổi trong cơ sở dữ liệu. Tầng dịch vụ phải gói thao tác ghi lịch sử và cập nhật số dư trong cùng giao dịch, xử lý đồng thời và rollback khi lỗi.
+    \item \texttt{NVARCHAR} lưu văn bản Unicode; \texttt{DECIMAL} lưu điểm chính xác theo hai chữ số thập phân; \texttt{NVARCHAR(MAX)} kèm \texttt{ISJSON} lưu cấu hình JSON.
 \end{itemize}
-
-\subsection{Lựa chọn tổ chức lưu trữ (Storage Organization)}
-Dựa trên yêu cầu workload, nếu sử dụng tổ chức Heap (dữ liệu chèn ở cuối) sẽ làm chậm quá trình tìm kiếm, trong khi tổ chức Hash chỉ phù hợp tìm kiếm chính xác ($O(1)$) nhưng không hỗ trợ tìm kiếm theo khoảng. 
-
-Do đó, dự án quyết định lựa chọn \textbf{MySQL (Storage Engine InnoDB)} vì các đặc tính vật lý sau:
-\begin{itemize}
-    \item \textbf{Tổ chức Clustered Index (B+ Tree):} InnoDB lưu trữ dữ liệu các bảng theo cấu trúc cây B+ (B+ Tree) dựa trên Khóa chính. Điều này hỗ trợ truy vấn theo khoảng cực kỳ hiệu quả nhờ các nút lá được nối tiếp nhau.
-    \item \textbf{Tính toàn vẹn (ACID):} Đảm bảo an toàn tuyệt đối cho các giao dịch điểm thưởng nhiều bước.
-    \item \textbf{Lưu trữ theo khối (Block/Page):} Tối ưu hóa hệ số chặn (Blocking factor - $bfr$) khi nạp dữ liệu từ đĩa cứng vào bộ đệm (Buffer pool), giúp giảm số lần I/O.
-\end{itemize}
+Khóa UUID dạng \texttt{VARCHAR(36)} được giữ để đồng bộ với mô hình hiện có. UUID ngẫu nhiên có thể gây phân mảnh và tăng kích thước chỉ mục; cần đo đạc trước khi lựa chọn khóa cụm khác. Không có tổ chức lưu trữ nào bảo đảm hiệu năng tốt cho mọi workload. Giao dịch SQL không tự tạo tính nguyên tử xuyên SQL Server và blockchain Sui.

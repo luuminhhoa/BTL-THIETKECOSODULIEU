@@ -5,8 +5,15 @@ Dựa trên pipeline xử lý truy vấn của hệ quản trị CSDL, việc vi
 \subsection{Bài toán truy vấn}
 \textbf{Yêu cầu:} Lấy ra Mã giao dịch (\texttt{TransactionID}) và Số điểm (\texttt{Amount}) của các giao dịch cộng điểm lớn hơn 500, thuộc về các Chiến dịch (\texttt{CAMPAIGN}) đang ở trạng thái hoạt động (\texttt{'Active'}).
 
-\textbf{Câu lệnh SQL đại số quan hệ:}
-$$ \pi_{TransactionID, Amount} ( \sigma_{Amount > 500 \wedge Status = \text{'Active'}} (CREDIT\_TRANSACTION \bowtie CAMPAIGN) ) $$
+\textbf{Biểu thức đại số quan hệ:}
+\[
+\begin{aligned}
+T' &= \sigma_{Amount > 500 \,\wedge\, TransactionType = \text{'Earn'}}(T),\\
+C' &= \sigma_{Status = \text{'Active'}}(C),\\
+Q &= \pi_{TransactionID,Amount}(T' \bowtie_{T'.CampaignID=C'.CampaignID} C').
+\end{aligned}
+\]
+Trong đó $T$ là CREDIT\_TRANSACTION, $C$ là CAMPAIGN. Phép nối dùng điều kiện bằng CampaignID, không phải nối tự nhiên trên tất cả thuộc tính cùng tên.
 
 \subsection{Cây truy vấn trước và sau khi tối ưu}
 
@@ -23,7 +30,7 @@ Theo luật biến đổi tương đương, phép chọn (Selection - $\sigma$) 
         \node[font=\Large\bfseries] at (0, 8.5) {Chưa tối ưu};
         
         \node[box] (proj1) at (0, 7) {$\pi_{TransactionID, Amount}$};
-        \node[box] (sel1) at (0, 5) {$\sigma_{Amount > 500 \wedge Status = \text{'Active'}}$};
+        \node[box] (sel1) at (0, 5) {$\sigma_{Amount > 500 \wedge TransactionType = \text{'Earn'} \wedge Status = \text{'Active'}}$};
         \node[box] (join1) at (0, 3) {$\bowtie_{CampaignID}$};
         
         \node[leaf] (trans1) at (-4.5, 0) {CREDIT\_TRANSACTION};
@@ -40,7 +47,7 @@ Theo luật biến đổi tương đương, phép chọn (Selection - $\sigma$) 
         \node[box] (proj2) at (18, 7) {$\pi_{TransactionID, Amount}$};
         \node[box] (join2) at (18, 5) {$\bowtie_{CampaignID}$};
         
-        \node[box] (sel2_trans) at (13, 2.5) {$\sigma_{Amount > 500}$};
+        \node[box] (sel2_trans) at (13, 2.5) {$\sigma_{Amount > 500 \wedge TransactionType = \text{'Earn'}}$};
         \node[box] (sel2_camp) at (23, 2.5) {$\sigma_{Status = \text{'Active'}}$};
         
         \node[leaf] (trans2) at (13, 0) {CREDIT\_TRANSACTION};
@@ -59,7 +66,17 @@ Theo luật biến đổi tương đương, phép chọn (Selection - $\sigma$) 
     \caption{Cây truy vấn trước và sau khi tối ưu hóa bằng luật phân rã}
 \end{figure}
 
-\subsection{Đánh giá thuật toán kết nối (Join Algorithm)}
-Bằng việc đẩy phép chọn xuống dưới, kích thước của 2 bảng trước khi thực hiện phép Join đã bị thu hẹp đáng kể. 
+\subsection{Câu lệnh SQL tương ứng}
+\begin{lstlisting}[style=sqlstyle]
+SELECT ct.TransactionID, ct.Amount
+FROM CREDIT_TRANSACTION AS ct
+JOIN CAMPAIGN AS c ON c.CampaignID = ct.CampaignID
+WHERE ct.Amount > 500
+  AND ct.TransactionType = 'Earn'
+  AND c.Status = 'Active';
+\end{lstlisting}
 
-Khi đó, hệ thống sẽ ưu tiên sử dụng thuật toán \textbf{Nested-Loop Join} nhờ việc bảng \texttt{CAMPAIGN} (bảng trong) đã trở nên rất nhỏ và có thể nạp toàn bộ vào bộ nhớ đệm (Buffer pool). Nếu kích thước bảng trung gian lớn và không có thứ tự, hệ thống có thể cân nhắc chuyển sang \textbf{Hash Join} để đạt chi phí $O(b_R + b_S)$.
+\subsection{Đánh giá thuật toán kết nối}
+Đẩy phép chọn xuống có thể giảm số dòng trung gian; mức giảm thực tế phụ thuộc phân bố dữ liệu. SQL Server chọn Nested Loops, Hash hoặc Merge Join theo statistics, chỉ mục và chi phí ước lượng. Nested Loops thường phù hợp khi đầu vào ngoài nhỏ và phía trong có đường tra cứu hiệu quả; không thể kết luận chỉ từ việc CAMPAIGN nhỏ.
+
+Đồ án chưa có execution plan hoặc số đo I/O, thời gian trước/sau. Vì vậy đây là phân tích biến đổi logic, không phải bằng chứng một thuật toán luôn được chọn hay truy vấn đã đạt mục tiêu hiệu năng.

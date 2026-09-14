@@ -46,7 +46,7 @@ Quản lý tài khoản đăng nhập của nhân viên thuộc các Merchant.
         MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng MERCHANT. \\ \hline
         Email & VARCHAR(255) & UNIQUE & Email đăng nhập (duy nhất). \\ \hline
         PasswordHash & VARCHAR(255) & NOT NULL & Chuỗi băm mật khẩu bảo mật. \\ \hline
-        RoleID & INT & NOT NULL & Mã quyền hạn của người dùng. \\ \hline
+        RoleID & INT & FK, NOT NULL & Mã quyền hạn của người dùng. \\ \hline
         ManagerID & VARCHAR(36) & FK, NULL & Mã người quản lý trực tiếp (tham chiếu đến UserID). \\ \hline
     \end{tabular}
 \end{table}

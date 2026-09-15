@@ -31,3 +31,9 @@ Với API\_CREDENTIAL, KeyID và ApiKey là hai khóa ứng viên đơn, mỗi k
 Một quan hệ đạt BCNF nếu mọi phụ thuộc hàm không tầm thường $X \rightarrow Y$ có $X$ là siêu khóa. Trong tập phụ thuộc trên, tất cả vế trái đều là khóa ứng viên của chính quan hệ đó. Theo tập phụ thuộc này, mười quan hệ đáp ứng BCNF.
 
 Kết luận này giảm dị thường cập nhật do các phụ thuộc hàm đã xét, không thay thế ràng buộc miền giá trị, kiểm soát đồng thời hoặc toàn vẹn liên bảng. AvailableBalance là số dư lưu sẵn để tra cứu; phải được tầng dịch vụ duy trì nhất quán với sổ cái, không thể suy ra tính nhất quán đó chỉ từ BCNF.
+
+
+\subsection{Cách kiểm tra dạng chuẩn}
+1NF yêu cầu mỗi ô chứa một giá trị thuộc miền đã chọn, không chứa danh sách lặp. 2NF yêu cầu đạt 1NF và thuộc tính không khóa không phụ thuộc vào một phần thực sự của khóa ứng viên. 3NF yêu cầu với mỗi phụ thuộc hàm không tầm thường, vế trái là siêu khóa hoặc thuộc tính vế phải là thuộc tính khóa. BCNF yêu cầu vế trái luôn là siêu khóa.
+
+Ví dụ, nếu đưa TenantName vào MERCHANT thì xuất hiện MerchantID xác định TenantID và TenantID xác định TenantName. Một tổ chức có nhiều cửa hàng sẽ khiến tên tổ chức bị lưu lặp. Giữ TenantName ở TENANT và tham chiếu bằng TenantID giúp tránh cập nhật tên ở nhiều dòng MERCHANT.

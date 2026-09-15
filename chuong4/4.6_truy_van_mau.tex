@@ -13,10 +13,10 @@ FROM CREDIT_TRANSACTION ct
 JOIN CREDIT c ON ct.CreditID = c.CreditID
 WHERE c.CustomerID = 'CUST_UUID_001'
   AND c.MerchantID = 'MERCH_UUID_002'
-ORDER BY ct.CreatedAt DESC;
+ORDER BY ct.CreatedAt DESC, ct.TransactionID DESC;
 \end{lstlisting}
 
-\subsection{Truy vấn 2: Tra cứu số dư điểm hiện tại của khách hàng trên toàn bộ các cửa hàng}
+\subsection{Truy vấn 2: Tra cứu số dư điểm hiện tại của khách hàng tại các cửa hàng đang hoạt động}
 \begin{lstlisting}[style=sqlstyle]
 SELECT 
     m.BusinessName,
@@ -25,10 +25,10 @@ FROM CREDIT c
 JOIN MERCHANT m ON c.MerchantID = m.MerchantID
 WHERE c.CustomerID = 'CUST_UUID_001'
   AND m.Status = 'Active'
-ORDER BY c.AvailableBalance DESC;
+ORDER BY c.AvailableBalance DESC, c.MerchantID;
 \end{lstlisting}
 
-\subsection{Truy vấn 3: Thống kê tổng số điểm đã phát hành của một chiến dịch trong tháng hiện tại}
+\subsection{Truy vấn 3: Thống kê tổng số điểm đã phát hành theo từng chiến dịch có phát sinh tích điểm trong tháng hiện tại}
 \begin{lstlisting}[style=sqlstyle]
 DECLARE @MonthStart DATETIME = DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1);
 
@@ -45,3 +45,5 @@ WHERE camp.MerchantID = 'MERCH_UUID_002'
 GROUP BY camp.CampaignID, camp.CampaignName;
 \end{lstlisting}
 Khoảng thời gian nửa kín ở truy vấn 3 giữ cột CreatedAt nguyên dạng để bộ tối ưu có thể tận dụng chỉ mục phù hợp. Truy vấn hiện có chưa bảo đảm kế hoạch seek; cần kiểm tra execution plan.
+
+Tổng điểm phát hành ở truy vấn 3 chỉ cộng giao dịch Earn, chưa trừ các giao dịch hoàn trả. Chiến dịch không có Earn trong tháng không xuất hiện do sử dụng INNER JOIN. Các mã khách hàng và cửa hàng trong ví dụ cần được thay bằng mã tồn tại trong dữ liệu thử.

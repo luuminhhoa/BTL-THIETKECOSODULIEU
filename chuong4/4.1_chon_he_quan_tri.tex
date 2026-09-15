@@ -4,7 +4,7 @@
 Bảng \texttt{CREDIT\_TRANSACTION} nhận nhiều thao tác ghi khi khách hàng tích/tiêu điểm. Các truy vấn chính gồm tìm ví theo khách hàng và Merchant, xem lịch sử theo thời gian và thống kê theo chiến dịch. Đây là giả định thiết kế; chưa có số liệu tải thực tế để chứng minh độ trễ.
 
 \subsection{Lựa chọn SQL Server}
-Đồ án thống nhất sử dụng \textbf{Microsoft SQL Server 2016 trở lên}, ngôn ngữ \textbf{T-SQL}, phù hợp với DDL và truy vấn mẫu.
+Đồ án thống nhất sử dụng \textbf{Microsoft SQL Server 2016 trở lên}, ngôn ngữ \textbf{T-SQL}, phù hợp với DDL và truy vấn mẫu. Đề xuất sản phẩm gốc có lựa chọn hệ quản trị khác; bài môn học được tự chọn hệ quản trị nên sử dụng SQL Server và thống nhất cú pháp T-SQL trong toàn báo cáo.
 \begin{itemize}
     \item Các bảng dùng rowstore với \texttt{PRIMARY KEY CLUSTERED} khai báo rõ trong DDL. Cấu trúc B+ tree hỗ trợ tìm theo khóa và khoảng trên khóa chỉ mục.
     \item Giao dịch SQL hỗ trợ tính ACID cho các thay đổi trong cơ sở dữ liệu. Tầng dịch vụ phải gói thao tác ghi lịch sử và cập nhật số dư trong cùng giao dịch, xử lý đồng thời và rollback khi lỗi.

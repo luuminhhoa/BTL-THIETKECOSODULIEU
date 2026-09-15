@@ -10,8 +10,8 @@ Hệ thống được phân cấp chặt chẽ để phục vụ các chuỗi b�
 - Tích hợp phân hệ phân quyền **RBAC (Role-Based Access Control)** với thực thể `ROLE` và `USER` nhằm quản lý chặt chẽ quyền hạn nhân sự tại các cửa hàng.
 
 ## 🛠 Công nghệ sử dụng
-- **Hệ quản trị CSDL:** SQL Server (T-SQL)
-- **Công cụ thiết kế ERD / Lược đồ:** (Các công cụ bạn đã dùng, ví dụ: draw.io, Visio,...)
+- **Hệ quản trị CSDL:** SQL Server 2016+ (T-SQL)
+- **Công cụ thiết kế ERD / Lược đồ:** TikZ trong LaTeX
 - **Soạn thảo báo cáo:** LaTeX (Biên dịch bằng LaTeX Workshop trên VS Code)
 
 ## 📂 Cấu trúc thư mục báo cáo (LaTeX)
@@ -23,11 +23,24 @@ Dự án được tổ chức code LaTeX theo từng chương riêng biệt đ�
 - `chuong4/`: Mô hình Vật lý, Mã lệnh DDL (chuẩn T-SQL) và các câu truy vấn mẫu trên SQL Server.
 
 ## 🚀 Hướng dẫn sử dụng
-1. **Xem Báo cáo:** Mở file `main.pdf` để xem toàn bộ tài liệu thiết kế hệ thống.
+1. **Xem Báo cáo:** Biên dịch `main.tex` để xem báo cáo từ nguồn hiện tại. `main.pdf` có sẵn trên nhánh gốc là bản cũ, chưa phản ánh thay đổi trong đề xuất này.
 2. **Triển khai Database:**
-   - Cài đặt SQL Server và SQL Server Management Studio (SSMS) / Azure Data Studio.
-   - Copy đoạn mã DDL tại mục 4.4 (`chuong4/4.4_ma_lenh_tao_bang.tex`) và chạy trên SSMS để khởi tạo Schema.
+   - Cài đặt SQL Server và SQL Server Management Studio (SSMS).
+   - Chạy `database/schema.sql` một lần trong cơ sở dữ liệu trống với schema mặc định `dbo`. Mục 4.4 nạp trực tiếp file này. Đây không phải script migration cho dữ liệu đang tồn tại.
    - Các câu truy vấn mẫu (Select, Join, Group By,...) có thể tìm thấy tại mục 4.6.
 
 ---
 **Tác giả:** Lưu Minh Hoa
+
+## Kiểm tra thay đổi
+- Đọc [ghi chú rà soát](REVIEW.md) để xem phạm vi, quy ước và giới hạn.
+- Chạy `python tests/check_consistency.py` để kiểm tra tĩnh cấu trúc và liên kết nguồn.
+- Sau khi tạo schema trong **database thử nghiệm trống**, chạy `database/constraint_tests.sql` để kiểm tra dữ liệu hợp lệ và các ràng buộc từ chối dữ liệu sai. Dữ liệu thử được rollback.
+- Biên dịch `pdflatex -interaction=nonstopmode -halt-on-error main.tex` hai lần từ thư mục gốc repo để cập nhật mục lục.
+- File `SQL` ở thư mục gốc là bản ghi terminal cũ, không phải script khởi tạo CSDL.
+
+### Tài liệu đối chiếu SQL Server
+- [Chỉ mục duy nhất và giá trị NULL](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-index-transact-sql)
+- [Chỉ mục có điều kiện](https://learn.microsoft.com/en-us/sql/relational-databases/indexes/create-filtered-indexes)
+- [Khóa chính, khóa ngoại và chỉ mục](https://learn.microsoft.com/en-us/sql/relational-databases/tables/primary-and-foreign-key-constraints)
+- [ISJSON](https://learn.microsoft.com/en-us/sql/t-sql/functions/isjson-transact-sql)

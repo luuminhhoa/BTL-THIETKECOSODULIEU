@@ -1,29 +1,13 @@
-\section{Tổng quan bài toán và phạm vi đề tài}
+\section{Tổng quan về bài toán và phạm vi đề tài}
+\subsection{Bối cảnh và mục tiêu}
+OctaPoint là nền tảng dịch vụ tín dụng và điểm thưởng cho doanh nghiệp. Trong bài này, credit được hiểu là điểm thưởng của chương trình khách hàng thân thiết. Khách hàng tích điểm khi thực hiện hoạt động hợp lệ và sử dụng điểm theo quy định của cửa hàng.
 
-\subsection{Bối cảnh thực tế và lý do phát triển}
-Trong nền kinh tế số hiện nay, các hệ thống tín dụng tiêu dùng và điểm thưởng (loyalty reward systems) đóng vai trò nòng cốt trong chiến lược giữ chân khách hàng tại các chuỗi siêu thị, trung tâm thương mại và dịch vụ F\&B. Tuy nhiên, các hệ thống truyền thống vận hành dựa trên cơ sở dữ liệu tập trung đang bộc lộ nhiều hạn chế nghiêm trọng về mặt kiến trúc và vận hành:
-\begin{itemize}
-    \item \textbf{Nguy cơ bảo mật và toàn vẹn dữ liệu:} Các cơ sở dữ liệu điểm thưởng tập trung truyền thống thường xuyên là mục tiêu của các cuộc tấn công quét mã (API spam), dò mật khẩu (brute-force), đúc điểm trái phép và gian lận từ nội bộ nhân viên.
-    \item \textbf{Chi phí và rào cản tích hợp:} Các doanh nghiệp (Merchant) gặp khó khăn trong việc tự xây dựng các hệ thống tín dụng tùy biến, an toàn và minh bạch từ con số không, dẫn đến thời gian triển khai chậm và chi phí bảo trì khổng lồ.
-    \item \textbf{Thiếu tính minh bạch và tranh chấp đối soát:} Việc thiếu một hợp đồng thông minh (smart contract) bất biến dẫn đến các tranh chấp về đối soát dữ liệu giữa người tiêu dùng, doanh nghiệp và các đối tác liên minh điểm thưởng chéo.
-    \item \textbf{Rào cản tiếp cận Web3:} Các giải pháp điểm thưởng ứng dụng blockchain hiện tại thường ép buộc người dùng và doanh nghiệp phải tự quản lý ví tiền mã hóa, cụm từ khôi phục (seed phrase) và trả phí giao dịch (gas fees), tạo ra rào cản ứng dụng (adoption barrier) rất lớn.
-\end{itemize}
-
-\subsection{Mục tiêu của hệ thống OctaPoint}
-Để giải quyết những thách thức trên, đề tài hướng tới việc nghiên cứu và thiết kế cơ sở dữ liệu cho nền tảng \textbf{OctaPoint} -- Nền tảng Dịch vụ Tín dụng \& Điểm thưởng cấp doanh nghiệp (Enterprise-grade Credit-as-a-Service - CaaS). 
-
-Hệ thống được thiết kế để tận dụng thông lượng cao của hợp đồng thông minh trên chuỗi khối Sui Layer-1, đồng thời trừu tượng hóa toàn bộ sự phức tạp của blockchain. Mục tiêu cốt lõi của việc thiết kế cơ sở dữ liệu cho OctaPoint bao gồm:
-\begin{itemize}
-    \item \textbf{Trải nghiệm người dùng Web2 liền mạch:} Ứng dụng kiến trúc xác thực không ví (Walletless Authentication) thông qua Enoki's zkLogin, cho phép người dùng đăng nhập bằng các định danh Web2 quen thuộc (như Google OAuth) mà không cần quản lý khóa riêng tư (private keys).
-    \item \textbf{Hỗ trợ Tác tử AI (AI-Ready):} Tích hợp sẵn giao thức Model Context Protocol (MCP) Server, cho phép các trợ lý AI và Bot chăm sóc khách hàng truy vấn số dư tín dụng, kiểm tra lịch sử giao dịch và kích hoạt các chiến dịch tự động một cách an toàn.
-    \item \textbf{Kiến trúc đa khách thuê (Multi-tenancy):} Thiết kế lược đồ dữ liệu linh hoạt, phân tách dữ liệu an toàn, cho phép nhiều doanh nghiệp (Merchants) cùng đăng ký, cấu hình chiến dịch tích điểm và quản lý hạn mức độc lập trên cùng một nền tảng.
-    \item \textbf{Hiệu năng cao và Khả năng ngoại tuyến (Offline-First):} Tối ưu hóa cơ sở dữ liệu quan hệ (SQL Server) kết hợp bộ đệm (Redis) để duy trì thời gian phản hồi API dưới 100ms, hỗ trợ kiểm tra số dư ngoại tuyến trong các môi trường tần suất cao và đồng bộ ghi chép hàng loạt (batch write-backs) sử dụng Programmable Transaction Blocks (PTBs).
-\end{itemize}
-
-\subsection{Phạm vi dữ liệu của đề tài}
-Dựa trên kiến trúc của hệ thống OctaPoint, cơ sở dữ liệu được thiết kế sẽ tập trung quản lý các miền dữ liệu chính phục vụ cho các phân hệ chức năng:
+Đề xuất hệ thống đầy đủ có Blockchain, SDK và MCP. Báo cáo môn Thiết kế cơ sở dữ liệu tập trung vào việc tổ chức dữ liệu quan hệ, xác định khóa và ràng buộc, chuẩn hóa và viết truy vấn mẫu. Báo cáo không trình bày các thành phần tích hợp như sản phẩm đã triển khai.
+\subsection{Phạm vi báo cáo bốn chương}
 \begin{enumerate}
-    \item \textbf{Merchant Web Portal:} Quản lý thông tin doanh nghiệp, thông tin xác thực API, cấu hình chiến dịch điểm thưởng (tỷ lệ tích lũy/đổi thưởng, hệ số nhân, ngày hết hạn) và kiểm soát truy cập (RBAC).
-    \item \textbf{Admin Web System:} Quản lý cấu hình toàn hệ thống, theo dõi kho bạc tài trợ phí gas (Enoki gas sponsorship treasuries), quản lý thanh toán gói cước doanh nghiệp (Subscription/Stripe) và giám sát hạ tầng.
-    \item \textbf{Lớp SDK \& MCP (Developer SDKs \& MCP Layer):} Quản lý lịch sử giao dịch điểm thưởng bất biến, cung cấp dữ liệu cấu trúc an toàn cho AI Agents thông qua OctaPoint MCP Server.
+\item Chương 1: mô tả bài toán, đối tượng sử dụng và yêu cầu dữ liệu.
+\item Chương 2: mô hình quan niệm, thực thể, thuộc tính và mối quan hệ.
+\item Chương 3: chuyển đổi sang mô hình quan hệ, phân tích khóa, chuẩn hóa và từ điển dữ liệu.
+\item Chương 4: chọn hệ quản trị, kiểu dữ liệu, ràng buộc, chỉ mục và truy vấn SQL.
 \end{enumerate}
+Bài chọn SQL Server làm hệ quản trị. Các phần Blockchain, SDK, MCP, bộ đệm, thanh toán và giám sát chỉ là bối cảnh mở rộng; không được triển khai trong phạm vi bài này.

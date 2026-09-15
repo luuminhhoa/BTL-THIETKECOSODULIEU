@@ -19,6 +19,7 @@ ORDER BY ct.CreatedAt DESC, ct.TransactionID DESC;
 \subsection{Truy vấn 2: Tra cứu số dư điểm hiện tại của khách hàng tại các cửa hàng đang hoạt động}
 \begin{lstlisting}[style=sqlstyle]
 SELECT 
+    m.MerchantID,
     m.BusinessName,
     c.AvailableBalance
 FROM CREDIT c
@@ -27,6 +28,8 @@ WHERE c.CustomerID = 'CUST_UUID_001'
   AND m.Status = 'Active'
 ORDER BY c.AvailableBalance DESC, c.MerchantID;
 \end{lstlisting}
+MerchantID giúp phân biệt các cửa hàng trùng BusinessName. Mỗi dòng là số dư tại một cửa hàng; không cộng các ví thành số dư dùng chung.
+
 
 \subsection{Truy vấn 3: Thống kê tổng số điểm đã phát hành theo từng chiến dịch có phát sinh tích điểm trong tháng hiện tại}
 \begin{lstlisting}[style=sqlstyle]

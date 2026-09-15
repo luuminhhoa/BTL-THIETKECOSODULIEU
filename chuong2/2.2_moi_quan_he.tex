@@ -1,14 +1,25 @@
 \section{Xác định các mối quan hệ (Relationships)}
+
 Dựa trên quy trình nghiệp vụ của hệ thống OctaPoint CaaS, các mối quan hệ (Relationships) giữa các thực thể được xác định và phân tích bản số (Cardinality) chi tiết như sau:
+
 \begin{itemize}
-    \item \textbf{Tenant - Merchant (1:N):} Một công ty mẹ (Tenant) quản lý nhiều cửa hàng (Merchant).
-    \item \textbf{Tenant - Campaign (1:N):} Công ty mẹ (Tenant) sở hữu và thiết lập các chiến dịch (Campaign) chung cho toàn hệ thống.
-    \item \textbf{Campaign - Merchant (N:N):} Một chiến dịch có thể áp dụng cho nhiều cửa hàng, và một cửa hàng có thể chạy nhiều chiến dịch cùng lúc. Quan hệ này được rã qua thực thể \texttt{Campaign\_Merchant}.
-    \item \textbf{Campaign - RewardRule (1:N):} Một chiến dịch bao gồm nhiều quy tắc điểm thưởng.
-    \item \textbf{Merchant - User (1:N):} Một cửa hàng quản lý nhiều nhân sự (User) trực thuộc.
-    \item \textbf{Customer - Credit (1:N) và Tenant - Credit (1:N):} Mỗi khách hàng có duy nhất 1 ví điểm (Credit) tại 1 chuỗi (Tenant).
-    \item \textbf{Merchant - APICredential (1:N):} Cửa hàng sở hữu các mã khóa để tích hợp API.
-    \item \textbf{Credit - CreditTransaction (1:N):} Một ví điểm ghi nhận nhiều biến động giao dịch.
-    \item \textbf{Merchant - CreditTransaction (1:N):} Mọi giao dịch điểm thưởng đều phải lưu vết rõ cửa hàng (Merchant) nơi khách hàng thực hiện.
-    \item \textbf{Campaign - CreditTransaction (1:N):} Giao dịch có thể sinh ra từ một chiến dịch.
+    \item \textbf{Tenant - Merchant (1:N):} Một đơn vị thuê bao (Tenant) có thể cấp phát hệ thống cho nhiều doanh nghiệp/cửa hàng (Merchant). Ngược lại, mỗi Merchant chỉ trực thuộc duy nhất một Tenant.
+    
+    \item \textbf{Merchant - User (1:N):} Một Merchant có thể tạo và quản lý nhiều tài khoản nhân sự (User) để phân quyền vận hành cửa hàng. Mỗi tài khoản User chỉ thuộc quyền quản lý của một Merchant định danh.
+    
+    \item \textbf{Merchant - Campaign (1:N):} Mỗi Merchant có thể khởi tạo và chạy nhiều chiến dịch khuyến mãi (Campaign) cùng lúc hoặc qua các thời kỳ, nhưng một chiến dịch cụ thể chỉ do một Merchant duy nhất phát hành.
+    
+    \item \textbf{Campaign - RewardRule (1:N):} Một chiến dịch (Campaign) có thể bao gồm nhiều quy tắc thưởng (RewardRule) khác nhau (ví dụ: quy định điểm thưởng khi mua hàng, điểm thưởng khi check-in). Mỗi quy tắc chỉ được áp dụng cho một chiến dịch cụ thể.
+    
+    \item \textbf{Customer - Credit (1:N) và Merchant - Credit (1:N):} Một Khách hàng (Customer) có thể sở hữu nhiều Ví điểm (Credit) ở các cửa hàng khác nhau. Đồng thời, một Merchant cũng quản lý Ví điểm của rất nhiều Customer. Đây chính là bước phân rã mối quan hệ Nhiều - Nhiều (M:N) nguyên thủy giữa Khách hàng và Cửa hàng thông qua thực thể trung gian (Associative Entity) là Ví điểm. Mỗi cặp khách hàng và cửa hàng có tối đa một ví.
+    
+    \item \textbf{Merchant - APICredential (1:N):} Một Merchant có thể tạo ra nhiều bộ khóa API (APICredential) để phục vụ việc tích hợp đa hệ thống (ví dụ: máy POS, website bán hàng). Mỗi bộ khóa chỉ gắn liền với một Merchant.
+    
+    \item \textbf{Credit - CreditTransaction (1:N):} Một Ví điểm (Credit) sẽ ghi nhận nhiều biến động giao dịch (CreditTransaction) theo thời gian thực (như cộng điểm, trừ điểm). Mỗi giao dịch lịch sử này bắt buộc phải tham chiếu về một Ví điểm duy nhất.
+    
+    \item \textbf{Campaign - CreditTransaction (1:N):} Các giao dịch cộng điểm (CreditTransaction) có thể được sinh ra từ việc áp dụng một chiến dịch (Campaign) cụ thể. Mỗi giao dịch có thể không gắn chiến dịch (CampaignID NULL) hoặc gắn đúng một chiến dịch.
+    \item \textbf{Role - User (1:N):} Một Role có thể gán cho nhiều User; mỗi User có đúng một Role tại một thời điểm.
+    \item \textbf{User - User (1:N, tự tham chiếu):} Một người quản lý có thể quản lý nhiều User. Mỗi User có tối đa một người quản lý trực tiếp qua ManagerID nullable; không được tự quản lý.
 \end{itemize}
+
+Các mối kết hợp trên cùng với bản số tương ứng sẽ là cơ sở nền tảng để xây dựng Sơ đồ Thực thể Kết hợp (ERD) hoàn chỉnh ở mục tiếp theo.

@@ -2,20 +2,25 @@
 
 Dựa trên lý thuyết thiết kế cơ sở dữ liệu quan hệ, để đảm bảo hệ thống OctaPoint không gặp phải các dị thường dữ liệu (Anomalies) khi Thêm, Xóa, Sửa, chúng ta cần phân tích tập Phụ thuộc hàm và tiến hành chuẩn hóa dữ liệu.
 
-\subsection{Xác định Tập Phụ thuộc hàm (Functional Dependencies)}
-Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dựa trên các quy tắc nghiệp vụ của mô hình CaaS (đã trình bày ở Chương 1), ta xác định được tập Phụ thuộc hàm $F$ cốt lõi như sau:
-
+\subsubsection{Xác định Tập Phụ thuộc hàm (Functional Dependencies)}
+Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dựa trên các quy tắc nghiệp vụ, ta xác định được tập Phụ thuộc hàm $F$ cốt lõi như sau:
 \begin{align*}
     \text{TenantID} &\rightarrow \text{TenantName, SystemConfig} \tag{F1} \\
     \text{MerchantID} &\rightarrow \text{TenantID, BusinessName, Status} \tag{F2} \\
     \text{UserID} &\rightarrow \text{MerchantID, Email, PasswordHash, RoleID, ManagerID} \tag{F3} \\
     \text{Email} &\rightarrow \text{UserID, MerchantID, PasswordHash, RoleID} \tag{F4} \\
-    \text{CampaignID} &\rightarrow \text{MerchantID, CampaignName, StartDate, EndDate, Status} \tag{F5} \\
-    \text{CreditID} &\rightarrow \text{CustomerID, MerchantID, AvailableBalance} \tag{F6} \\
-    \text{TransactionID} &\rightarrow \text{CreditID, CampaignID, Amount, TransactionType, SuiTxDigest} \tag{F7}
-\end{align*}
-
-\textit{Giải thích nghiệp vụ:} Phụ thuộc hàm (F4) tồn tại vì email đăng nhập của người dùng quản trị (User) bắt buộc phải là duy nhất trên toàn hệ thống, do đó nó có khả năng định danh ngược lại UserID.
+    \text{CampaignID} &\rightarrow \text{TenantID, CampaignName, StartDate, EndDate, Status} \tag{F5} \\
+    \text{CreditID} &\rightarrow \text{CustomerID, TenantID, AvailableBalance} \tag{F6} \\
+    \text{TransactionID} &\rightarrow \text{CreditID, CampaignID, MerchantID, Amount,} \nonumber \\
+    &\quad \text{TransactionType, SuiTxDigest, CreatedAt} \tag{F7}
+    \end{align*}
+\textit{Giải thích nghiệp vụ:} 
+\begin{itemize}
+    \item Phụ thuộc hàm (F4) tồn tại vì email đăng nhập của User là duy nhất.
+    \item (F5) và (F6) thể hiện rõ ví điểm và chiến dịch nay thuộc quyền sở hữu cấp cao nhất là Tenant.
+    \item (F7) Giao dịch điểm bắt buộc định danh được Merchant nơi phát sinh.
+    \item Bảng trung gian \texttt{Campaign\_Merchant} chỉ chứa toàn bộ là khóa chính (CampaignID, MerchantID) nên không phát sinh phụ thuộc hàm không tầm thường.
+\end{itemize}
 
 \subsection{Tính Bao đóng và Tìm khóa ứng viên}
 Tiến hành kiểm tra việc tìm khóa cho lược đồ \texttt{User(UserID, MerchantID, Email, PasswordHash, RoleID, ManagerID)} bằng thuật toán tính Bao đóng:

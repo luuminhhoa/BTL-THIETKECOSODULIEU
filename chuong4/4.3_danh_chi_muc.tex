@@ -6,7 +6,7 @@ Chỉ mục (Index) là cấu trúc phụ giúp DBMS tìm khối dữ liệu c�
 Dựa trên \textbf{Algorithm 4.1 (Quyết định tạo chỉ mục)}, dự án áp dụng các nguyên tắc sau:
 \begin{enumerate}
     \item \textbf{Ưu tiên Khóa:} Luôn xem xét tạo chỉ mục trên Khóa chính (PK) và Khóa ngoại (FK) trước.
-    \item \textbf{Đánh giá Độ chọn lọc (Selectivity):} Chỉ mục cây B+ chỉ hiệu quả khi cột có độ chọn lọc cao (càng nhiều giá trị phân biệt càng tốt). Công thức tính độ chọn lọc được định nghĩa là:
+    \item \textbf{Đánh giá Độ chọn lọc (Selectivity):} Chỉ mục cây B-Tree chỉ hiệu quả khi cột có độ chọn lọc cao (càng nhiều giá trị phân biệt càng tốt). Công thức tính độ chọn lọc được định nghĩa là:
     $$selectivity(A)=\frac{NDV(A)}{|R|}$$
     Trong đó, $NDV(A)$ là số giá trị phân biệt của cột $A$, và $|R|$ là tổng số dòng của bảng.
     \item \textbf{Chi phí ghi:} Hạn chế tối đa việc tạo chỉ mục phụ trên bảng \texttt{CREDIT\_TRANSACTION} vì đây là bảng có tải công việc ghi liên tục (Write-heavy workload).
@@ -16,11 +16,11 @@ Dựa trên \textbf{Algorithm 4.1 (Quyết định tạo chỉ mục)}, dự án
 Từ các nguyên tắc trên, hệ thống triển khai các loại chỉ mục cụ thể như sau:
 
 \begin{itemize}
-    \item \textbf{Chỉ mục Cụm (Clustered Index):} Được MySQL tự động tạo trên Khóa chính của tất cả các bảng. Dữ liệu vật lý được tổ chức theo cấu trúc Cây B+ (B+ Tree), hỗ trợ tìm kiếm chính xác và tìm kiếm theo khoảng (Range Query) với chi phí $O(\log_p N)$.
+    \item \textbf{Chỉ mục Cụm (Clustered Index):} Được SQL Server tự động tạo trên Khóa chính của tất cả các bảng. Dữ liệu vật lý được tổ chức theo cấu trúc Cây B-Tree, hỗ trợ tìm kiếm chính xác và tìm kiếm theo khoảng (Range Query) với chi phí $O(\log_p N)$.
     
-    \item \textbf{Chỉ mục Phụ (Nonclustered Index) trên Khóa ngoại:} Tạo chỉ mục cho các cột FK như \texttt{MerchantID}, \texttt{CreditID}, \texttt{CampaignID} nhằm tối ưu hóa chi phí cho thuật toán kết nối lồng nhau (Nested-Loop Join) khi thực hiện các truy vấn thống kê nhiều bảng.
+    \item \textbf{Chỉ mục Phụ (Nonclustered Index) trên Khóa ngoại:} Tạo chỉ mục cho các cột FK quan trọng như \texttt{TenantID}, \texttt{MerchantID}, \texttt{CreditID}, \texttt{CampaignID} nhằm tối ưu hóa chi phí cho thuật toán kết nối lồng nhau (Nested-Loop Join) khi thực hiện các truy vấn thống kê nhiều bảng.
     
-    \item \textbf{Chỉ mục Phụ trên cột có Độ chọn lọc cao:} Tạo Index cho cột \texttt{Email} (bảng USER) để tăng tốc độ đăng nhập. Vì $NDV(Email) \approx |USER|$, độ chọn lọc xấp xỉ 1 (rất cao), nên chỉ mục B+ hoạt động vô cùng hiệu quả.
+    \item \textbf{Chỉ mục Phụ trên Ràng buộc UNIQUE:} SQL Server tự động tạo Nonclustered Index ngầm định trên các cột được gán ràng buộc UNIQUE. Nhờ vậy, hệ thống được tăng tốc cực nhanh khi truy vấn cột \texttt{Email} (bảng USER) lúc đăng nhập, hoặc cặp \texttt{(CustomerID, TenantID)} (bảng CREDIT) lúc kiểm tra số dư ví chung.
     
-    \item \textbf{Cột KHÔNG tạo chỉ mục:} Các cột như \texttt{Status} (chỉ có Active/Inactive) hay \texttt{TransactionType} (chỉ có Earn/Burn/Refund) có độ chọn lọc cực thấp. Theo lý thuyết, việc dùng B+ tree cho các cột này không đáng giá vì mỗi giá trị trả về quá nhiều dòng. Dự án quyết định không đánh chỉ mục trên các cột này để tiết kiệm dung lượng lưu trữ và tối ưu tốc độ ghi dữ liệu.
+    \item \textbf{Cột KHÔNG tạo chỉ mục:} Các cột như \texttt{Status} (chỉ có Active/Inactive) hay \texttt{TransactionType} (chỉ có Earn/Burn/Refund) có độ chọn lọc cực thấp. Việc dùng B-Tree cho các cột này không đáng giá vì mỗi giá trị trả về quá nhiều dòng. Dự án quyết định không đánh chỉ mục trên các cột này để tiết kiệm dung lượng lưu trữ đĩa và tối ưu tốc độ ghi dữ liệu.
 \end{itemize}

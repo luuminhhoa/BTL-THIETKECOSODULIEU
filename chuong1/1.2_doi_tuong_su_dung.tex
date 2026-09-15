@@ -9,8 +9,8 @@ Hệ thống OctaPoint CaaS phục vụ bốn nhóm tác nhân chính: Quản tr
     \label{fig:usecase_tong_quan}
 \end{figure}
 
-\subsubsection{Quản trị viên Hệ thống (System Administrator)}
-FA-1. \textbf{Quản lý tài khoản và phân quyền đa khách thuê (Multi-tenant):} Tạo mới, phê duyệt, cập nhật trạng thái hoạt động của các doanh nghiệp (Merchants) đăng ký sử dụng nền tảng.
+\subsubsection*{Quản trị viên Hệ thống (System Administrator)}
+FA-1. \textbf{Quản lý tài khoản và phân quyền đa khách thuê (Multi-tenant):} Tạo mới, phê duyệt, cập nhật trạng thái hoạt động của các Công ty mẹ/Chuỗi bán lẻ (Tenants) và các Cửa hàng/Chi nhánh (Merchants) trực thuộc trên nền tảng.
 
 FA-2. \textbf{Giám sát hạ tầng Blockchain và Tài nguyên:} Theo dõi ví tài trợ phí gas (Enoki gas sponsorship treasuries), giám sát thông lượng API Gateway và trạng thái hợp đồng thông minh trên mạng lưới Sui.
 
@@ -18,62 +18,43 @@ FA-3. \textbf{Quản lý gói cước (Subscription \& Billing):} Cấu hình c�
 
 FA-4. \textbf{Truy vấn nhật ký kiểm toán toàn cục:} Theo dõi và truy vết (audit trail) mọi thay đổi cấu hình quan trọng trên nền tảng nhằm đảm bảo tính minh bạch.
 
-\subsubsection{Doanh nghiệp Đối tác (Merchant Operator)}
-FM-1. \textbf{Quản lý API Key và Webhook:} Khởi tạo, luân chuyển (rotate) và vô hiệu hóa cặp khóa API/Secret Key phục vụ tích hợp SDK; cấu hình điểm cuối (endpoints) nhận Webhook.
+\subsubsection*{Doanh nghiệp Đối tác (Merchant Operator)}
+FM-1. \textbf{Quản lý API Key và Webhook:} Khởi tạo, luân chuyển (rotate) và vô hiệu hóa cặp khóa API/Secret Key phục vụ tích hợp SDK; cấu hình điểm cuối (endpoints) nhận Webhook tại từng chi nhánh.
 
-FM-2. \textbf{Cấu hình Chiến dịch \& Quy tắc (Rule Engine):} Thiết lập tỷ lệ tích lũy/quy đổi điểm, hệ số nhân theo sự kiện (multiplier campaigns), điều kiện hạng thành viên (Tiers) và thời hạn sử dụng điểm.
+FM-2. \textbf{Cấu hình Chiến dịch \& Quy tắc (Rule Engine):} Thiết lập tỷ lệ tích lũy/quy đổi điểm, hệ số nhân theo sự kiện (multiplier campaigns). Quản trị viên cấp Tenant có thể áp dụng chiến dịch cho toàn chuỗi hoặc chỉ định cho một số Merchant nhất định.
 
-FM-3. \textbf{Giám sát giao dịch và Đối soát:} Theo dõi luồng điểm phát hành, điểm tiêu luỹ, lịch sử giao dịch khách hàng và xuất báo cáo đối soát tài chính định kỳ.
+FM-3. \textbf{Giám sát giao dịch và Đối soát:} Theo dõi luồng điểm phát hành, điểm tiêu luỹ, lịch sử giao dịch khách hàng tại cửa hàng và xuất báo cáo đối soát tài chính định kỳ.
 
-\subsubsection{Người dùng cuối (End-User)}
+\subsubsection*{Người dùng cuối (End-User)}
 FU-1. \textbf{Xác thực không ví (Walletless Authentication):} Đăng nhập vào hệ thống thông qua các định danh Web2 (Google, Apple OAuth) được hỗ trợ bởi giao thức zkLogin mà không cần quản lý private key.
 
-FU-2. \textbf{Truy vấn số dư và Lịch sử:} Xem số dư điểm thưởng hiện tại tại các Merchant khác nhau và kiểm tra lịch sử giao dịch tích/đổi điểm.
+FU-2. \textbf{Truy vấn số dư và Lịch sử:} Xem số dư điểm khả dụng chung theo từng Chuỗi (Tenant) và kiểm tra chi tiết lịch sử giao dịch tại các Cửa hàng (Merchant) thuộc chuỗi đó.
 
 FU-3. \textbf{Thực thi giao dịch điểm thưởng:} Thực hiện các giao dịch nhận điểm hoặc thanh toán/đổi quà bằng điểm tại điểm bán (POS) hoặc ứng dụng thương mại điện tử.
 
-\subsubsection{Tác tử AI và Hệ thống tự động (AI Agent \& SDK System)}
+\subsubsection*{Tác tử AI và Hệ thống tự động (AI Agent \& SDK System)}
 FS-1. \textbf{Truy vấn ngữ cảnh tự động (MCP Context Retrieval):} Thông qua giao thức MCP, tự động truy xuất dữ liệu số dư, lịch sử giao dịch và quy định chiến dịch để phục vụ ngữ cảnh cho các LLM/Chatbot chăm sóc khách hàng.
 
 FS-2. \textbf{Ghi nhận giao dịch thời gian thực:} Gửi các yêu cầu cộng/trừ điểm thưởng thông qua SDK (gRPC/REST) với độ trễ thấp (Sub-100ms).
 
 FS-3. \textbf{Đồng bộ trạng thái On-chain/Off-chain:} Lắng nghe và đồng bộ trạng thái giao dịch từ Sui blockchain về cơ sở dữ liệu quan hệ cục bộ (SQL Server).
 
-\vspace{0.5cm}
-\textbf{Bảng 1.1 -- Tổng hợp yêu cầu chức năng theo vai trò:}
 \begin{table}[H]
     \centering
+    \caption{Tổng hợp yêu cầu chức năng theo vai trò}
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|c|l|p{8.5cm}|}
+    \begin{tabular}{|c|l|p{8cm}|}
         \hline
-        \textbf{Mã} & \textbf{Vai trò} & \textbf{Yêu cầu chức năng} \\
-        \hline
-        FA-1 & Administrator & Quản lý tài khoản và phân quyền đa khách thuê (Multi-tenant) \\
-        \hline
-        FA-2 & Administrator & Giám sát hạ tầng Blockchain, phí Gas và tài nguyên hệ thống \\
-        \hline
-        FA-3 & Administrator & Quản lý gói cước (Subscription), thanh toán định kỳ \\
-        \hline
-        FA-4 & Administrator & Truy vấn nhật ký kiểm toán (Audit Trail) toàn cục \\
-        \hline
-        FM-1 & Merchant & Quản lý API Key, Secret và cấu hình Webhook \\
-        \hline
-        FM-2 & Merchant & Thiết lập chiến dịch, tỷ lệ quy đổi và quy tắc hạng thành viên \\
-        \hline
-        FM-3 & Merchant & Giám sát lịch sử giao dịch, đối soát tài chính \\
-        \hline
-        FU-1 & End-User & Đăng nhập Web2 qua zkLogin (Không dùng ví Crypto) \\
-        \hline
-        FU-2 & End-User & Tra cứu số dư độc lập tại các doanh nghiệp và lịch sử giao dịch \\
-        \hline
-        FU-3 & End-User & Tích điểm và tiêu điểm tại điểm bán (POS/E-commerce) \\
-        \hline
-        FS-1 & Tác tử AI / SDK & Truy xuất ngữ cảnh dữ liệu qua giao thức MCP cho LLM \\
-        \hline
-        FS-2 & Tác tử AI / SDK & Gửi lệnh cộng/trừ điểm tự động qua API Gateway \\
-        \hline
-        FS-3 & Tác tử AI / SDK & Đồng bộ trạng thái giao dịch On-chain và Off-chain \\
-        \hline
+        \textbf{Mã} & \textbf{Vai trò} & \textbf{Yêu cầu chức năng} \\ \hline
+        FA-1 & Administrator & Quản lý tài khoản đa khách thuê (Chuỗi và Cửa hàng) \\ \hline
+        FA-2 & Administrator & Giám sát hạ tầng Blockchain, phí Gas và tài nguyên \\ \hline
+        FA-3 & Administrator & Quản lý gói cước (Subscription), thanh toán định kỳ \\ \hline
+        FA-4 & Administrator & Truy vấn nhật ký kiểm toán (Audit Trail) toàn cục \\ \hline
+        FM-1 & Merchant & Quản lý API Key, Secret và cấu hình Webhook \\ \hline
+        FM-2 & Tenant/Merchant & Thiết lập chiến dịch, tỷ lệ quy đổi và phạm vi áp dụng \\ \hline
+        FM-3 & Merchant & Giám sát lịch sử giao dịch tại cửa hàng, đối soát \\ \hline
+        FU-1 & End-User & Đăng nhập Web2 qua zkLogin (Không dùng ví Crypto) \\ \hline
+        FU-2 & End-User & Tra cứu số dư ví chung của chuỗi và lịch sử giao dịch \\ \hline
+        FU-3 & End-User & Tích điểm và tiêu điểm tại điểm bán \\ \hline
     \end{tabular}
-    \label{tab:yeu_cau_chuc_nang}
 \end{table}

@@ -14,17 +14,18 @@ Quá trình ánh xạ từ ERD sang Lược đồ Logic tuân thủ các quy t�
 \end{itemize}
 
 \subsection{Danh sách Lược đồ Quan hệ sơ bộ}
-Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc trên, ta thu được tập hợp các lược đồ quan hệ sơ bộ như sau. (Quy ước: Thuộc tính gạch chân là Khóa chính - PK, thuộc tính in nghiêng là Khóa ngoại - FK).
+Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc ánh xạ, ta thu được tập hợp 11 lược đồ quan hệ sơ bộ như sau. (Quy ước: Thuộc tính gạch chân là Khóa chính - PK, thuộc tính in nghiêng là Khóa ngoại - FK).
 
 \begin{description}
     \item[\texttt{Tenant}] (\underline{TenantID}, TenantName, SystemConfig)
     \item[\texttt{Merchant}] (\underline{MerchantID}, \textit{TenantID}, BusinessName, Status)
     \item[\texttt{Role}] (\underline{RoleID}, RoleName)
-    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID}, \textit{ManagerID})    
-    \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{MerchantID}, CampaignName, StartDate, EndDate, Status)
-    \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier) 
+    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID}, \textit{ManagerID})
+    \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{TenantID}, CampaignName, StartDate, EndDate, Status)
+    \item[\texttt{Campaign\_Merchant}] (\underline{\textit{CampaignID}}, \underline{\textit{MerchantID}})
+    \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier)
     \item[\texttt{Customer}] (\underline{CustomerID}, WalletAddress, Email)
-    \item[\texttt{Credit}] (\underline{CreditID}, \textit{CustomerID}, \textit{MerchantID}, AvailableBalance)
-    \item[\texttt{CreditTransaction}] (\underline{TransactionID}, \textit{CreditID}, \textit{CampaignID}, Amount, TransactionType, SuiTxDigest, CreatedAt)
+    \item[\texttt{Credit}] (\underline{CreditID}, \textit{CustomerID}, \textit{TenantID}, AvailableBalance)
+    \item[\texttt{CreditTransaction}] (\underline{TransactionID}, \textit{CreditID}, \textit{CampaignID}, \textit{MerchantID}, Amount, TransactionType, SuiTxDigest, CreatedAt)
     \item[\texttt{APICredential}] (\underline{KeyID}, \textit{MerchantID}, ApiKey, SecretHash)
 \end{description}

@@ -1,6 +1,6 @@
 \section{Một số câu truy vấn mẫu}
 
-Dưới đây là các câu truy vấn T-SQL tiêu biểu để kiểm chứng thiết kế cơ sở dữ liệu trên hệ quản trị SQL Server.
+Dưới đây là các câu truy vấn T-SQL tiêu biểu để kiểm chứng thiết kế cơ sở dữ liệu trên hệ quản trị SQL Server, thể hiện rõ khả năng xử lý dữ liệu tập trung theo kiến trúc Multi-tenant.
 
 \subsection{Truy vấn 1: Xem lịch sử giao dịch điểm của một khách hàng tại một cửa hàng}
 \begin{lstlisting}[style=sqlstyle]
@@ -12,23 +12,22 @@ SELECT
 FROM CREDIT_TRANSACTION ct
 JOIN CREDIT c ON ct.CreditID = c.CreditID
 WHERE c.CustomerID = 'CUST_UUID_001'
-  AND c.MerchantID = 'MERCH_UUID_002'
+  AND ct.MerchantID = 'MERCH_UUID_002'
 ORDER BY ct.CreatedAt DESC;
 \end{lstlisting}
 
-\subsection{Truy vấn 2: Tra cứu số dư điểm hiện tại của khách hàng trên toàn bộ các cửa hàng}
+\subsection{Truy vấn 2: Tra cứu số dư điểm hiện tại của khách hàng trên toàn bộ các chuỗi (Tenant)}
 \begin{lstlisting}[style=sqlstyle]
 SELECT 
-    m.BusinessName,
+    t.TenantName,
     c.AvailableBalance
 FROM CREDIT c
-JOIN MERCHANT m ON c.MerchantID = m.MerchantID
+JOIN TENANT t ON c.TenantID = t.TenantID
 WHERE c.CustomerID = 'CUST_UUID_001'
-  AND m.Status = 'Active'
 ORDER BY c.AvailableBalance DESC;
 \end{lstlisting}
 
-\subsection{Truy vấn 3: Thống kê tổng số điểm đã phát hành của một chiến dịch trong tháng hiện tại}
+\subsection{Truy vấn 3: Thống kê tổng số điểm đã phát hành của một chiến dịch tại một cửa hàng trong tháng}
 \begin{lstlisting}[style=sqlstyle]
 SELECT 
     camp.CampaignName,
@@ -36,9 +35,49 @@ SELECT
     SUM(ct.Amount) AS TotalPointsIssued
 FROM CREDIT_TRANSACTION ct
 JOIN CAMPAIGN camp ON ct.CampaignID = camp.CampaignID
-WHERE camp.MerchantID = 'MERCH_UUID_002'
+WHERE ct.MerchantID = 'MERCH_UUID_002'
   AND ct.TransactionType = 'Earn'
   AND MONTH(ct.CreatedAt) = MONTH(GETDATE())
   AND YEAR(ct.CreatedAt) = YEAR(GETDATE())
 GROUP BY camp.CampaignID, camp.CampaignName;
+\end{lstlisting}
+
+\subsection{Truy vấn 4: Phân tích khách hàng (Top 5 người có số dư cao nhất tại một Chuỗi)}
+\begin{lstlisting}[style=sqlstyle]
+SELECT TOP 5
+    cust.Email,
+    cust.WalletAddress,
+    c.AvailableBalance
+FROM CREDIT c
+JOIN CUSTOMER cust ON c.CustomerID = cust.CustomerID
+WHERE c.TenantID = 'TENANT_UUID_001'
+ORDER BY c.AvailableBalance DESC;
+\end{lstlisting}
+
+\subsection{Truy vấn 5: Thống kê hiệu suất các cửa hàng (Tổng điểm đã tiêu/tích lũy theo từng chi nhánh của chuỗi)}
+\begin{lstlisting}[style=sqlstyle]
+SELECT 
+    m.BusinessName,
+    ct.TransactionType,
+    COUNT(ct.TransactionID) AS TotalTx,
+    SUM(ct.Amount) AS TotalPoints
+FROM CREDIT_TRANSACTION ct
+JOIN MERCHANT m ON ct.MerchantID = m.MerchantID
+WHERE m.TenantID = 'TENANT_UUID_001'
+GROUP BY m.BusinessName, ct.TransactionType
+ORDER BY m.BusinessName, ct.TransactionType;
+\end{lstlisting}
+
+\subsection{Truy vấn 6: Tra cứu danh sách các cửa hàng được phép áp dụng một Chiến dịch đang hoạt động}
+\begin{lstlisting}[style=sqlstyle]
+SELECT 
+    camp.CampaignName,
+    m.BusinessName,
+    m.Status AS MerchantStatus
+FROM CAMPAIGN_MERCHANT cm
+JOIN CAMPAIGN camp ON cm.CampaignID = camp.CampaignID
+JOIN MERCHANT m ON cm.MerchantID = m.MerchantID
+WHERE camp.Status = 'Active' 
+  AND camp.TenantID = 'TENANT_UUID_001'
+ORDER BY camp.CampaignName, m.BusinessName;
 \end{lstlisting}

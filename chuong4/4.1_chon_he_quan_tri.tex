@@ -12,9 +12,9 @@ Hệ thống OctaPoint CaaS có đặc thù tải công việc như sau:
 \subsection{Lựa chọn tổ chức lưu trữ (Storage Organization)}
 Dựa trên yêu cầu workload, nếu sử dụng tổ chức Heap (dữ liệu chèn ở cuối) sẽ làm chậm quá trình tìm kiếm, trong khi tổ chức Hash chỉ phù hợp tìm kiếm chính xác ($O(1)$) nhưng không hỗ trợ tìm kiếm theo khoảng. 
 
-Do đó, dự án quyết định lựa chọn \textbf{MySQL (Storage Engine InnoDB)} vì các đặc tính vật lý sau:
+Do đó, dự án quyết định lựa chọn hệ quản trị \textbf{SQL Server} vì các đặc tính vật lý sau:
 \begin{itemize}
-    \item \textbf{Tổ chức Clustered Index (B+ Tree):} InnoDB lưu trữ dữ liệu các bảng theo cấu trúc cây B+ (B+ Tree) dựa trên Khóa chính. Điều này hỗ trợ truy vấn theo khoảng cực kỳ hiệu quả nhờ các nút lá được nối tiếp nhau.
+    \item \textbf{Tổ chức Clustered Index (B-Tree):} SQL Server lưu trữ dữ liệu các bảng theo cấu trúc cây B-Tree dựa trên Khóa chính (Clustered Index). Điều này hỗ trợ truy vấn theo khoảng cực kỳ hiệu quả nhờ các nút lá được liên kết với nhau.
     \item \textbf{Tính toàn vẹn (ACID):} Đảm bảo an toàn tuyệt đối cho các giao dịch điểm thưởng nhiều bước.
-    \item \textbf{Lưu trữ theo khối (Block/Page):} Tối ưu hóa hệ số chặn (Blocking factor - $bfr$) khi nạp dữ liệu từ đĩa cứng vào bộ đệm (Buffer pool), giúp giảm số lần I/O.
+    \item \textbf{Lưu trữ theo khối (Page/Extent):} Kiến trúc lưu trữ theo từng Page (8KB) giúp tối ưu hóa hệ số chặn (Blocking factor - $bfr$) khi nạp dữ liệu từ đĩa cứng vào bộ đệm (Buffer pool), giúp giảm thiểu tối đa số lần I/O.
 \end{itemize}

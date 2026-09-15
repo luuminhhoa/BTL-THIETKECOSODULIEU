@@ -6,7 +6,7 @@ Dựa trên pipeline xử lý truy vấn của hệ quản trị CSDL, việc vi
 \textbf{Yêu cầu:} Lấy ra Mã giao dịch (\texttt{TransactionID}) và Số điểm (\texttt{Amount}) của các giao dịch cộng điểm lớn hơn 500, thuộc về các Chiến dịch (\texttt{CAMPAIGN}) đang ở trạng thái hoạt động (\texttt{'Active'}).
 
 \textbf{Câu lệnh SQL đại số quan hệ:}
-$$ \pi_{TransactionID, Amount} ( \sigma_{Amount > 500 \wedge Status = \text{'Active'}} (CREDIT\_TRANSACTION \bowtie CAMPAIGN) ) $$
+$$\pi_{TransactionID, Amount} ( \sigma_{Amount > 500 \wedge Status = \text{'Active'}} (CREDIT\_TRANSACTION \bowtie CAMPAIGN) )$$
 
 \subsection{Cây truy vấn trước và sau khi tối ưu}
 
@@ -62,4 +62,4 @@ Theo luật biến đổi tương đương, phép chọn (Selection - $\sigma$) 
 \subsection{Đánh giá thuật toán kết nối (Join Algorithm)}
 Bằng việc đẩy phép chọn xuống dưới, kích thước của 2 bảng trước khi thực hiện phép Join đã bị thu hẹp đáng kể. 
 
-Khi đó, hệ thống sẽ ưu tiên sử dụng thuật toán \textbf{Nested-Loop Join} nhờ việc bảng \texttt{CAMPAIGN} (bảng trong) đã trở nên rất nhỏ và có thể nạp toàn bộ vào bộ nhớ đệm (Buffer pool). Nếu kích thước bảng trung gian lớn và không có thứ tự, hệ thống có thể cân nhắc chuyển sang \textbf{Hash Join} để đạt chi phí $O(b_R + b_S)$.
+Tuy nhiên, thay vì khẳng định hệ thống luôn chọn một thuật toán cố định, ta cần hiểu rằng Trình tối ưu hóa truy vấn (Query Optimizer) của SQL Server sẽ đánh giá dựa trên thống kê thực tế. Nếu bảng \texttt{CAMPAIGN} sau khi lọc trở nên rất nhỏ và có thể nạp toàn bộ vào bộ nhớ đệm (Buffer pool), thuật toán \textbf{Nested-Loop Join} có thể được hệ thống ưu tiên. Ngược lại, nếu kích thước dữ liệu trung gian của cả hai bảng vẫn lớn và không có thứ tự, hệ thống sẽ linh hoạt chuyển sang sử dụng \textbf{Hash Join} để đạt chi phí $O(b_R + b_S)$.

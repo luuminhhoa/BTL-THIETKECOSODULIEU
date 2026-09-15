@@ -21,13 +21,9 @@ Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc trên, ta thu đ
     \item[\texttt{Tenant}] (\underline{TenantID}, TenantName, SystemConfig)
     \item[\texttt{Merchant}] (\underline{MerchantID}, \textit{TenantID}, BusinessName, Status)
     \item[\texttt{Role}] (\underline{RoleID}, RoleName)
-
     \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID}, \textit{ManagerID})
     \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{MerchantID}, CampaignName, StartDate, EndDate, Status)
     \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier)
-    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID}, \textit{ManagerID})    
-    \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{MerchantID}, CampaignName, StartDate, EndDate, Status)
-    \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier) 
     \item[\texttt{Customer}] (\underline{CustomerID}, WalletAddress, Email)
     \item[\texttt{Credit}] (\underline{CreditID}, \textit{CustomerID}, \textit{MerchantID}, AvailableBalance)
     \item[\texttt{CreditTransaction}] (\underline{TransactionID}, \textit{CreditID}, \textit{CampaignID}, Amount, TransactionType, SuiTxDigest, CreatedAt)

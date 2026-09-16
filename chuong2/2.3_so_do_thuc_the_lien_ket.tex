@@ -1,134 +1,145 @@
 \section{Sơ đồ Thực thể Kết hợp (ERD)}
 
-Dựa trên danh sách các thực thể và mối quan hệ đã phân tích, sơ đồ ERD ở mức quan niệm được thiết kế theo ký pháp chuẩn Chen (Thực thể dạng hình chữ nhật, Mối kết hợp dạng hình thoi, Thuộc tính dạng hình bầu dục). Sơ đồ này độc lập với hệ quản trị CSDL vật lý.
+Dựa trên danh sách các thực thể và mối quan hệ đã chuẩn hóa, sơ đồ ERD ở mức quan niệm của hệ thống OctaPoint CaaS được thiết kế theo ký pháp chuẩn Chen:
+\begin{itemize}
+    \item \textbf{Thực thể mạnh (Regular Entity):} Biểu diễn bằng hình chữ nhật viền đơn.
+    \item \textbf{Thực thể kết hợp / yếu (Associative/Weak Entity):} Biểu diễn bằng hình chữ nhật viền đôi (\texttt{Campaign\_Merchant}, \texttt{CreditTransaction}).
+    \item \textbf{Mối kết hợp (Relationship):} Biểu diễn bằng hình thoi.
+    \item \textbf{Thuộc tính (Attribute):} Biểu diễn bằng hình elip; thuộc tính khóa chính (PK) được gạch chân.
+\end{itemize}
 
 % =========================================================
-% TÙY CHỌN 1: SƠ ĐỒ TIKZ FULL THUỘC TÍNH (BẢN XEM TRƯỚC ĐÃ TỐI ƯU TỶ LỆ)
+% TÙY CHỌN 1: SƠ ĐỒ TIKZ FULL THUỘC TÍNH (BỐ CỤC CHUẨN ĐỐI XỨNG)
 % =========================================================
 \begin{figure}[H]
     \centering
-    \resizebox{\textwidth}{!}{
+    \resizebox{0.98\textwidth}{!}{
     \begin{tikzpicture}[>=stealth, thick]
         
-        % 1. ĐỊNH NGHĨA LẠI STYLE: Hình chữ nhật (nhỏ gọn), Hình thoi (to và cân đối)
-        \tikzstyle{entity} = [rectangle, draw=black, fill=blue!10, minimum width=2.4cm, minimum height=0.8cm, text centered, font=\footnotesize\bfseries]
-        \tikzstyle{weak_entity} = [rectangle, draw=black, double, double distance=1.5pt, fill=blue!10, minimum width=2.6cm, minimum height=0.8cm, text centered, font=\footnotesize\bfseries]
-        \tikzstyle{relationship} = [diamond, draw=black, fill=orange!20, minimum width=2.2cm, minimum height=1.2cm, text centered, font=\scriptsize\itshape]
-        \tikzstyle{weak_relationship} = [diamond, draw=black, double, double distance=1.5pt, fill=orange!20, minimum width=2.2cm, minimum height=1.2cm, text centered, font=\scriptsize\itshape]
-        \tikzstyle{attribute} = [ellipse, draw=black, fill=white, inner sep=1.5pt, minimum width=1.3cm, minimum height=0.5cm, text centered, font=\tiny]
+        % 1. ĐỊNH NGHĨA STYLE CHUẨN CHEN
+        \tikzstyle{entity} = [rectangle, draw=black, fill=blue!10, minimum width=2.4cm, minimum height=0.85cm, text centered, font=\footnotesize\bfseries]
+        \tikzstyle{weak_entity} = [rectangle, draw=black, double, double distance=1.5pt, fill=blue!10, minimum width=2.6cm, minimum height=0.85cm, text centered, font=\footnotesize\bfseries]
+        \tikzstyle{relationship} = [diamond, draw=black, fill=orange!20, minimum width=2.2cm, minimum height=1.1cm, text centered, font=\scriptsize\itshape]
+        \tikzstyle{weak_relationship} = [diamond, draw=black, double, double distance=1.5pt, fill=orange!20, minimum width=2.2cm, minimum height=1.1cm, text centered, font=\scriptsize\itshape]
+        \tikzstyle{attribute} = [ellipse, draw=black, fill=white, inner sep=1.5pt, minimum width=1.3cm, minimum height=0.55cm, text centered, font=\tiny]
 
-        % 2. CÁC THỰC THỂ LÕI (Cập nhật 11 thực thể)
-        \node[entity] (tenant) at (0, 11.5) {Tenant};
-        \node[entity] (merchant) at (0, 6) {Merchant};
-        \node[entity] (campaign) at (7, 11.5) {Campaign};
-        \node[entity] (rule) at (12, 11.5) {RewardRule};
-        \node[entity] (user) at (-7, 6) {User};
-        \node[entity] (role) at (-11, 8.5) {Role};
-        \node[entity] (customer) at (-7, 1.5) {Customer};
-        \node[entity] (credit) at (0, 1.5) {Credit};
-        \node[entity] (api) at (5, 3) {APICredential};
-        \node[weak_entity] (transaction) at (0, -3.5) {CreditTransaction};
-        \node[weak_entity] (camp_merch) at (3.5, 8.75) {Campaign\_Merchant}; 
+        % 2. CÁC THỰC THỂ CỐT LÕI (Bố trí theo trục dọc Tenant -> Merchant/Credit -> Transaction)
+        \node[entity] (tenant) at (0, 11) {Tenant};
+        \node[entity] (merchant) at (-4.5, 6) {Merchant};
+        \node[entity] (campaign) at (4.5, 11) {Campaign};
+        \node[entity] (rule) at (9.5, 11) {RewardRule};
+        \node[entity] (user) at (-9.5, 6) {User};
+        \node[entity] (role) at (-9.5, 9.5) {Role};
+        \node[entity] (customer) at (6, 6) {Customer};
+        \node[entity] (credit) at (0, 6) {Credit};
+        \node[entity] (api) at (-4.5, 11) {APICredential};
+        \node[weak_entity] (camp_merch) at (0, 8.5) {Campaign\_Merchant}; 
+        \node[weak_entity] (transaction) at (0, 0.5) {CreditTransaction};
 
-        % 3. MỐI QUAN HỆ
-        \node[relationship] (capphat) at (0, 8.75) {Cấp phát};
-        \node[relationship] (sohuu_camp) at (3.5, 11.5) {Sở hữu}; 
-        \node[relationship] (baogom) at (9.5, 11.5) {Bao gồm};
-        \node[weak_relationship] (apdung_camp) at (3.5, 6) {Áp dụng (N:N)}; 
-        \node[relationship] (quanly_user) at (-3.5, 6) {Quản lý};
-        \node[relationship] (phanquyen) at (-9, 7.25) {Phân quyền};
-        \node[relationship] (sepnhanvien) at (-8.5, 4.5) {Sếp-NV}; % ĐÃ SỬA LỖI TÊN BIẾN
-        \node[relationship] (sohuu_vi) at (-3.5, 1.5) {Sở hữu};
-        \node[relationship] (tenant_vi) at (-4.5, 6.5) {Quản lý ví}; 
-        \node[relationship] (ghinhan) at (0, -1) {Ghi nhận};
-        \node[relationship] (phatsinh) at (-3.5, -1) {Phát sinh tại}; 
-        \node[relationship] (taokhoa) at (2.5, 4.5) {Tạo khóa};
-        \node[relationship] (sinh_giao_dich) at (7, -1) {Sinh ra};
+        % 3. CÁC MỐI QUAN HỆ (HÌNH THOI)
+        \node[relationship] (capphat) at (-2.2, 9) {Cấp chi nhánh};
+        \node[relationship] (sohuu_camp) at (2.2, 11) {Ban hành}; 
+        \node[relationship] (baogom_rule) at (7, 11) {Bao gồm};
+        \node[relationship] (ap_dung) at (2.2, 8.5) {Thiết lập};
+        \node[relationship] (thuoc_ve) at (-2.2, 7.3) {Áp dụng tại};
+        \node[relationship] (quanly_user) at (-7, 6) {Quản lý};
+        \node[relationship] (phanquyen) at (-9.5, 7.7) {Phân quyền};
+        \node[relationship] (sepnhanvien) at (-11.5, 4.2) {Quản lý cấp}; 
+        \node[relationship] (sohuu_vi) at (3, 6) {Sở hữu};
+        \node[relationship] (tenant_vi) at (0, 8.5) {}; % Ẩn phụ trợ hoặc liên kết trực tiếp
+        \node[relationship] (quanly_credit) at (0, 8.5) {Quản trị ví};
+        \node[relationship] (taokhoa) at (-2.2, 11) {Cấp quyền};
+        
+        \node[relationship] (ghinhan) at (0, 3.2) {Biến động};
+        \node[relationship] (phatsinh) at (-4.5, 3.2) {Phát sinh tại}; 
+        \node[relationship] (sinh_giao_dich) at (4.5, 3.2) {Kích hoạt};
 
-        % 4. VẼ ĐƯỜNG NỐI THỰC THỂ
-        \draw (tenant) -- node[right] {1} (capphat) -- node[right] {N} (merchant);
+        % 4. ĐƯỜNG NỐI MỐI QUAN HỆ VÀ BẢN SỐ (CARDINALITY)
+        % Tenant - Merchant
+        \draw (tenant.south west) to[out=210, in=60] node[above, pos=0.2] {1} (capphat.north east);
+        \draw (capphat.south west) to[out=240, in=70] node[left, pos=0.8] {N} (merchant.north);
+
+        % Tenant - Campaign
         \draw (tenant) -- node[above] {1} (sohuu_camp) -- node[above] {N} (campaign);
-        \draw (campaign) -- node[above] {1} (baogom) -- node[above] {N} (rule);
-        
-        \draw (campaign.south) -- (camp_merch.north);
-        \draw (merchant.east) -- (apdung_camp.west);
-        \draw (camp_merch.south) -- (apdung_camp.north);
 
-        \draw (user) -- node[above] {N} (quanly_user) -- node[above] {1} (merchant);
-        \draw (role) -- node[above, sloped] {1} (phanquyen) -- node[above, sloped] {N} (user);
-        
-        \draw (user.south west) to[out=270, in=180] (sepnhanvien.west); % ĐÃ SỬA
-        \draw (sepnhanvien.east) to[out=0, in=270] (user.south east); % ĐÃ SỬA
+        % Campaign - RewardRule
+        \draw (campaign) -- node[above] {1} (baogom_rule) -- node[above] {N} (rule);
 
+        % Tenant - APICredential
+        \draw (tenant) -- node[above] {1} (taokhoa) -- node[above] {N} (api);
+
+        % Campaign - Campaign_Merchant - Merchant (Phân rã N:N)
+        \draw (campaign.south west) to[out=230, in=0] node[above] {1} (ap_dung.east);
+        \draw (ap_dung.west) -- node[above] {N} (camp_merch.east);
+        \draw (camp_merch.west) -- node[above] {N} (thuoc_ve.east);
+        \draw (thuoc_ve.west) to[out=180, in=40] node[above] {1} (merchant.north east);
+
+        % Merchant - User - Role
+        \draw (merchant) -- node[above] {1} (quanly_user) -- node[above] {N} (user);
+        \draw (role) -- node[right] {1} (phanquyen) -- node[right] {N} (user);
+        \draw (user.west) to[out=180, in=90] (-11.5, 6) to (-11.5, 4.8) -- (sepnhanvien.north);
+        \draw (sepnhanvien.south) to[out=270, in=240] (-9.5, 4.8) to node[right] {N} (user.south);
+
+        % Tenant - Credit & Customer - Credit
+        \draw (tenant.south) -- node[right, pos=0.3] {1} (quanly_credit) -- node[right, pos=0.7] {N} (credit.north);
         \draw (customer) -- node[above] {1} (sohuu_vi) -- node[above] {N} (credit);
-        
-        \draw (tenant.west) to[out=180, in=90] node[left, pos=0.8] {1} (tenant_vi.north);
-        \draw (tenant_vi.south) to[out=270, in=135] node[left, pos=0.2] {N} (credit.north west);
 
+        % Credit - CreditTransaction
         \draw (credit) -- node[right] {1} (ghinhan) -- node[right] {N} (transaction);
-        \draw (merchant.south west) to[out=225, in=90] node[left] {1} (phatsinh) to[out=270, in=135] node[left] {N} (transaction.north west);
-        \draw (merchant) -- node[above] {1} (taokhoa) -- node[above] {N} (api);
-        
-        \draw (campaign.south east) to[out=315, in=90] node[right, pos=0.8] {1} (sinh_giao_dich.north);
-        \draw (sinh_giao_dich.south) to[out=270, in=0] node[above, pos=0.8] {N} (transaction.east);
 
-        % 5. THUỘC TÍNH (Rút gọn bớt nhánh FK để hình không bị nổ)
-        % Tenant
-        \node[attribute] (t1) at (-2.5, 12.5) {\underline{TenantID}};
-        \node[attribute] (t2) at (0, 13) {TenantName};
-        \node[attribute] (t3) at (2.5, 12.5) {SystemConfig};
-        \draw (tenant) -- (t1); \draw (tenant) -- (t2); \draw (tenant) -- (t3);
+        % Merchant - CreditTransaction
+        \draw (merchant.south) -- node[left] {1} (phatsinh) -- node[left] {N} (transaction.north west);
 
-        % Merchant
-        \node[attribute] (m1) at (-2.5, 7.5) {\underline{MerchantID}};
-        \node[attribute] (m2) at (-2.5, 4.5) {BusinessName};
+        % Campaign - CreditTransaction
+        \draw (campaign.south) to[out=280, in=90] node[right, pos=0.3] {0..1} (sinh_giao_dich.north);
+        \draw (sinh_giao_dich.south) to[out=270, in=0] node[above, pos=0.8] {N} (transaction.north east);
+
+        % 5. CÁC THUỘC TÍNH (ATTRIBUTES)
+        % Tenant Attributes
+        \node[attribute] (t1) at (-0.8, 12.5) {\underline{TenantID}};
+        \node[attribute] (t2) at (1.2, 12.5) {TenantName};
+        \draw (tenant) -- (t1); \draw (tenant) -- (t2);
+
+        % Merchant Attributes
+        \node[attribute] (m1) at (-6.5, 7.5) {\underline{MerchantID}};
+        \node[attribute] (m2) at (-6.5, 5.2) {BusinessName};
         \draw (merchant) -- (m1); \draw (merchant) -- (m2);
 
-        % Role
-        \node[attribute] (role1) at (-13, 9.5) {\underline{RoleID}};
-        \node[attribute] (role2) at (-13, 7.5) {RoleName};
-        \draw (role) -- (role1); \draw (role) -- (role2);
+        % Campaign Attributes
+        \node[attribute] (c1) at (4.5, 12.6) {\underline{CampaignID}};
+        \node[attribute] (c2) at (6.5, 12.4) {CampaignName};
+        \draw (campaign) -- (c1); \draw (campaign) -- (c2);
 
-        % User 
-        \node[attribute] (u1) at (-9.5, 6) {\underline{UserID}};
-        \node[attribute] (u2) at (-7, 7.5) {Email};
-        \draw (user) -- (u1); \draw (user) -- (u2); 
-
-        % Campaign
-        \node[attribute] (c1) at (5, 13) {\underline{CampaignID}};
-        \node[attribute] (c2) at (7, 13) {CampaignName};
-        \node[attribute] (c3) at (9, 13) {Status};
-        \draw (campaign) -- (c1); \draw (campaign) -- (c2); \draw (campaign) -- (c3); 
-
-        % RewardRule
-        \node[attribute] (r1) at (11, 13) {\underline{RuleID}};
-        \node[attribute] (r2) at (13, 13) {ActionType};
-        \draw (rule) -- (r1); \draw (rule) -- (r2);
-
-        % APICredential
-        \node[attribute] (a1) at (7, 4) {\underline{KeyID}};
-        \node[attribute] (a2) at (7, 2) {ApiKey};
-        \draw (api) -- (a1); \draw (api) -- (a2);
-
-        % Customer 
-        \node[attribute] (cus1) at (-9.5, 1.5) {\underline{CustomerID}};
-        \node[attribute] (cus2) at (-7, 3) {Email};
+        % Customer Attributes
+        \node[attribute] (cus1) at (8.5, 6.7) {\underline{CustomerID}};
+        \node[attribute] (cus2) at (8.5, 5.3) {SuiAddress};
         \draw (customer) -- (cus1); \draw (customer) -- (cus2);
 
-        % Credit
-        \node[attribute] (cre1) at (0, 3) {\underline{CreditID}};
-        \node[attribute] (cre2) at (2.5, 0) {AvailableBalance};
+        % Credit Attributes
+        \node[attribute] (cre1) at (-1.5, 5) {\underline{CreditID}};
+        \node[attribute] (cre2) at (1.5, 5) {AvailableBalance};
         \draw (credit) -- (cre1); \draw (credit) -- (cre2);
 
-        % CreditTransaction
-        \node[attribute] (tr1) at (-2.5, -5) {\underline{TransactionID}};
-        \node[attribute] (tr2) at (0, -5) {Amount};
-        \node[attribute] (tr4) at (2.5, -5) {SuiTxDigest};
-        \draw (transaction) -- (tr1); \draw (transaction) -- (tr2); \draw (transaction) -- (tr4);
+        % Campaign_Merchant Attribute
+        \node[attribute] (cm1) at (0, 9.8) {AssignedAt};
+        \draw (camp_merch) -- (cm1);
+
+        % Transaction Attributes
+        \node[attribute] (tr1) at (-2.8, -1) {\underline{TransactionID}};
+        \node[attribute] (tr2) at (-0.9, -1) {Amount};
+        \node[attribute] (tr3) at (0.9, -1) {Type};
+        \node[attribute] (tr4) at (2.8, -1) {SuiTxDigest};
+        \draw (transaction) -- (tr1); \draw (transaction) -- (tr2); 
+        \draw (transaction) -- (tr3); \draw (transaction) -- (tr4);
+
+        % APICredential Attributes
+        \node[attribute] (api1) at (-6.5, 11.8) {\underline{CredentialID}};
+        \node[attribute] (api2) at (-6.5, 10.5) {ApiKey};
+        \draw (api) -- (api1); \draw (api) -- (api2);
 
     \end{tikzpicture}
     }
-    \caption{Sơ đồ Thực thể Kết hợp (ERD) mức quan niệm hệ thống OctaPoint CaaS (Kiến trúc Ví điểm dùng chung)}
+    \caption{Sơ đồ Thực thể Kết hợp (ERD) mức quan niệm hệ thống OctaPoint CaaS (Kiến trúc Ví điểm chung và Chiến dịch theo chi nhánh)}
     \label{fig:erd_tikz}
 \end{figure}
 % =========================================================

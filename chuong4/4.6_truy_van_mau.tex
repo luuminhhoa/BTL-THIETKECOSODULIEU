@@ -46,10 +46,13 @@ WHERE camp.MerchantID = 'MERCH_UUID_002'
   AND ct.TransactionType = 'Earn'
   AND ct.CreatedAt >= @MonthStart
   AND ct.CreatedAt < DATEADD(MONTH, 1, @MonthStart)
-GROUP BY camp.CampaignID, camp.CampaignName;
+GROUP BY camp.CampaignID, camp.CampaignName
+ORDER BY TotalPointsIssued DESC, camp.CampaignID;
 \end{lstlisting}
 Khoảng thời gian nửa kín ở truy vấn 3 giữ cột CreatedAt nguyên dạng để bộ tối ưu có thể tận dụng chỉ mục phù hợp. Truy vấn hiện có chưa bảo đảm kế hoạch seek; cần kiểm tra execution plan.
 
 Tổng điểm phát hành ở truy vấn 3 chỉ cộng giao dịch Earn, chưa trừ các giao dịch hoàn trả. Chiến dịch không có Earn trong tháng không xuất hiện do sử dụng INNER JOIN. Các mã khách hàng và cửa hàng trong ví dụ cần được thay bằng mã tồn tại trong dữ liệu thử.
 
 CampaignID được hiển thị cùng CampaignName để phân biệt các chiến dịch trùng tên; mỗi dòng kết quả vẫn tương ứng với một chiến dịch.
+
+Truy vấn 3 sắp xếp tổng điểm phát hành giảm dần; nếu bằng nhau thì sắp xếp theo CampaignID để kết quả có thứ tự ổn định.

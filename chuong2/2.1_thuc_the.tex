@@ -1,107 +1,131 @@
 \section{Xác định Các Thực thể và Thuộc tính}
-Dựa trên các phân hệ chức năng và quy tắc nghiệp vụ đã khảo sát, mô hình dữ liệu quan niệm của hệ thống OctaPoint CaaS xác định 11 thực thể cốt lõi cùng danh sách thuộc tính chi tiết.
+Dựa trên các phân hệ chức năng và quy tắc nghiệp vụ đã thống nhất, mô hình dữ liệu quan niệm của hệ thống OctaPoint CaaS xác định 11 thực thể cốt lõi cùng danh sách thuộc tính chi tiết.
 
-Để đảm bảo tính liên kết chặt chẽ, kiến trúc dữ liệu của hệ thống được quy hoạch dựa trên hai trục trung tâm:
+Để đảm bảo tính liên kết chặt chẽ và nhất quán, kiến trúc dữ liệu của hệ thống được quy hoạch dựa trên hai trục trung tâm:
 \begin{itemize}
-    \item \textbf{Trục Doanh nghiệp (Merchant):} Đóng vai trò là gốc của cấu trúc đa khách thuê (Multi-tenant). Mọi dữ liệu về chiến dịch (Campaign), người dùng (User), cấu hình API (APICredential) đều được định tuyến và cô lập dựa trên khóa ngoại MerchantID.
-    \item \textbf{Trục Sổ cái Giao dịch (Ledger):} Tập trung vào thực thể \texttt{CreditTransaction}. Đây là rốn vũ trụ ghi nhận mọi biến động điểm thưởng, liên kết chặt chẽ với người dùng cuối (Customer), chiến dịch (Campaign) và chuỗi khối Sui để phục vụ đối soát.
+    \item \textbf{Trục Khách thuê Đa doanh nghiệp (Tenant \& Merchant):} Thực thể \texttt{Tenant} (Công ty mẹ / Chuỗi bán lẻ) đóng vai trò là gốc của cấu trúc đa khách thuê (Multi-tenant). Mọi chính sách tích điểm, chiến dịch ưu đãi (Campaign), người dùng quản trị (User) và cấu hình khóa tích hợp (APICredential) đều được phân cấp từ Tenant xuống các chi nhánh/cửa hàng trực thuộc (\texttt{Merchant}).
+    \item \textbf{Trục Ví điểm và Sổ cái Giao dịch (Credit \& Ledger):} Tập trung vào cặp thực thể \texttt{Credit} (Ví điểm dùng chung giữa Customer và Tenant) và \texttt{CreditTransaction} (Sổ cái ghi nhận mọi biến động điểm thưởng). Mỗi giao dịch điểm bắt buộc lưu vết cửa hàng (\texttt{Merchant}) nơi khách hàng thực hiện và mã băm giao dịch trên chuỗi khối Sui (\texttt{SuiTxDigest}) để phục vụ đối soát tài chính minh bạch.
 \end{itemize}
 
-\subsection{Phân hệ Tổ chức và Phân quyền (Tenant \& RBAC)}
+\subsection{Phân hệ Tổ chức và Phân quyền (Tenant, Merchant \& RBAC)}
 \begin{itemize}
-    \item \textbf{Thực thể Tenant (Đơn vị thuê bao gốc):}
+    \item \textbf{Thực thể Tenant (Công ty mẹ / Chuỗi bán lẻ):}
     \begin{itemize}
-        \item \underline{TenantID} (PK): Mã định danh duy nhất của công ty mẹ/chuỗi.
-        \item TenantName (NOT NULL): Tên định danh gốc.
-        \item SystemConfig (NULL): Cấu hình chung dạng JSON.
+        \item \underline{TenantID} (PK): Mã định danh duy nhất của công ty mẹ/chuỗi thương hiệu.
+        \item TenantName (NOT NULL): Tên doanh nghiệp/chuỗi bán lẻ.
+        \item Status (NOT NULL): Trạng thái hoạt động (Active/Suspended/Inactive).
+        \item SystemConfig (NULL): Cấu hình tham số hệ thống dạng JSON.
+        \item CreatedAt (NOT NULL): Thời điểm khởi tạo chuỗi.
     \end{itemize}
 
-    \item \textbf{Thực thể Merchant (Doanh nghiệp đối tác):}
+    \item \textbf{Thực thể Merchant (Cửa hàng / Chi nhánh trực thuộc):}
     \begin{itemize}
-        \item \underline{MerchantID} (PK): Mã định danh cửa hàng/chi nhánh.
-        \item \textit{TenantID} (FK, NOT NULL): Liên kết tới bảng Tenant.
-        \item BusinessName (NOT NULL): Tên thương hiệu/cửa hàng.
-        \item Status (NOT NULL): Trạng thái hoạt động (Active/Suspended).
+        \item \underline{MerchantID} (PK): Mã định danh duy nhất của chi nhánh/cửa hàng.
+        \item \textit{TenantID} (FK, NOT NULL): Tham chiếu đến chuỗi mẹ (Tenant) sở hữu cửa hàng.
+        \item BusinessName (NOT NULL): Tên chi nhánh hoặc thương hiệu điểm bán.
+        \item Address (NULL): Địa chỉ vật lý của cửa hàng.
+        \item Status (NOT NULL): Trạng thái hoạt động (Active/Suspended/Closed).
+        \item CreatedAt (NOT NULL): Ngày tham gia hệ thống.
     \end{itemize}
 
-    \item \textbf{Thực thể USER (Người dùng/Nhân viên):}
+    \item \textbf{Thực thể USER (Nhân viên / Người dùng quản trị):}
     \begin{itemize}
-        \item \underline{UserID} (PK): Mã định danh nhân viên.
-        \item \textit{MerchantID} (FK, NOT NULL): Mã cửa hàng trực thuộc.
-        \item \textit{RoleID} (FK, NOT NULL): Mã phân quyền.
-        \item \textit{ManagerID} (FK, NULL): Mã người quản lý trực tiếp (tự tham chiếu).
-        \item Email (UNIQUE): Email đăng nhập hệ thống.
-        \item PasswordHash (NOT NULL): Mật khẩu đã được mã hóa.
+        \item \underline{UserID} (PK): Mã định danh tài khoản người dùng nội bộ.
+        \item \textit{TenantID} (FK, NOT NULL): Tham chiếu chuỗi (Tenant) công tác.
+        \item \textit{MerchantID} (FK, NULL): Chi nhánh phụ trách (nếu là nhân viên cửa hàng; NULL nếu là quản trị cấp chuỗi).
+        \item \textit{RoleID} (FK, NOT NULL): Mã vai trò/phân quyền.
+        \item \textit{ManagerID} (FK, NULL): Mã tài khoản quản lý trực tiếp (quan hệ tự tham chiếu).
+        \item Username (UNIQUE, NOT NULL): Tên đăng nhập.
+        \item Email (UNIQUE, NOT NULL): Thư điện tử đăng nhập.
+        \item PasswordHash (NOT NULL): Mật khẩu đã được băm an toàn.
+        \item Status (NOT NULL): Trạng thái tài khoản (Active/Locked).
     \end{itemize}
 
-    \item \textbf{Thực thể Role (Vai trò):}
+    \item \textbf{Thực thể Role (Vai trò hệ thống):}
     \begin{itemize}
         \item \underline{RoleID} (PK): Mã định danh vai trò.
-        \item RoleName (NOT NULL): Tên vai trò (Admin, Manager, Staff).
+        \item RoleName (NOT NULL): Tên vai trò (TenantAdmin, BranchManager, Cashier).
+        \item Description (NULL): Diễn giải quyền hạn của vai trò.
     \end{itemize}
 \end{itemize}
 
 \subsection{Phân hệ Tín dụng và Điểm thưởng (Loyalty Engine)}
 \begin{itemize}
-    \item \textbf{Thực thể Campaign (Chiến dịch điểm thưởng):}
+    \item \textbf{Thực thể Campaign (Chiến dịch ưu đãi điểm thưởng):}
     \begin{itemize}
         \item \underline{CampaignID} (PK): Mã định danh chiến dịch.
-        \item \textit{TenantID} (FK, NOT NULL): Chuỗi (Tenant) sở hữu chiến dịch.
-        \item CampaignName (NOT NULL): Tên chiến dịch.
-        \item StartDate (NOT NULL): Ngày bắt đầu.
-        \item EndDate (NULL): Thời điểm kết thúc.
-        \item Status (NOT NULL): Trạng thái (Draft/Active/Expired).
+        \item \textit{TenantID} (FK, NOT NULL): Thuộc sở hữu của Tenant (công ty mẹ) ban hành.
+        \item CampaignName (NOT NULL): Tên chương trình ưu đãi.
+        \item Description (NULL): Mô tả chi tiết nội dung chương trình.
+        \item StartDate (NOT NULL): Thời điểm bắt đầu hiệu lực.
+        \item EndDate (NOT NULL): Thời điểm kết thúc chiến dịch.
+        \item Status (NOT NULL): Trạng thái (Draft/Active/Paused/Expired).
+        \item CreatedAt (NOT NULL): Ngày khởi tạo chiến dịch.
     \end{itemize}
 
-    \item \textbf{Thực thể Campaign\_Merchant (Phạm vi áp dụng):}
+    \item \textbf{Thực thể Campaign\_Merchant (Phạm vi áp dụng chiến dịch):}
     \begin{itemize}
-        \item \underline{\textit{CampaignID}} (PK, FK): Tham chiếu chiến dịch.
-        \item \underline{\textit{MerchantID}} (PK, FK): Tham chiếu cửa hàng được áp dụng.
+        \item \underline{\textit{CampaignID}} (PK, FK): Mã chiến dịch được áp dụng.
+        \item \underline{\textit{MerchantID}} (PK, FK): Mã cửa hàng/chi nhánh được phép áp dụng.
+        \item AssignedAt (NOT NULL): Thời điểm phân bổ chiến dịch cho chi nhánh.
     \end{itemize}
 
-    \item \textbf{Thực thể RewardRule (Quy tắc tính điểm):}
+    \item \textbf{Thực thể RewardRule (Quy tắc tích và đổi điểm):}
     \begin{itemize}
         \item \underline{RuleID} (PK): Mã định danh quy tắc.
-        \item \textit{CampaignID} (FK, NOT NULL): Thuộc chiến dịch nào.
-        \item ActionType (NOT NULL): Loại hành động.
-        \item PointsMultiplier (NOT NULL): Hệ số nhân điểm.
+        \item \textit{TenantID} (FK, NOT NULL): Chuỗi áp dụng chính sách.
+        \item \textit{CampaignID} (FK, NULL): Thuộc chiến dịch cụ thể (NULL nếu là quy tắc mặc định của toàn chuỗi).
+        \item ActionType (NOT NULL): Loại hành động áp dụng (EARN / REDEEM).
+        \item EarnRatio (NOT NULL): Tỷ lệ tích điểm dựa trên giá trị đơn hàng.
+        \item RedeemRatio (NOT NULL): Tỷ lệ quy đổi điểm thành tiền thanh toán.
     \end{itemize}
 
-    \item \textbf{Thực thể CUSTOMER (Khách hàng):}
+    \item \textbf{Thực thể CUSTOMER (Khách hàng thành viên):}
     \begin{itemize}
-        \item \underline{CustomerID} (PK): Mã định danh khách hàng nội bộ.
-        \item WalletAddress (UNIQUE, NULL): Địa chỉ blockchain (Sui).
-        \item Email (NULL): Địa chỉ email.
+        \item \underline{CustomerID} (PK): Mã định danh duy nhất của khách hàng trong hệ sinh thái.
+        \item FullName (NOT NULL): Họ và tên khách hàng.
+        \item PhoneNumber (UNIQUE, NOT NULL): Số điện thoại định danh thành viên.
+        \item Email (UNIQUE, NULL): Địa chỉ thư điện tử.
+        \item SuiAddress (UNIQUE, NULL): Địa chỉ ví zkLogin định danh trên mạng lưới chuỗi khối Sui.
+        \item CreatedAt (NOT NULL): Thời điểm đăng ký tài khoản.
     \end{itemize}
 
-    \item \textbf{Thực thể Credit (Số dư ví điểm chung):}
+    \item \textbf{Thực thể Credit (Ví điểm tích lũy dùng chung):}
     \begin{itemize}
-        \item \underline{CreditID} (PK): Mã định danh bản ghi số dư.
-        \item \textit{CustomerID} (FK, NOT NULL): Liên kết khách hàng.
-        \item \textit{TenantID} (FK, NOT NULL): Thuộc chuỗi (Tenant) nào.
-        \item AvailableBalance (NOT NULL): Số dư khả dụng hiện tại.
+        \item \underline{CreditID} (PK): Mã định danh bản ghi ví điểm.
+        \item \textit{CustomerID} (FK, NOT NULL): Khách hàng sở hữu ví.
+        \item \textit{TenantID} (FK, NOT NULL): Chuỗi bán lẻ phát hành và chấp nhận ví điểm này.
+        \item AvailableBalance (NOT NULL): Số dư điểm khả dụng hiện tại (mặc định = 0).
+        \item LockedBalance (NOT NULL): Số điểm đang bị tạm khóa chờ xử lý giao dịch.
+        \item Status (NOT NULL): Trạng thái ví điểm (Active/Frozen).
+        \item UpdatedAt (NOT NULL): Thời điểm số dư biến động gần nhất.
     \end{itemize}
 \end{itemize}
 
-\subsection{Phân hệ Sổ cái Giao dịch và Kiểm toán (Ledger \& Audit)}
+\subsection{Phân hệ Sổ cái Giao dịch và Tích hợp API (Ledger \& Integration)}
 \begin{itemize}
-    \item \textbf{Thực thể CreditTransaction (Giao dịch điểm):}
+    \item \textbf{Thực thể CreditTransaction (Giao dịch biến động điểm):}
     \begin{itemize}
-        \item \underline{TransactionID} (PK): Mã định danh giao dịch nội bộ.
-        \item \textit{CreditID} (FK, NOT NULL): Liên kết tới ví số dư.
-        \item \textit{CampaignID} (FK, NULL): Phát sinh từ chiến dịch nào.
-        \item \textit{MerchantID} (FK, NOT NULL): Cửa hàng nơi phát sinh giao dịch.
-        \item Amount (NOT NULL): Số điểm biến động.
-        \item TransactionType (NOT NULL): Loại (Earn/Redeem/Refund).
-        \item SuiTxDigest (UNIQUE, NULL): Mã băm đối soát trên chuỗi khối Sui.
-        \item CreatedAt (NOT NULL): Thời điểm giao dịch.
+        \item \underline{TransactionID} (PK): Mã định danh duy nhất của giao dịch điểm.
+        \item \textit{CreditID} (FK, NOT NULL): Ví điểm bị tác động số dư.
+        \item \textit{MerchantID} (FK, NOT NULL): Cửa hàng/chi nhánh nơi phát sinh giao dịch.
+        \item \textit{CampaignID} (FK, NULL): Chiến dịch được áp dụng (NULL nếu là giao dịch thông thường).
+        \item TransactionType (NOT NULL): Loại giao dịch (EARN / REDEEM / ADJUST).
+        \item Amount (NOT NULL): Lượng điểm biến động trong giao dịch.
+        \item BalanceBefore (NOT NULL): Số dư điểm khả dụng trước giao dịch.
+        \item BalanceAfter (NOT NULL): Số dư điểm khả dụng sau giao dịch.
+        \item SuiTxDigest (UNIQUE, NULL): Mã băm xác thực giao dịch trên chuỗi khối Sui.
+        \item Description (NULL): Ghi chú diễn giải lý do phát sinh giao dịch.
+        \item CreatedAt (NOT NULL): Thời điểm giao dịch được ghi nhận vào hệ thống.
     \end{itemize}
-    
-    \item \textbf{Thực thể APICredential (Khóa tích hợp):}
+
+    \item \textbf{Thực thể APICredential (Khóa xác thực tích hợp hệ thống):}
     \begin{itemize}
-        \item \underline{KeyID} (PK): Mã định danh khóa.
-        \item \textit{MerchantID} (FK, NOT NULL): Doanh nghiệp sở hữu khóa.
-        \item ApiKey (NOT NULL, UNIQUE): Mã định danh khóa công khai.
-        \item SecretHash (NOT NULL): Mã băm của Secret Key.
+        \item \underline{CredentialID} (PK): Mã định danh khóa API.
+        \item \textit{TenantID} (FK, NOT NULL): Chuỗi (Tenant) được cấp phát quyền tích hợp API.
+        \item ApiKey (UNIQUE, NOT NULL): Khóa công khai gửi kèm trong Header yêu cầu API.
+        \item SecretHash (NOT NULL): Mã băm của Secret Key dùng để ký chữ ký số HMAC-SHA256.
+        \item Status (NOT NULL): Trạng thái của khóa (Active/Revoked).
+        \item CreatedAt (NOT NULL): Ngày khởi tạo cặp khóa tích hợp.
     \end{itemize}
 \end{itemize}

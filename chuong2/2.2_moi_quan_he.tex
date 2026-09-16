@@ -1,14 +1,28 @@
-\section{Xác định các mối quan hệ (Relationships)}
-Dựa trên quy trình nghiệp vụ của hệ thống OctaPoint CaaS, các mối quan hệ (Relationships) giữa các thực thể được xác định và phân tích bản số (Cardinality) chi tiết như sau:
+\section{Xác định các Mối quan hệ (Relationships)}
+Dựa trên kiến trúc nghiệp vụ đã chuẩn hóa của hệ thống OctaPoint CaaS, các mối quan hệ (Relationships) giữa 11 thực thể cốt lõi được phân tích và xác định bản số (Cardinality) chi tiết như sau:
+
 \begin{itemize}
-    \item \textbf{Tenant - Merchant (1:N):} Một công ty mẹ (Tenant) quản lý nhiều cửa hàng (Merchant).
-    \item \textbf{Tenant - Campaign (1:N):} Công ty mẹ (Tenant) sở hữu và thiết lập các chiến dịch (Campaign) chung cho toàn hệ thống.
-    \item \textbf{Campaign - Merchant (N:N):} Một chiến dịch có thể áp dụng cho nhiều cửa hàng, và một cửa hàng có thể chạy nhiều chiến dịch cùng lúc. Quan hệ này được rã qua thực thể \texttt{Campaign\_Merchant}.
-    \item \textbf{Campaign - RewardRule (1:N):} Một chiến dịch bao gồm nhiều quy tắc điểm thưởng.
-    \item \textbf{Merchant - User (1:N):} Một cửa hàng quản lý nhiều nhân sự (User) trực thuộc.
-    \item \textbf{Customer - Credit (1:N) và Tenant - Credit (1:N):} Mỗi khách hàng có duy nhất 1 ví điểm (Credit) tại 1 chuỗi (Tenant).
-    \item \textbf{Merchant - APICredential (1:N):} Cửa hàng sở hữu các mã khóa để tích hợp API.
-    \item \textbf{Credit - CreditTransaction (1:N):} Một ví điểm ghi nhận nhiều biến động giao dịch.
-    \item \textbf{Merchant - CreditTransaction (1:N):} Mọi giao dịch điểm thưởng đều phải lưu vết rõ cửa hàng (Merchant) nơi khách hàng thực hiện.
-    \item \textbf{Campaign - CreditTransaction (1:N):} Giao dịch có thể sinh ra từ một chiến dịch.
+    \item \textbf{Tenant -- Merchant (1:N):} Một công ty mẹ / chuỗi bán lẻ (Tenant) sở hữu và quản lý một hoặc nhiều cửa hàng / chi nhánh (Merchant). Một chi nhánh bắt buộc phải trực thuộc một Tenant duy nhất.
+    \item \textbf{Tenant -- Campaign (1:N):} Công ty mẹ (Tenant) là đơn vị duy nhất có thẩm quyền khởi tạo và ban hành các chiến dịch điểm thưởng (Campaign). Mỗi chiến dịch thuộc quyền sở hữu của một Tenant cụ thể. 
+    \item \textbf{Campaign -- Merchant (N:N thông qua thực thể kết hợp Campaign\_Merchant):} 
+    Một chiến dịch do Tenant ban hành có thể được chỉ định áp dụng cho toàn bộ các cửa hàng hoặc một tập hợp chi nhánh cụ thể (ví dụ: các cửa hàng tại khu vực TP.HCM). Ngược lại, một cửa hàng có thể tham gia nhiều chiến dịch khuyến mãi khác nhau cùng một thời điểm. Mối quan hệ nhiều--nhiều này được chuẩn hóa thông qua thực thể kết hợp \texttt{Campaign\_Merchant}.
+    \item \textbf{Tenant -- RewardRule (1:N) và Campaign -- RewardRule (1:N):}
+    Mỗi quy tắc tính điểm (RewardRule) thuộc về một chuỗi (Tenant). Quy tắc có thể gắn với một chiến dịch cụ thể (\texttt{CampaignID}) hoặc để trống (\texttt{NULL}) nếu là chính sách tích điểm cơ bản mặc định của toàn chuỗi.
+    \item \textbf{Tenant -- Credit (1:N) và Customer -- Credit (1:N):}
+    Khách hàng (Customer) khi tham gia tích điểm tại một chuỗi bán lẻ sẽ được cấp một ví điểm (\texttt{Credit}). Điểm thưởng có giá trị thanh toán chung trong toàn bộ chuỗi Tenant. 
+    \textit{Ràng buộc toàn vẹn quan trọng:} Một khách hàng chỉ có duy nhất **một** ví điểm trong một chuỗi bán lẻ, được ràng buộc bởi chỉ mục duy nhất \texttt{UNIQUE(CustomerID, TenantID)}.
+    \item \textbf{Merchant -- User (1:N) và Tenant -- User (1:N):}
+    Tài khoản người dùng/nhân viên (\texttt{User}) thuộc về một Tenant. Nếu là nhân viên điểm bán (Thu ngân, Cửa hàng trưởng), tài khoản sẽ được gắn trực tiếp với một \texttt{MerchantID} cụ thể.
+    \item \textbf{Role -- User (1:N):}
+    Một vai trò phân quyền (Role) có thể được gán cho nhiều tài khoản người dùng khác nhau; mỗi tài khoản người dùng gắn liền với một vai trò quản trị.
+    \item \textbf{User -- User (1:N -- Tự tham chiếu Sếp/Nhân viên):}
+    Mối quan hệ đệ quy nội bộ cho phép một người quản lý (Manager) giám sát nhiều nhân viên cấp dưới trực thuộc chi nhánh.
+    \item \textbf{Tenant -- APICredential (1:N):}
+    Công ty mẹ (Tenant) sở hữu các cặp mã khóa API (API Key / Secret) để phân quyền cho các hệ thống máy POS hoặc cổng thương mại điện tử kết nối vào CaaS Gateway.
+    \item \textbf{Credit -- CreditTransaction (1:N):}
+    Một ví điểm chung ghi nhận lịch sử của nhiều lần biến động điểm (tích điểm, tiêu điểm, hoàn điểm). Mỗi giao dịch bắt buộc gắn với một ví điểm xác định.
+    \item \textbf{Merchant -- CreditTransaction (1:N):}
+    Mọi giao dịch điểm thưởng đều bắt buộc phải lưu vết rõ mã cửa hàng (\texttt{MerchantID}) nơi giao dịch phát sinh. Đây là căn cứ bắt buộc để Tenant thực hiện hạch toán doanh số, tính phí nhượng quyền và đối soát nội bộ giữa các chi nhánh.
+    \item \textbf{Campaign -- CreditTransaction (1:N):}
+    Một chiến dịch có thể kích hoạt nhiều giao dịch thưởng điểm cho khách hàng. Nếu giao dịch phát sinh từ hoạt động mua hàng thông thường không có khuyến mãi, mối liên kết này mang giá trị \texttt{NULL}.
 \end{itemize}

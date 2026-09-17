@@ -16,7 +16,6 @@ TENANT cũng quản lý các CREDIT tương ứng với khách hàng tham gia ch
     \item \textbf{TenantName}: Tên công ty hoặc chuỗi bán lẻ.
 \end{itemize}
 
-
 \subsubsection{MERCHANT}
 
 MERCHANT đại diện cho một cửa hàng hoặc chi nhánh thuộc một TENANT.
@@ -30,7 +29,6 @@ khuyến mãi.
     \item \textbf{Status}: Trạng thái hoạt động của Merchant.
 \end{itemize}
 
-
 \subsubsection{ROLE}
 
 ROLE lưu thông tin về vai trò của người dùng trong hệ thống.
@@ -39,7 +37,6 @@ ROLE lưu thông tin về vai trò của người dùng trong hệ thống.
     \item \textbf{RoleID}: Mã định danh của vai trò.
     \item \textbf{RoleName}: Tên vai trò.
 \end{itemize}
-
 
 \subsubsection{USER}
 
@@ -55,7 +52,6 @@ Một USER thuộc một ROLE và có thể được quản lý bởi một USER
     \item \textbf{PasswordHash}: Mật khẩu đã được băm.
 \end{itemize}
 
-
 \subsubsection{CUSTOMER}
 
 CUSTOMER đại diện cho khách hàng tham gia chương trình loyalty của Tenant.
@@ -65,7 +61,6 @@ CUSTOMER đại diện cho khách hàng tham gia chương trình loyalty của T
     \item \textbf{Email}: Email của khách hàng.
     \item \textbf{WalletAddress}: Địa chỉ ví blockchain của khách hàng.
 \end{itemize}
-
 
 \subsubsection{CREDIT}
 
@@ -83,7 +78,6 @@ Trong mỗi TENANT, một CUSTOMER tối đa có một CREDIT.
     \item \textbf{AvailableBalance}: Số dư điểm hiện tại.
 \end{itemize}
 
-
 \subsubsection{CAMPAIGN}
 
 CAMPAIGN đại diện cho một chiến dịch tích điểm hoặc chương trình thưởng
@@ -97,7 +91,6 @@ CAMPAIGN\_MERCHANT.
     \item \textbf{Status}: Trạng thái của Campaign.
     \item \textbf{StartDate}: Thời điểm bắt đầu Campaign.
 \end{itemize}
-
 
 \subsubsection{CAMPAIGN\_MERCHANT}
 
@@ -115,7 +108,6 @@ tham gia nhiều Campaign.
 Khóa chính của CAMPAIGN\_MERCHANT được tạo bởi cặp
 \textbf{(CampaignID, MerchantID)}.
 
-
 \subsubsection{REWARD\_RULE}
 
 REWARD\_RULE lưu các quy tắc tính điểm được định nghĩa trong một Campaign.
@@ -126,7 +118,6 @@ REWARD\_RULE lưu các quy tắc tính điểm được định nghĩa trong m�
     \item \textbf{ActionType}: Loại hành động được áp dụng.
     \item \textbf{PointsMultiplier}: Hệ số nhân điểm.
 \end{itemize}
-
 
 \subsubsection{CREDIT\_TRANSACTION}
 
@@ -144,7 +135,6 @@ Giao dịch có thể liên quan đến một CAMPAIGN hoặc không.
     \item \textbf{TransactionType}: Loại giao dịch.
     \item \textbf{SuiTxDigest}: Mã giao dịch trên blockchain Sui.
 \end{itemize}
-
 
 \subsubsection{API\_CREDENTIAL}
 

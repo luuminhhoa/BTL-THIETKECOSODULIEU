@@ -1,39 +1,248 @@
 \section{Phụ thuộc hàm và Khóa ứng viên}
 
-Phân tích được thực hiện trên từng quan hệ, không dùng tên thuộc tính trùng nhau ở nhiều bảng như một thuộc tính chung. Kết luận chuẩn hóa chỉ áp dụng cho tập phụ thuộc hàm nghiệp vụ được nêu dưới đây; việc dùng UUID không tự bảo đảm BCNF.
+Phân tích phụ thuộc hàm được thực hiện riêng trên từng quan hệ. Các thuộc tính cùng tên ở những quan hệ khác nhau được xem là các thuộc tính thuộc các quan hệ riêng biệt. Kết luận chuẩn hóa được xây dựng dựa trên tập phụ thuộc hàm nghiệp vụ được xác định trong mô hình logic.
 
 \subsection{Tập phụ thuộc hàm được xét}
-Ký hiệu $R$ là toàn bộ thuộc tính của quan hệ tương ứng. Trong mỗi dòng dưới đây, từng vế trái liệt kê xác định mọi thuộc tính còn lại của $R$.
-\begin{itemize}
-    \item TENANT: TenantID $\rightarrow R$.
-    \item MERCHANT: MerchantID $\rightarrow R$.
-    \item ROLE: RoleID $\rightarrow R$.
-    \item USER: UserID $\rightarrow R$; Email $\rightarrow R$, với $R$ gồm UserID, MerchantID, Email, PasswordHash, RoleID, ManagerID.
-    \item CUSTOMER: CustomerID $\rightarrow R$.
-    \item CAMPAIGN: CampaignID $\rightarrow R$.
-    \item REWARD\_RULE: RuleID $\rightarrow R$.
-    \item CREDIT: CreditID $\rightarrow R$; (CustomerID, MerchantID) $\rightarrow R$.
-    \item API\_CREDENTIAL: KeyID $\rightarrow R$; ApiKey $\rightarrow R$.
-    \item CREDIT\_TRANSACTION: TransactionID $\rightarrow R$, bao gồm cả CreatedAt.
-\end{itemize}
-Các khóa nghiệp vụ Email của USER, ApiKey và cặp (CustomerID, MerchantID) đều NOT NULL và UNIQUE. WalletAddress và SuiTxDigest chỉ duy nhất trên các dòng khác NULL; không coi chúng là khóa ứng viên của toàn quan hệ theo mô hình quan hệ cổ điển.
 
-Không giả định RoleName, Customer.Email, CampaignName hoặc (CampaignID, ActionType) duy nhất. Không giả định MerchantID xác định RoleID hoặc ManagerID. Nếu bổ sung phụ thuộc hàm nghiệp vụ khác, cần kiểm tra chuẩn hóa lại.
+Ký hiệu $R$ là tập toàn bộ thuộc tính của quan hệ tương ứng. Các phụ thuộc hàm được xét như sau:
+
+\begin{itemize}
+
+    \item \textbf{TENANT:}
+    \[
+    TenantID \rightarrow R
+    \]
+
+    \item \textbf{MERCHANT:}
+    \[
+    MerchantID \rightarrow R
+    \]
+
+    \item \textbf{ROLE:}
+    \[
+    RoleID \rightarrow R
+    \]
+
+    \item \textbf{USER:}
+    \[
+    UserID \rightarrow R
+    \]
+    \[
+    Email \rightarrow R
+    \]
+    với $R$ gồm:
+    \[
+    \{UserID, RoleID, ManagerID, MerchantID, Email, PasswordHash\}
+    \]
+
+    \item \textbf{CUSTOMER:}
+    \[
+    CustomerID \rightarrow R
+    \]
+
+    \item \textbf{CREDIT:}
+    \[
+    CreditID \rightarrow R
+    \]
+    \[
+    (CustomerID,TenantID) \rightarrow R
+    \]
+
+    \item \textbf{CAMPAIGN:}
+    \[
+    CampaignID \rightarrow R
+    \]
+
+    \item \textbf{CAMPAIGN\_MERCHANT:}
+    \[
+    (CampaignID,MerchantID) \rightarrow R
+    \]
+
+    \item \textbf{REWARD\_RULE:}
+    \[
+    RuleID \rightarrow R
+    \]
+
+    \item \textbf{CREDIT\_TRANSACTION:}
+    \[
+    TransactionID \rightarrow R
+    \]
+
+    \item \textbf{API\_CREDENTIAL:}
+    \[
+    KeyID \rightarrow R
+    \]
+    \[
+    ApiKey \rightarrow R
+    \]
+
+\end{itemize}
+
+Trong đó, \texttt{Email} của \texttt{USER} và \texttt{ApiKey} của \texttt{API\_CREDENTIAL} được xác định là các thuộc tính duy nhất và không NULL.
+Đối với bảng \texttt{CREDIT}, cặp $(CustomerID,TenantID)$ là khóa nghiệp vụ duy nhất. Một khách hàng có thể tham gia nhiều Tenant khác nhau, nhưng trong cùng một Tenant chỉ có tối đa một Credit tương ứng.
+Không giả định các thuộc tính như \texttt{RoleName}, \texttt{Customer.Email}, \texttt{Status}, \texttt{ActionType} hoặc các thuộc tính mô tả khác là khóa nếu chưa có ràng buộc UNIQUE tương ứng.
 
 \subsection{Bao đóng và tính tối thiểu}
-Với USER, $\{UserID\}^{+}=R_{User}$ và $\{Email\}^{+}=R_{User}$. Không có phụ thuộc từ tập rỗng, nên cả hai tập đơn đều tối thiểu và là khóa ứng viên.
+\subsubsection{Quan hệ USER}
+Với khóa \texttt{UserID}:
 
-Với CREDIT, $\{CreditID\}^{+}=R_{Credit}$ và $\{CustomerID,MerchantID\}^{+}=R_{Credit}$. CustomerID riêng không xác định ví vì một khách có ví ở nhiều Merchant; MerchantID riêng không xác định ví vì một cửa hàng phục vụ nhiều khách. Do đó cặp là khóa ứng viên tối thiểu. CreditID được chọn làm PK để giao dịch tham chiếu gọn hơn; UNIQUE trên cặp vẫn bắt buộc.
+\[
+\{UserID\}^{+}=R_{USER}
+\]
 
-Với API\_CREDENTIAL, KeyID và ApiKey là hai khóa ứng viên đơn, mỗi khóa có bao đóng bằng toàn quan hệ. Với các bảng còn lại, ID ở dòng tương ứng có bao đóng bằng toàn quan hệ và là khóa ứng viên đơn theo tập phụ thuộc hàm đã xét.
+Do đó, \texttt{UserID} là khóa ứng viên.
+Với \texttt{Email}:
+
+\[
+\{Email\}^{+}=R_{USER}
+\]
+
+Do \texttt{Email} được quy định là UNIQUE và NOT NULL, \texttt{Email} cũng là một khóa ứng viên của quan hệ \texttt{USER}.
+Vì vậy, các khóa ứng viên của \texttt{USER} là:
+
+\[
+\{UserID\},\{Email\}
+\]
+
+\subsubsection{Quan hệ CREDIT}
+
+Với \texttt{CreditID}:
+
+\[
+\{CreditID\}^{+}=R_{CREDIT}
+\]
+
+Do đó, \texttt{CreditID} là khóa ứng viên.
+Với cặp $(CustomerID,TenantID)$:
+
+\[
+\{CustomerID,TenantID\}^{+}=R_{CREDIT}
+\]
+
+Do đó:
+
+\[
+(CustomerID,TenantID)
+\]
+
+là khóa ứng viên thứ hai.
+
+\texttt{CustomerID} riêng lẻ không xác định được một Credit duy nhất vì một khách hàng có thể có Credit tại nhiều Tenant.
+Tương tự, \texttt{TenantID} riêng lẻ không xác định được một Credit duy nhất vì một Tenant có thể có nhiều khách hàng.
+Vì vậy, khóa nghiệp vụ tối thiểu của \texttt{CREDIT} là:
+
+\[
+\{CustomerID,TenantID\}
+\]
+
+Trong triển khai, \texttt{CreditID} được chọn làm khóa chính để các giao dịch tham chiếu đến Credit thuận tiện hơn. Đồng thời, ràng buộc:
+
+\[
+UNIQUE(CustomerID,TenantID)
+\]
+
+được duy trì để bảo đảm tính duy nhất theo nghiệp vụ.
+
+\subsubsection{Quan hệ API\_CREDENTIAL}
+
+Với \texttt{KeyID}:
+
+\[
+\{KeyID\}^{+}=R_{API\_CREDENTIAL}
+\]
+
+Với \texttt{ApiKey}:
+
+\[
+\{ApiKey\}^{+}=R_{API\_CREDENTIAL}
+\]
+
+Do đó, hai khóa ứng viên của quan hệ \texttt{API\_CREDENTIAL} là:
+
+\[
+\{KeyID\},\{ApiKey\}
+\]
+
+\subsubsection{Các quan hệ còn lại}
+Đối với \texttt{TENANT}, \texttt{MERCHANT}, \texttt{ROLE}, \texttt{CUSTOMER}, \texttt{CAMPAIGN}, \texttt{REWARD\_RULE} và \texttt{CREDIT\_TRANSACTION}, khóa định danh của mỗi quan hệ có bao đóng bằng toàn bộ tập thuộc tính của quan hệ tương ứng.
+Do đó, các khóa ứng viên lần lượt là:
+
+\[
+TenantID
+\]
+
+\[
+MerchantID
+\]
+
+\[
+RoleID
+\]
+
+\[
+CustomerID
+\]
+
+\[
+CampaignID
+\]
+
+\[
+RuleID
+\]
+
+\[
+TransactionID
+\]
+
+Đối với \texttt{CAMPAIGN\_MERCHANT}, khóa chính ghép là:
+
+\[
+(CampaignID,MerchantID)
+\]
+
+Hai thuộc tính riêng lẻ không xác định được toàn bộ quan hệ vì một Campaign có thể áp dụng cho nhiều Merchant và một Merchant có thể tham gia nhiều Campaign.
 
 \section{Chuẩn hóa Dữ liệu}
-Một quan hệ đạt BCNF nếu mọi phụ thuộc hàm không tầm thường $X \rightarrow Y$ có $X$ là siêu khóa. Trong tập phụ thuộc trên, tất cả vế trái đều là khóa ứng viên của chính quan hệ đó. Theo tập phụ thuộc này, mười quan hệ đáp ứng BCNF.
 
-Kết luận này giảm dị thường cập nhật do các phụ thuộc hàm đã xét, không thay thế ràng buộc miền giá trị, kiểm soát đồng thời hoặc toàn vẹn liên bảng. AvailableBalance là số dư lưu sẵn để tra cứu; phải được tầng dịch vụ duy trì nhất quán với sổ cái, không thể suy ra tính nhất quán đó chỉ từ BCNF.
+Một quan hệ đạt BCNF nếu với mọi phụ thuộc hàm không tầm thường:
+\[
+X \rightarrow Y
+\]
+thì $X$ phải là một siêu khóa của quan hệ.
+Dựa trên tập phụ thuộc hàm đã xác định, các vế trái của các phụ thuộc hàm đều là khóa ứng viên hoặc siêu khóa của quan hệ tương ứng.
+Do đó, các quan hệ:
 
+\begin{itemize}
+    \item TENANT
+    \item MERCHANT
+    \item ROLE
+    \item USER
+    \item CUSTOMER
+    \item CREDIT
+    \item CAMPAIGN
+    \item CAMPAIGN\_MERCHANT
+    \item REWARD\_RULE
+    \item CREDIT\_TRANSACTION
+    \item API\_CREDENTIAL
+\end{itemize}
+
+đều đạt chuẩn BCNF theo tập phụ thuộc hàm được xét.
+Kết quả chuẩn hóa giúp giảm dư thừa dữ liệu và các dị thường cập nhật đối với các phụ thuộc hàm đã xác định. Tuy nhiên, BCNF không thay thế các ràng buộc toàn vẹn tham chiếu, ràng buộc miền giá trị hoặc các quy tắc nghiệp vụ khác.
+Đối với thuộc tính \texttt{AvailableBalance}, đây là số dư được lưu sẵn nhằm hỗ trợ truy vấn nhanh. Tính nhất quán giữa số dư và các giao dịch trong \texttt{CREDIT\_TRANSACTION} cần được bảo đảm bởi các quy tắc nghiệp vụ của hệ thống.
 
 \subsection{Cách kiểm tra dạng chuẩn}
-1NF yêu cầu mỗi ô chứa một giá trị thuộc miền đã chọn, không chứa danh sách lặp. 2NF yêu cầu đạt 1NF và thuộc tính không khóa không phụ thuộc vào một phần thực sự của khóa ứng viên. 3NF yêu cầu với mỗi phụ thuộc hàm không tầm thường, vế trái là siêu khóa hoặc thuộc tính vế phải là thuộc tính khóa. BCNF yêu cầu vế trái luôn là siêu khóa.
+\textbf{Dạng chuẩn 1NF (First Normal Form):} mỗi ô dữ liệu chứa một giá trị đơn thuộc miền dữ liệu đã xác định, không chứa danh sách hoặc nhóm lặp.
+\textbf{Dạng chuẩn 2NF (Second Normal Form):} quan hệ phải đạt 1NF và mọi thuộc tính không khóa phải phụ thuộc đầy đủ vào toàn bộ khóa ứng viên, không phụ thuộc vào một phần của khóa ghép.
+\textbf{Dạng chuẩn 3NF (Third Normal Form):} với mỗi phụ thuộc hàm không tầm thường $X \rightarrow A$, $X$ phải là siêu khóa hoặc $A$ phải là thuộc tính khóa.
+\textbf{Dạng chuẩn BCNF:} với mọi phụ thuộc hàm không tầm thường $X \rightarrow Y$, $X$ phải là siêu khóa.
 
-Ví dụ, nếu đưa TenantName vào MERCHANT thì xuất hiện MerchantID xác định TenantID và TenantID xác định TenantName. Một tổ chức có nhiều cửa hàng sẽ khiến tên tổ chức bị lưu lặp. Giữ TenantName ở TENANT và tham chiếu bằng TenantID giúp tránh cập nhật tên ở nhiều dòng MERCHANT.
+Ví dụ, nếu đưa \texttt{TenantName} vào bảng \texttt{MERCHANT}, sẽ phát sinh phụ thuộc:
+\[
+MerchantID \rightarrow TenantID
+\]
+và:
+\[
+TenantID \rightarrow TenantName
+\]
+Điều này làm cho tên Tenant bị lặp lại trên nhiều dòng Merchant thuộc cùng một Tenant. Vì vậy, \texttt{TenantName} được lưu tại bảng \texttt{TENANT} và \texttt{MERCHANT} chỉ tham chiếu thông qua \texttt{TenantID}.

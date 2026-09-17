@@ -1,35 +1,75 @@
 \section{Chuyển đổi từ Mô hình Quan niệm sang Lược đồ Logic}
 
-Dựa trên sơ đồ thực thể kết hợp (ERD) và các quy tắc nghiệp vụ đã phân tích ở Chương 2, tiến hành chuyển đổi mô hình thực thể quan niệm sang mô hình quan hệ (Relational Schema). Quá trình này được thực hiện thông qua việc áp dụng nghiêm ngặt các thuật toán ánh xạ ER sang quan hệ.
+Dựa trên sơ đồ thực thể kết hợp (ERD) và các quy tắc nghiệp vụ đã phân tích ở Chương 2, tiến hành chuyển đổi mô hình thực thể quan niệm sang mô hình quan hệ (Relational Schema). Quá trình chuyển đổi được thực hiện thông qua các quy tắc ánh xạ từ ER sang quan hệ nhằm bảo đảm các thực thể, thuộc tính, khóa và mối kết hợp trong mô hình logic phù hợp với mô hình quan niệm.
 
 \subsection{Các quy tắc chuyển đổi áp dụng}
+
 Quá trình ánh xạ từ ERD sang Lược đồ Logic tuân thủ các quy tắc cốt lõi sau:
 
 \begin{itemize}
-    \item \textbf{Quy tắc 1 (Ánh xạ Thực thể mạnh):} Mỗi thực thể (Entity) mạnh trong ERD được chuyển thành một quan hệ (Bảng - Table) trong Lược đồ Logic. Các thuộc tính đơn trở thành các cột (Columns) của bảng. Khóa định danh của thực thể trở thành Khóa chính (Primary Key - PK).
+    \item \textbf{Quy tắc 1 (Ánh xạ thực thể mạnh):} 
+    Mỗi thực thể mạnh trong ERD được chuyển thành một quan hệ (bảng). 
+    Các thuộc tính của thực thể trở thành các thuộc tính của quan hệ và khóa định danh của thực thể trở thành khóa chính (Primary Key - PK).
+
+    \item \textbf{Quy tắc 2 (Ánh xạ mối kết hợp 1:N):} 
+    Đối với mối kết hợp một-nhiều (1:N), khóa chính của thực thể phía ``1'' được đưa sang thực thể phía ``N'' làm khóa ngoại (Foreign Key - FK).
     
-    \item \textbf{Quy tắc 2 (Ánh xạ mối kết hợp 1:N):} Đối với các mối kết hợp một-nhiều (ví dụ: \texttt{Merchant} - \texttt{Campaign}, \texttt{Customer} - \texttt{Credit}), đưa khóa chính của bảng phía "1" sang bảng phía "N" làm khóa ngoại (Foreign Key - FK).
+    Ví dụ, \texttt{TENANT} có nhiều \texttt{MERCHANT}, do đó \texttt{TenantID} được đặt trong bảng \texttt{MERCHANT} làm khóa ngoại.
+
+    \item \textbf{Quy tắc 3 (Ánh xạ mối kết hợp M:N):} 
+    Đối với mối kết hợp nhiều-nhiều (M:N), tạo một quan hệ trung gian chứa khóa của hai thực thể tham gia.
     
-    \item \textbf{Quy tắc 3 (Ánh xạ mối kết hợp M:N):} Tạo một quan hệ trung gian cho mối kết hợp nhiều-nhiều (ví dụ Customer và Merchant thông qua Credit). Đưa khóa của hai thực thể vào làm khóa ngoại. Trong CREDIT, chọn CreditID làm PK và đặt UNIQUE(CustomerID, MerchantID) cho khóa nghiệp vụ; không ghép CreditID vào cặp khóa này.
-    \item \textbf{Quan hệ tự tham chiếu:} Đưa ManagerID nullable vào USER làm FK tham chiếu UserID, giữ nguyên quan hệ quản lý của ERD.
+    Trong mô hình OctaPoint, mối kết hợp giữa \texttt{CAMPAIGN} và \texttt{MERCHANT} được phân rã thông qua bảng \texttt{CAMPAIGN\_MERCHANT}. Hai thuộc tính \texttt{CampaignID} và \texttt{MerchantID} đồng thời là khóa ngoại và tạo thành khóa chính ghép của quan hệ trung gian.
+
+    \item \textbf{Quy tắc 4 (Ánh xạ quan hệ CREDIT):}
+    \texttt{CREDIT} biểu diễn ví điểm dùng chung của một \texttt{CUSTOMER} trong phạm vi một \texttt{TENANT}. Vì vậy, bảng \texttt{CREDIT} chứa \texttt{CustomerID} và \texttt{TenantID}. 
+    Để bảo đảm mỗi khách hàng chỉ có tối đa một ví điểm trong một Tenant, áp dụng ràng buộc \texttt{UNIQUE(CustomerID, TenantID)}.
+
+    \item \textbf{Quy tắc 5 (Quan hệ tự tham chiếu):}
+    Quan hệ quản lý nhân sự trong \texttt{USER} được ánh xạ bằng thuộc tính \texttt{ManagerID}. Thuộc tính này là khóa ngoại tham chiếu đến \texttt{UserID} của chính bảng \texttt{USER} và cho phép giá trị NULL đối với người không có người quản lý trực tiếp.
+
+    \item \textbf{Quy tắc 6 (Giao dịch điểm):}
+    \texttt{CREDIT\_TRANSACTION} tham chiếu đến \texttt{CREDIT} và \texttt{MERCHANT}. 
+    \texttt{CampaignID} được phép NULL vì một giao dịch điểm có thể phát sinh mà không gắn với một chiến dịch cụ thể.
 \end{itemize}
 
-\subsection{Danh sách Lược đồ Quan hệ sơ bộ}
-Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc trên, ta thu được tập hợp các lược đồ quan hệ sơ bộ như sau. (Quy ước: Thuộc tính gạch chân là Khóa chính - PK, thuộc tính in nghiêng là Khóa ngoại - FK).
+\subsection{Danh sách Lược đồ Quan hệ}
+
+Dựa trên ERD của OctaPoint CaaS, tập hợp các lược đồ quan hệ được xác định như sau. Quy ước: thuộc tính gạch chân là Khóa chính (PK), thuộc tính in nghiêng là Khóa ngoại (FK).
 
 \begin{description}
-    \item[\texttt{Tenant}] (\underline{TenantID}, TenantName, SystemConfig)
-    \item[\texttt{Merchant}] (\underline{MerchantID}, \textit{TenantID}, BusinessName, Status)
-    \item[\texttt{Role}] (\underline{RoleID}, RoleName)
 
-    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID}, \textit{ManagerID})
-    \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{MerchantID}, CampaignName, StartDate, EndDate, Status)
-    \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier)
-    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID}, \textit{ManagerID})    
-    \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{MerchantID}, CampaignName, StartDate, EndDate, Status)
-    \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier) 
-    \item[\texttt{Customer}] (\underline{CustomerID}, WalletAddress, Email)
-    \item[\texttt{Credit}] (\underline{CreditID}, \textit{CustomerID}, \textit{MerchantID}, AvailableBalance)
-    \item[\texttt{CreditTransaction}] (\underline{TransactionID}, \textit{CreditID}, \textit{CampaignID}, Amount, TransactionType, SuiTxDigest, CreatedAt)
-    \item[\texttt{APICredential}] (\underline{KeyID}, \textit{MerchantID}, ApiKey, SecretHash)
+    \item[\texttt{TENANT}]
+    (\underline{TenantID}, TenantName)
+
+    \item[\texttt{MERCHANT}]
+    (\underline{MerchantID}, \textit{TenantID}, BusinessName, Status)
+
+    \item[\texttt{ROLE}]
+    (\underline{RoleID}, RoleName)
+
+    \item[\texttt{USER}]
+    (\underline{UserID}, \textit{RoleID}, \textit{ManagerID}, \textit{MerchantID}, Email, PasswordHash)
+
+    \item[\texttt{CUSTOMER}]
+    (\underline{CustomerID}, Email, WalletAddress)
+
+    \item[\texttt{CREDIT}]
+    (\underline{CreditID}, \textit{CustomerID}, \textit{TenantID}, AvailableBalance)
+
+    \item[\texttt{CAMPAIGN}]
+    (\underline{CampaignID}, \textit{TenantID}, Status, StartDate)
+
+    \item[\texttt{CAMPAIGN\_MERCHANT}]
+    (\underline{\textit{CampaignID}}, \underline{\textit{MerchantID}})
+
+    \item[\texttt{REWARD\_RULE}]
+    (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier)
+
+    \item[\texttt{CREDIT\_TRANSACTION}]
+    (\underline{TransactionID}, \textit{CreditID}, \textit{MerchantID}, \textit{CampaignID}, Amount, CreatedAt, TransactionType, SuiTxDigest)
+
+    \item[\texttt{API\_CREDENTIAL}]
+    (\underline{KeyID}, \textit{MerchantID}, ApiKey, SecretHash)
+
 \end{description}

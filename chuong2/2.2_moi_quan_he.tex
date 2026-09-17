@@ -1,25 +1,142 @@
-\section{Xác định các mối quan hệ (Relationships)}
+\subsection{Mối quan hệ giữa các thực thể}
 
-Dựa trên quy trình nghiệp vụ của hệ thống OctaPoint CaaS, các mối quan hệ (Relationships) giữa các thực thể được xác định và phân tích bản số (Cardinality) chi tiết như sau:
+Các mối quan hệ trong mô hình quan niệm được xác định dựa trên phạm vi
+quản lý của TENANT, Merchant và cơ chế quản lý điểm của khách hàng.
 
-\begin{itemize}
-    \item \textbf{Tenant - Merchant (1:N):} Một đơn vị thuê bao (Tenant) có thể cấp phát hệ thống cho nhiều doanh nghiệp/cửa hàng (Merchant). Ngược lại, mỗi Merchant chỉ trực thuộc duy nhất một Tenant.
-    
-    \item \textbf{Merchant - User (1:N):} Một Merchant có thể tạo và quản lý nhiều tài khoản nhân sự (User) để phân quyền vận hành cửa hàng. Mỗi tài khoản User chỉ thuộc quyền quản lý của một Merchant định danh.
-    
-    \item \textbf{Merchant - Campaign (1:N):} Mỗi Merchant có thể khởi tạo và chạy nhiều chiến dịch khuyến mãi (Campaign) cùng lúc hoặc qua các thời kỳ, nhưng một chiến dịch cụ thể chỉ do một Merchant duy nhất phát hành.
-    
-    \item \textbf{Campaign - RewardRule (1:N):} Một chiến dịch (Campaign) có thể bao gồm nhiều quy tắc thưởng (RewardRule) khác nhau (ví dụ: quy định điểm thưởng khi mua hàng, điểm thưởng khi check-in). Mỗi quy tắc chỉ được áp dụng cho một chiến dịch cụ thể.
-    
-    \item \textbf{Customer - Credit (1:N) và Merchant - Credit (1:N):} Một Khách hàng (Customer) có thể sở hữu nhiều Ví điểm (Credit) ở các cửa hàng khác nhau. Đồng thời, một Merchant cũng quản lý Ví điểm của rất nhiều Customer. Đây chính là bước phân rã mối quan hệ Nhiều - Nhiều (M:N) nguyên thủy giữa Khách hàng và Cửa hàng thông qua thực thể trung gian (Associative Entity) là Ví điểm. Mỗi cặp khách hàng và cửa hàng có tối đa một ví.
-    
-    \item \textbf{Merchant - APICredential (1:N):} Một Merchant có thể tạo ra nhiều bộ khóa API (APICredential) để phục vụ việc tích hợp đa hệ thống (ví dụ: máy POS, website bán hàng). Mỗi bộ khóa chỉ gắn liền với một Merchant.
-    
-    \item \textbf{Credit - CreditTransaction (1:N):} Một Ví điểm (Credit) sẽ ghi nhận nhiều biến động giao dịch (CreditTransaction) theo thời gian thực (như cộng điểm, trừ điểm). Mỗi giao dịch lịch sử này bắt buộc phải tham chiếu về một Ví điểm duy nhất.
-    
-    \item \textbf{Campaign - CreditTransaction (1:N):} Các giao dịch cộng điểm (CreditTransaction) có thể được sinh ra từ việc áp dụng một chiến dịch (Campaign) cụ thể. Mỗi giao dịch có thể không gắn chiến dịch (CampaignID NULL) hoặc gắn đúng một chiến dịch.
-    \item \textbf{Role - User (1:N):} Một Role có thể gán cho nhiều User; mỗi User có đúng một Role tại một thời điểm.
-    \item \textbf{User - User (1:N, tự tham chiếu):} Một người quản lý có thể quản lý nhiều User. Mỗi User có tối đa một người quản lý trực tiếp qua ManagerID nullable; không được tự quản lý.
-\end{itemize}
+\subsubsection{TENANT -- MERCHANT}
 
-Các mối kết hợp trên cùng với bản số tương ứng sẽ là cơ sở nền tảng để xây dựng Sơ đồ Thực thể Kết hợp (ERD) hoàn chỉnh ở mục tiếp theo.
+Một TENANT có thể quản lý nhiều MERCHANT, trong khi mỗi MERCHANT chỉ
+thuộc về một TENANT.
+
+\[
+TENANT \; 1:N \; MERCHANT
+\]
+
+\subsubsection{TENANT -- CAMPAIGN}
+
+Một TENANT có thể tạo nhiều CAMPAIGN. Mỗi CAMPAIGN thuộc về đúng một
+TENANT.
+
+\[
+TENANT \; 1:N \; CAMPAIGN
+\]
+
+\subsubsection{CAMPAIGN -- MERCHANT}
+
+Một CAMPAIGN có thể được áp dụng cho nhiều MERCHANT và một MERCHANT
+có thể tham gia nhiều CAMPAIGN. Do đó, đây là quan hệ nhiều-nhiều (N:N).
+
+Quan hệ này được chuyển đổi thông qua thực thể trung gian
+CAMPAIGN\_MERCHANT.
+
+\[
+CAMPAIGN \; N:N \; MERCHANT
+\]
+
+Được biểu diễn thành:
+
+\[
+CAMPAIGN \; 1:N \; CAMPAIGN\_MERCHANT
+\]
+
+\[
+MERCHANT \; 1:N \; CAMPAIGN\_MERCHANT
+\]
+
+\subsubsection{TENANT -- CREDIT}
+
+Một TENANT có thể quản lý nhiều CREDIT. Mỗi CREDIT thuộc về một TENANT.
+
+\[
+TENANT \; 1:N \; CREDIT
+\]
+
+\subsubsection{CUSTOMER -- CREDIT}
+
+Một CUSTOMER có thể có CREDIT trong nhiều TENANT.
+Mỗi CREDIT thuộc về một CUSTOMER.
+
+\[
+CUSTOMER \; 1:N \; CREDIT
+\]
+
+Để đảm bảo mỗi CUSTOMER tối đa có một CREDIT trong một TENANT,
+hệ thống áp dụng ràng buộc:
+
+\[
+UNIQUE(CustomerID, TenantID)
+\]
+
+\subsubsection{CREDIT -- CREDIT\_TRANSACTION}
+
+Một CREDIT có thể phát sinh nhiều CREDIT\_TRANSACTION.
+Mỗi CREDIT\_TRANSACTION thuộc về một CREDIT.
+
+\[
+CREDIT \; 1:N \; CREDIT\_TRANSACTION
+\]
+
+\subsubsection{MERCHANT -- CREDIT\_TRANSACTION}
+
+Một MERCHANT có thể phát sinh nhiều CREDIT\_TRANSACTION.
+Mỗi CREDIT\_TRANSACTION được ghi nhận tại một MERCHANT.
+
+\[
+MERCHANT \; 1:N \; CREDIT\_TRANSACTION
+\]
+
+\subsubsection{CAMPAIGN -- CREDIT\_TRANSACTION}
+
+Một CAMPAIGN có thể liên quan đến nhiều giao dịch.
+Tuy nhiên, một CREDIT\_TRANSACTION có thể không thuộc Campaign nào,
+do đó CampaignID trong CREDIT\_TRANSACTION có thể NULL.
+
+\[
+CAMPAIGN \; 0..N \; : \; CREDIT\_TRANSACTION \; 0..1
+\]
+
+\subsubsection{CAMPAIGN -- REWARD\_RULE}
+
+Một CAMPAIGN có thể chứa nhiều REWARD\_RULE.
+Mỗi REWARD\_RULE thuộc về một CAMPAIGN.
+
+\[
+CAMPAIGN \; 1:N \; REWARD\_RULE
+\]
+
+\subsubsection{MERCHANT -- USER}
+
+Một MERCHANT có thể có nhiều USER.
+Một USER có thể được gán cho một MERCHANT hoặc không.
+
+\[
+MERCHANT \; 1:N \; USER
+\]
+
+\subsubsection{ROLE -- USER}
+
+Một ROLE có thể được gán cho nhiều USER.
+Mỗi USER thuộc một ROLE.
+
+\[
+ROLE \; 1:N \; USER
+\]
+
+\subsubsection{MERCHANT -- API\_CREDENTIAL}
+
+Một MERCHANT có thể có nhiều API\_CREDENTIAL.
+Mỗi API\_CREDENTIAL thuộc về một MERCHANT.
+
+\[
+MERCHANT \; 1:N \; API\_CREDENTIAL
+\]
+
+\subsubsection{USER -- USER}
+
+USER có quan hệ đệ quy để biểu diễn người quản lý.
+Một USER có thể có một Manager hoặc không, trong khi một Manager
+có thể quản lý nhiều USER.
+
+\[
+USER \; 0..1:N \; USER
+\]

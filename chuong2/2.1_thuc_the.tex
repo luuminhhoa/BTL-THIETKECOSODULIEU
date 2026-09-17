@@ -1,100 +1,159 @@
-\section{Xác định Các Thực thể và Thuộc tính}
-Dựa trên các phân hệ chức năng và quy tắc nghiệp vụ đã khảo sát, mô hình dữ liệu quan niệm của hệ thống OctaPoint CaaS xác định các thực thể cốt lõi cùng danh sách thuộc tính chi tiết.
+\subsection{Mô tả các thực thể}
 
-Để đảm bảo tính liên kết chặt chẽ, kiến trúc dữ liệu của hệ thống được quy hoạch dựa trên hai trục trung tâm:
+Hệ thống OctaPoint được xây dựng với các thực thể chính nhằm quản lý doanh nghiệp,
+cửa hàng, khách hàng, điểm tín dụng và các chiến dịch thưởng điểm.
+
+\subsubsection{TENANT}
+
+TENANT đại diện cho công ty mẹ hoặc chuỗi bán lẻ tham gia sử dụng nền tảng
+OctaPoint. Đây là phạm vi dữ liệu chính của hệ thống loyalty.
+
+Mỗi TENANT có thể quản lý nhiều MERCHANT và nhiều CAMPAIGN.
+TENANT cũng quản lý các CREDIT tương ứng với khách hàng tham gia chương trình.
+
 \begin{itemize}
-    \item \textbf{Trục Doanh nghiệp (Merchant):} Là đơn vị sở hữu dữ liệu nghiệp vụ bên dưới Tenant. Mọi dữ liệu về chiến dịch (Campaign), người dùng (User), cấu hình API (APICredential) được liên kết dựa trên khóa ngoại \texttt{MerchantID}.
-    \item \textbf{Trục Sổ cái Giao dịch (Ledger):} Tập trung vào thực thể \texttt{CreditTransaction}. Đây là thực thể ghi nhận mọi biến động điểm thưởng, liên kết chặt chẽ với người dùng cuối (\texttt{Customer}), chiến dịch (\texttt{Campaign}) và chuỗi khối Sui để phục vụ đối soát.
+    \item \textbf{TenantID}: Mã định danh duy nhất của Tenant.
+    \item \textbf{TenantName}: Tên công ty hoặc chuỗi bán lẻ.
 \end{itemize}
 
-\subsection{Phân hệ Tổ chức và Phân quyền (Tenant \& RBAC)}
+
+\subsubsection{MERCHANT}
+
+MERCHANT đại diện cho một cửa hàng hoặc chi nhánh thuộc một TENANT.
+Merchant là nơi phát sinh các giao dịch và có thể được áp dụng các chiến dịch
+khuyến mãi.
+
 \begin{itemize}
-    \item \textbf{Thực thể Tenant (Đơn vị thuê bao gốc):}
-    \begin{itemize}
-        \item \texttt{TenantID} (PK): Mã định danh duy nhất của hệ thống lõi.
-        \item \texttt{TenantName} (NOT NULL): Tên định danh gốc.
-        \item \texttt{SystemConfig} (NULL): Cấu hình chung dạng JSON.
-    \end{itemize}
-    
-    \item \textbf{Thực thể Merchant (Doanh nghiệp đối tác):}
-    \begin{itemize}
-        \item \texttt{MerchantID} (PK): Mã định danh doanh nghiệp.
-        \item \texttt{TenantID} (FK, NOT NULL): Liên kết tới bảng Tenant.
-        \item \texttt{BusinessName} (NOT NULL): Tên thương hiệu/doanh nghiệp.
-        \item \texttt{Status} (NOT NULL): Trạng thái hoạt động (Active/Suspended).
-    \end{itemize}
-    
-    \item \textbf{USER (Người dùng/Nhân viên):}
-    \begin{itemize}
-    \item \texttt{UserID} (PK): Mã định danh nhân viên.
-    \item \texttt{MerchantID} (FK, NOT NULL): Mã cửa hàng trực thuộc.
-    \item \texttt{RoleID} (FK, NOT NULL): Mã phân quyền (Tham chiếu đến thực thể ROLE).
-    \item \texttt{ManagerID} (FK, NULL): Mã người quản lý trực tiếp (Tham chiếu tự thân đến một User khác). Nếu NULL nghĩa là quản lý cấp cao nhất (Không có sếp).
-    \item \texttt{Email} (UNIQUE): Email đăng nhập không NULL và duy nhất toàn hệ thống.
-    \item \texttt{PasswordHash}: Giá trị băm mật khẩu, không lưu bản rõ.
-\end{itemize}
-    
-    \item \textbf{Thực thể Role (Vai trò):}
-    \begin{itemize}
-        \item \texttt{RoleID} (PK): Mã định danh vai trò.
-        \item \texttt{RoleName} (NOT NULL): Tên vai trò (Admin, Manager, Staff).
-    \end{itemize}
+    \item \textbf{MerchantID}: Mã định danh duy nhất của Merchant.
+    \item \textbf{TenantID}: Mã Tenant mà Merchant trực thuộc.
+    \item \textbf{BusinessName}: Tên cửa hàng hoặc chi nhánh.
+    \item \textbf{Status}: Trạng thái hoạt động của Merchant.
 \end{itemize}
 
-\subsection{Phân hệ Tín dụng và Điểm thưởng (Loyalty Engine)}
+
+\subsubsection{ROLE}
+
+ROLE lưu thông tin về vai trò của người dùng trong hệ thống.
+
 \begin{itemize}
-    \item \textbf{Thực thể Campaign (Chiến dịch điểm thưởng):}
-    \begin{itemize}
-        \item \texttt{CampaignID} (PK): Mã định danh chiến dịch.
-        \item \texttt{MerchantID} (FK, NOT NULL): Doanh nghiệp sở hữu chiến dịch.
-        \item \texttt{CampaignName} (NOT NULL): Tên chiến dịch.
-        \item \texttt{StartDate} (NOT NULL): Ngày bắt đầu.
-        \item \texttt{EndDate} (NULL): Thời điểm kết thúc chiến dịch (Có thể để trống nếu chiến dịch chạy vô thời hạn).
-        \item \texttt{Status} (NOT NULL): Trạng thái (Draft/Active/Expired).
-    \end{itemize}
-    
-    \item \textbf{Thực thể RewardRule (Quy tắc tính điểm):}
-    \begin{itemize}
-        \item \texttt{RuleID} (PK): Mã định danh quy tắc.
-        \item \texttt{CampaignID} (FK, NOT NULL): Thuộc chiến dịch nào.
-        \item \texttt{ActionType} (NOT NULL): Mã hành động mở rộng (ví dụ Purchase, Birthday).
-        \item \texttt{PointsMultiplier} (NOT NULL): Hệ số nhân điểm, lớn hơn 0.
-    \end{itemize}
-    
-    \item \textbf{CUSTOMER (Khách hàng):}
-    \begin{itemize}
-    \item \texttt{CustomerID} (PK): Mã định danh khách hàng nội bộ của hệ thống.
-    \item \texttt{WalletAddress} (UNIQUE khi khác NULL, NULL): Địa chỉ blockchain (Sui Network) được hệ thống sử dụng để định danh thông qua cơ chế Walletless Authentication.
-    \item \texttt{Email}: Địa chỉ email (Định danh Web2).
-    \end{itemize}
-    
-    \item \textbf{Thực thể Credit (Số dư ví điểm):}
-    \begin{itemize}
-        \item \texttt{CreditID} (PK): Mã định danh bản ghi số dư.
-        \item \texttt{CustomerID} (FK, NOT NULL): Liên kết khách hàng.
-        \item \texttt{MerchantID} (FK, NOT NULL): Thuộc doanh nghiệp nào.
-        \item \texttt{AvailableBalance} (NOT NULL): Số dư khả dụng hiện tại, không âm. Cặp (CustomerID, MerchantID) duy nhất.
-    \end{itemize}
+    \item \textbf{RoleID}: Mã định danh của vai trò.
+    \item \textbf{RoleName}: Tên vai trò.
 \end{itemize}
 
-\subsection{Phân hệ Sổ cái Giao dịch và Kiểm toán (Ledger \& Audit)}
+
+\subsubsection{USER}
+
+USER đại diện cho người dùng quản trị hoặc vận hành hệ thống tại Merchant.
+Một USER thuộc một ROLE và có thể được quản lý bởi một USER khác.
+
 \begin{itemize}
-    \item \textbf{Thực thể CreditTransaction (Giao dịch điểm):}
-    \begin{itemize}
-        \item \texttt{TransactionID} (PK): Mã định danh giao dịch nội bộ.
-        \item \texttt{CreditID} (FK, NOT NULL): Liên kết tới ví số dư.
-        \item \texttt{CampaignID} (FK, NULL): Phát sinh từ chiến dịch nào.
-        \item \texttt{Amount} (NOT NULL): Biến động có dấu: Earn dương, Redeem âm; Refund khác 0 và đảo dấu giao dịch gốc.
-        \item \texttt{TransactionType} (NOT NULL): Loại (Earn/Redeem/Refund).
-        \item \texttt{SuiTxDigest} (UNIQUE, NULL): Mã băm đối soát trên chuỗi khối Sui.
-        \item \texttt{CreatedAt} (NOT NULL): Thời điểm giao dịch.
-    \end{itemize}
-    
-    \item \textbf{Thực thể APICredential (Khóa tích hợp):}
-    \begin{itemize}
-        \item \texttt{KeyID} (PK): Mã định danh khóa.
-        \item \texttt{MerchantID} (FK, NOT NULL): Doanh nghiệp sở hữu khóa.
-        \item \texttt{ApiKey} (NOT NULL, UNIQUE): Mã định danh khóa công khai.
-        \item \texttt{SecretHash} (NOT NULL): Mã băm của Secret Key.
-    \end{itemize}
+    \item \textbf{UserID}: Mã định danh duy nhất của người dùng.
+    \item \textbf{RoleID}: Vai trò của người dùng.
+    \item \textbf{ManagerID}: Người quản lý trực tiếp, có thể để trống.
+    \item \textbf{MerchantID}: Merchant mà người dùng phụ trách, có thể để trống.
+    \item \textbf{Email}: Email đăng nhập của người dùng.
+    \item \textbf{PasswordHash}: Mật khẩu đã được băm.
+\end{itemize}
+
+
+\subsubsection{CUSTOMER}
+
+CUSTOMER đại diện cho khách hàng tham gia chương trình loyalty của Tenant.
+
+\begin{itemize}
+    \item \textbf{CustomerID}: Mã định danh duy nhất của khách hàng.
+    \item \textbf{Email}: Email của khách hàng.
+    \item \textbf{WalletAddress}: Địa chỉ ví blockchain của khách hàng.
+\end{itemize}
+
+
+\subsubsection{CREDIT}
+
+CREDIT đại diện cho ví hoặc số dư điểm chung của một CUSTOMER trong
+một TENANT. CREDIT không phụ thuộc trực tiếp vào MERCHANT, do đó không
+chứa thuộc tính MerchantID.
+
+Một CUSTOMER có thể có CREDIT trong nhiều TENANT khác nhau.
+Trong mỗi TENANT, một CUSTOMER tối đa có một CREDIT.
+
+\begin{itemize}
+    \item \textbf{CreditID}: Mã định danh duy nhất của Credit.
+    \item \textbf{CustomerID}: Khách hàng sở hữu Credit.
+    \item \textbf{TenantID}: Tenant quản lý Credit.
+    \item \textbf{AvailableBalance}: Số dư điểm hiện tại.
+\end{itemize}
+
+
+\subsubsection{CAMPAIGN}
+
+CAMPAIGN đại diện cho một chiến dịch tích điểm hoặc chương trình thưởng
+do TENANT tạo ra. Campaign thuộc về TENANT, trong khi phạm vi áp dụng
+cho các Merchant được xác định thông qua thực thể trung gian
+CAMPAIGN\_MERCHANT.
+
+\begin{itemize}
+    \item \textbf{CampaignID}: Mã định danh duy nhất của Campaign.
+    \item \textbf{TenantID}: Tenant sở hữu Campaign.
+    \item \textbf{Status}: Trạng thái của Campaign.
+    \item \textbf{StartDate}: Thời điểm bắt đầu Campaign.
+\end{itemize}
+
+
+\subsubsection{CAMPAIGN\_MERCHANT}
+
+CAMPAIGN\_MERCHANT là thực thể trung gian dùng để biểu diễn mối quan hệ
+nhiều-nhiều giữa CAMPAIGN và MERCHANT.
+
+Một Campaign có thể áp dụng cho nhiều Merchant và một Merchant có thể
+tham gia nhiều Campaign.
+
+\begin{itemize}
+    \item \textbf{CampaignID}: Mã Campaign.
+    \item \textbf{MerchantID}: Mã Merchant.
+\end{itemize}
+
+Khóa chính của CAMPAIGN\_MERCHANT được tạo bởi cặp
+\textbf{(CampaignID, MerchantID)}.
+
+
+\subsubsection{REWARD\_RULE}
+
+REWARD\_RULE lưu các quy tắc tính điểm được định nghĩa trong một Campaign.
+
+\begin{itemize}
+    \item \textbf{RuleID}: Mã định danh duy nhất của quy tắc.
+    \item \textbf{CampaignID}: Campaign chứa quy tắc.
+    \item \textbf{ActionType}: Loại hành động được áp dụng.
+    \item \textbf{PointsMultiplier}: Hệ số nhân điểm.
+\end{itemize}
+
+
+\subsubsection{CREDIT\_TRANSACTION}
+
+CREDIT\_TRANSACTION lưu lịch sử thay đổi số dư Credit.
+Mỗi giao dịch thuộc về một CREDIT và phát sinh tại một MERCHANT cụ thể.
+Giao dịch có thể liên quan đến một CAMPAIGN hoặc không.
+
+\begin{itemize}
+    \item \textbf{TransactionID}: Mã định danh duy nhất của giao dịch.
+    \item \textbf{CreditID}: Credit liên quan đến giao dịch.
+    \item \textbf{MerchantID}: Merchant nơi giao dịch phát sinh.
+    \item \textbf{CampaignID}: Campaign liên quan, có thể để trống.
+    \item \textbf{Amount}: Số điểm thay đổi.
+    \item \textbf{CreatedAt}: Thời gian tạo giao dịch.
+    \item \textbf{TransactionType}: Loại giao dịch.
+    \item \textbf{SuiTxDigest}: Mã giao dịch trên blockchain Sui.
+\end{itemize}
+
+
+\subsubsection{API\_CREDENTIAL}
+
+API\_CREDENTIAL lưu thông tin xác thực API của Merchant khi kết nối
+với nền tảng OctaPoint.
+
+\begin{itemize}
+    \item \textbf{KeyID}: Mã định danh của API Credential.
+    \item \textbf{MerchantID}: Merchant sở hữu thông tin xác thực.
+    \item \textbf{ApiKey}: Khóa API.
+    \item \textbf{SecretHash}: Giá trị bí mật đã được băm.
 \end{itemize}

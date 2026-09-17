@@ -1,29 +1,32 @@
 \section{Sơ đồ Lược đồ Logic (Logical Schema Diagram)}
 
-Lược đồ dưới đây tương ứng với tập phụ thuộc hàm đã xét ở mục chuẩn hóa. Các ràng buộc miền giá trị và duy nhất bổ sung được trình bày ở từ điển dữ liệu.
+Lược đồ logic được xây dựng dựa trên mô hình ERD đã hoàn thiện và tập phụ thuộc hàm được xác định ở các mục trước. Sơ đồ thể hiện các quan hệ, thuộc tính, khóa chính (Primary Key - PK), khóa ngoại (Foreign Key - FK) và bản số của các mối quan hệ.
 
-Đặc biệt, hệ thống tồn tại mối kết hợp Nhiều - Nhiều (M:N) giữa \texttt{CUSTOMER} và \texttt{MERCHANT}. Mối kết hợp này đã được phân rã thành hai mối quan hệ 1-N thông qua thực thể trung gian (Associative Entity) là bảng \texttt{CREDIT}.
+Trong mô hình OctaPoint, \texttt{CREDIT} là ví điểm dùng chung của một \texttt{CUSTOMER} trong phạm vi một \texttt{TENANT}. Vì vậy, \texttt{CREDIT} tham chiếu đến \texttt{CUSTOMER} và \texttt{TENANT}, không tham chiếu trực tiếp đến \texttt{MERCHANT}.
 
-Dưới đây là Sơ đồ Logic thể hiện trực quan cấu trúc các bảng, tập hợp đầy đủ các thuộc tính, khóa chính (Primary Key - PK) và các mối quan hệ khóa ngoại (Foreign Key - FK) kèm bản số (1-N) liên kết giữa các bảng.
+Bên cạnh đó, \texttt{CAMPAIGN} thuộc về một \texttt{TENANT}. Một Campaign có thể áp dụng cho nhiều Merchant và một Merchant có thể tham gia nhiều Campaign. Do đó, mối quan hệ M:N giữa \texttt{CAMPAIGN} và \texttt{MERCHANT} được phân rã thông qua bảng trung gian \texttt{CAMPAIGN\_MERCHANT}.
 
 \begin{figure}[H]
     \centering
-    \resizebox{\textwidth}{!}{ % Co theo chieu rong trang
+    \resizebox{\textwidth}{!}{
     \begin{tikzpicture}[>=stealth, thick]
 
-        % Bảng TENANT
-        \node (tenant) at (0, 6.5) {
+        % ========================================================
+        % TENANT
+        % ========================================================
+        \node (tenant) at (0,6) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{TENANT}} \\ \hline
             \underline{TenantID} (PK) \\
-            TenantName \\
-            SystemConfig \\ \hline
+            TenantName \\ \hline
             \end{tabular}
         };
 
-        % Bảng MERCHANT
-        \node (merchant) at (0, 1.5) {
+        % ========================================================
+        % MERCHANT
+        % ========================================================
+        \node (merchant) at (0,1.5) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{MERCHANT}} \\ \hline
@@ -34,8 +37,38 @@ Dưới đây là Sơ đồ Logic thể hiện trực quan cấu trúc các bả
             \end{tabular}
         };
 
-        % Bảng API_CREDENTIAL (Đã bổ sung)
-        \node (api) at (-6.5, 4.5) {
+        % ========================================================
+        % ROLE
+        % ========================================================
+        \node (role) at (-7,1.5) {
+            \begin{tabular}{|l|}
+            \hline
+            \multicolumn{1}{|c|}{\textbf{ROLE}} \\ \hline
+            \underline{RoleID} (PK) \\
+            RoleName \\ \hline
+            \end{tabular}
+        };
+
+        % ========================================================
+        % USER
+        % ========================================================
+        \node (user) at (-7,-2.5) {
+            \begin{tabular}{|l|}
+            \hline
+            \multicolumn{1}{|c|}{\textbf{USER}} \\ \hline
+            \underline{UserID} (PK) \\
+            \textit{RoleID} (FK) \\
+            \textit{ManagerID} (FK, NULL) \\
+            \textit{MerchantID} (FK, NULL) \\
+            Email \\
+            PasswordHash \\ \hline
+            \end{tabular}
+        };
+
+        % ========================================================
+        % API CREDENTIAL
+        % ========================================================
+        \node (api) at (-7,5.5) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{API\_CREDENTIAL}} \\ \hline
@@ -46,72 +79,63 @@ Dưới đây là Sơ đồ Logic thể hiện trực quan cấu trúc các bả
             \end{tabular}
         };
 
-        % Bảng USER
-        \node (user) at (-6.5, 1.5) {
-            \begin{tabular}{|l|}
-            \hline
-            \multicolumn{1}{|c|}{\textbf{USER}} \\ \hline
-            \underline{UserID} (PK) \\
-            \textit{MerchantID} (FK) \\
-            Email \\
-            PasswordHash \\
-            \textit{RoleID} (FK) \\
-            \textit{ManagerID} (FK, NULL) \\ \hline
-            \end{tabular}
-        };
-
-        % Bang ROLE va quan he quan ly tu tham chieu
-        \node (role) at (-11, 1.5) {
-            \begin{tabular}{|l|}
-            \hline
-            \multicolumn{1}{|c|}{\textbf{ROLE}} \\ \hline
-            \underline{RoleID} (PK) \\
-            RoleName \\ \hline
-            \end{tabular}
-        };
-        \draw[->] (user.west) -- node[pos=0.2, above] {N} node[pos=0.8, above] {1} (role.east);
-        \draw[->] (user.south west) -- ++(-0.5,-0.7) -- ++(2.5,0)
-            node[midway, below] {ManagerID: N--0..1} -- (user.south east);
-
-        % Bảng CAMPAIGN
-        \node (campaign) at (6.5, 1.5) {
+        % ========================================================
+        % CAMPAIGN
+        % ========================================================
+        \node (campaign) at (7,1.5) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{CAMPAIGN}} \\ \hline
             \underline{CampaignID} (PK) \\
-            \textit{MerchantID} (FK) \\
-            CampaignName \\
-            StartDate \\
-            EndDate \\
-            Status \\ \hline
+            \textit{TenantID} (FK) \\
+            Status \\
+            StartDate \\ \hline
             \end{tabular}
         };
 
-        % Bảng CUSTOMER
-        \node (customer) at (-6.5, -3) {
+        % ========================================================
+        % CAMPAIGN MERCHANT
+        % ========================================================
+        \node (cm) at (7,-2.5) {
+            \begin{tabular}{|l|}
+            \hline
+            \multicolumn{1}{|c|}{\textbf{CAMPAIGN\_MERCHANT}} \\ \hline
+            \underline{\textit{CampaignID}} (PK, FK) \\
+            \underline{\textit{MerchantID}} (PK, FK) \\ \hline
+            \end{tabular}
+        };
+
+        % ========================================================
+        % CUSTOMER
+        % ========================================================
+        \node (customer) at (-7,-7) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{CUSTOMER}} \\ \hline
             \underline{CustomerID} (PK) \\
-            WalletAddress \\
-            Email \\ \hline
+            Email \\
+            WalletAddress \\ \hline
             \end{tabular}
         };
 
-        % Bảng CREDIT (Bảng trung gian giải quyết quan hệ N-N)
-        \node (credit) at (0, -3) {
+        % ========================================================
+        % CREDIT
+        % ========================================================
+        \node (credit) at (0,-7) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{CREDIT}} \\ \hline
             \underline{CreditID} (PK) \\
             \textit{CustomerID} (FK) \\
-            \textit{MerchantID} (FK) \\
+            \textit{TenantID} (FK) \\
             AvailableBalance \\ \hline
             \end{tabular}
         };
 
-        % Bảng REWARD_RULE
-        \node (rule) at (6.5, -3) {
+        % ========================================================
+        % REWARD RULE
+        % ========================================================
+        \node (rule) at (7,-7) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{REWARD\_RULE}} \\ \hline
@@ -122,57 +146,140 @@ Dưới đây là Sơ đồ Logic thể hiện trực quan cấu trúc các bả
             \end{tabular}
         };
 
-        % Bảng CREDIT_TRANSACTION
-        \node (transaction) at (0, -8) {
+        % ========================================================
+        % CREDIT TRANSACTION
+        % ========================================================
+        \node (transaction) at (0,-11.5) {
             \begin{tabular}{|l|}
             \hline
             \multicolumn{1}{|c|}{\textbf{CREDIT\_TRANSACTION}} \\ \hline
             \underline{TransactionID} (PK) \\
             \textit{CreditID} (FK) \\
-            \textit{CampaignID} (FK) \\
+            \textit{MerchantID} (FK) \\
+            \textit{CampaignID} (FK, NULL) \\
             Amount \\
+            CreatedAt \\
             TransactionType \\
-            SuiTxDigest \\
-            CreatedAt \\ \hline
+            SuiTxDigest \\ \hline
             \end{tabular}
         };
 
         % ========================================================
-        % VẼ DÂY NỐI CÓ GẮN NHÃN BẢN SỐ (1 và N)
+        % RELATIONSHIPS
         % ========================================================
-        
-        % MERCHANT -> TENANT
-        \draw[->] (merchant.north) -- node[pos=0.15, right] {N} node[pos=0.85, right] {1} (tenant.south);
-        
-        % API -> MERCHANT (Dây gấp khúc)
-        \draw[->, rounded corners] (api.east) -| node[pos=0.1, above] {N} node[pos=0.9, left] {1} (merchant.north west);
-        
-        % USER -> MERCHANT
-        \draw[->] (user.east) -- node[pos=0.15, above] {N} node[pos=0.85, above] {1} (merchant.west);
-        
-        % CAMPAIGN -> MERCHANT
-        \draw[->] (campaign.west) -- node[pos=0.15, above] {N} node[pos=0.85, above] {1} (merchant.east);
-        
-        % CREDIT -> MERCHANT
-        \draw[->] (credit.north) -- node[pos=0.15, right] {N} node[pos=0.85, right] {1} (merchant.south);
-        
-        % CREDIT -> CUSTOMER
-        \draw[->] (credit.west) -- node[pos=0.15, above] {N} node[pos=0.85, above] {1} (customer.east);
-        
-        % REWARD_RULE -> CAMPAIGN
-        \draw[->] (rule.north) -- node[pos=0.15, right] {N} node[pos=0.85, right] {1} (campaign.south);
-        
-        % TRANSACTION -> CREDIT
-        \draw[->] (transaction.north) -- node[pos=0.15, right] {N} node[pos=0.85, right] {1} (credit.south);
-        
-        % TRANSACTION -> CAMPAIGN (Dây gấp khúc vòng lên)
-        \draw[->, rounded corners] (transaction.east) -| node[pos=0.1, above] {N} node[pos=0.95, right] {0..1} (campaign.south east);
+
+        % TENANT - MERCHANT
+        \draw[->]
+        (merchant.north)
+        -- node[right] {N}
+        node[right, pos=0.85] {1}
+        (tenant.south);
+
+        % TENANT - CAMPAIGN
+        \draw[->]
+        (campaign.north)
+        -- node[right] {N}
+        node[right, pos=0.85] {1}
+        (tenant.south east);
+
+        % ROLE - USER
+        \draw[->]
+        (user.north)
+        -- node[left] {N}
+        node[left, pos=0.85] {1}
+        (role.south);
+
+        % MERCHANT - USER
+        \draw[->]
+        (user.east)
+        -- node[above] {N}
+        node[above, pos=0.85] {1}
+        (merchant.west);
+
+        % MERCHANT - API
+        \draw[->]
+        (api.east)
+        -- node[above] {N}
+        node[above, pos=0.85] {1}
+        (merchant.north west);
+
+        % CAMPAIGN - CAMPAIGN_MERCHANT
+        \draw[->]
+        (cm.north)
+        -- node[right] {N}
+        node[right, pos=0.85] {1}
+        (campaign.south);
+
+        % MERCHANT - CAMPAIGN_MERCHANT
+        \draw[->]
+        (cm.west)
+        -- node[above] {N}
+        node[above, pos=0.85] {1}
+        (merchant.east);
+
+        % CAMPAIGN - REWARD RULE
+        \draw[->]
+        (rule.north)
+        -- node[right] {N}
+        node[right, pos=0.85] {1}
+        (campaign.south east);
+
+        % CUSTOMER - CREDIT
+        \draw[->]
+        (credit.west)
+        -- node[above] {N}
+        node[above, pos=0.85] {1}
+        (customer.east);
+
+        % TENANT - CREDIT
+        \draw[->, rounded corners]
+        (credit.north)
+        -| node[pos=0.2, right] {N}
+        node[pos=0.85, right] {1}
+        (tenant.south west);
+
+        % CREDIT - TRANSACTION
+        \draw[->]
+        (transaction.north)
+        -- node[right] {N}
+        node[right, pos=0.85] {1}
+        (credit.south);
+
+        % MERCHANT - TRANSACTION
+        \draw[->, rounded corners]
+        (transaction.east)
+        -| node[pos=0.2, below] {N}
+        node[pos=0.9, above] {1}
+        (merchant.south east);
+
+        % CAMPAIGN - TRANSACTION
+        \draw[->, rounded corners]
+        (transaction.west)
+        -| node[pos=0.15, below] {N}
+        node[pos=0.9, left] {0..1}
+        (campaign.south west);
+
+        % USER SELF RELATIONSHIP
+        \draw[->, rounded corners]
+        (user.south)
+        -- ++(0,-0.8)
+        -| node[pos=0.2, below] {N}
+        node[pos=0.85, right] {0..1}
+        (user.east);
 
     \end{tikzpicture}
     }
-    \caption{Sơ đồ Lược đồ Logic chi tiết hệ thống OctaPoint CaaS}
+
+    \caption{Sơ đồ Lược đồ Logic hệ thống OctaPoint CaaS}
     \label{fig:sodo_logic_tikz}
 \end{figure}
 
-\textit{Ghi chú:} Sơ đồ thể hiện rõ việc phân rã mối kết hợp N-N giữa Khách hàng và Doanh nghiệp thông qua thực thể trung gian \texttt{CREDIT}. Các đường liên kết chỉ hướng tham chiếu từ Khóa ngoại (nhánh N) trỏ tới Khóa chính (nhánh 1), đảm bảo chặt chẽ ràng buộc toàn vẹn tham chiếu.
-Mỗi cặp (CustomerID, MerchantID) ở CREDIT có tối đa một bản ghi. Nhãn N chỉ số lượng tối đa ở phía tham chiếu; RoleID bắt buộc, ManagerID và CampaignID của giao dịch tùy chọn.
+\textit{Ghi chú:} Các đường liên kết thể hiện quan hệ giữa khóa ngoại và khóa chính của các quan hệ. Nhãn ``1'' và ``N'' biểu diễn bản số của các mối quan hệ.
+
+Mỗi \texttt{CREDIT} thuộc về một \texttt{CUSTOMER} và một \texttt{TENANT}. Ràng buộc \texttt{UNIQUE(CustomerID,TenantID)} bảo đảm một khách hàng chỉ có tối đa một Credit trong cùng một Tenant.
+
+Mối quan hệ giữa \texttt{CAMPAIGN} và \texttt{MERCHANT} là M:N và được phân rã thông qua \texttt{CAMPAIGN\_MERCHANT}.
+
+Trong \texttt{CREDIT\_TRANSACTION}, \texttt{MerchantID} bắt buộc để ghi nhận Merchant nơi giao dịch phát sinh, trong khi \texttt{CampaignID} có thể NULL vì giao dịch không nhất thiết phải thuộc một Campaign.
+
+\texttt{ManagerID} trong \texttt{USER} là khóa ngoại tự tham chiếu đến \texttt{UserID}. Một User có thể không có Manager hoặc có một Manager trực tiếp.

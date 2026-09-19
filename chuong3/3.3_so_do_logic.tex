@@ -1,8 +1,8 @@
 \section{Sơ đồ Lược đồ Logic (Logical Schema Diagram)}
 
-Sau khi trải qua quá trình phân tích phụ thuộc hàm và chứng minh đạt Dạng chuẩn Boyce-Codd (BCNF), tập lược đồ quan hệ đã đảm bảo tính toàn vẹn, không dư thừa và tối ưu cho việc lưu trữ. 
+Lược đồ dưới đây tương ứng với tập phụ thuộc hàm đã xét ở mục chuẩn hóa. Các ràng buộc miền giá trị và duy nhất bổ sung được trình bày ở từ điển dữ liệu.
 
-Đặc biệt, kiến trúc mới đã loại bỏ việc ví điểm bị trói buộc vào từng cửa hàng lẻ. Thay vào đó, ví điểm (\texttt{CREDIT}) được quản lý tập trung theo cấp chuỗi (\texttt{TENANT}). Đồng thời, mối kết hợp Nhiều - Nhiều (M:N) giữa \texttt{CAMPAIGN} và \texttt{MERCHANT} đã được phân rã thành hai mối quan hệ 1-N thông qua thực thể trung gian là bảng \texttt{CAMPAIGN\_MERCHANT}.
+Đặc biệt, hệ thống tồn tại mối kết hợp Nhiều - Nhiều (M:N) giữa \texttt{CUSTOMER} và \texttt{MERCHANT}. Mối kết hợp này đã được phân rã thành hai mối quan hệ 1-N thông qua thực thể trung gian (Associative Entity) là bảng \texttt{CREDIT}.
 
 Dưới đây là Sơ đồ Logic thể hiện trực quan cấu trúc các bảng, tập hợp đầy đủ các thuộc tính, khóa chính (Primary Key - PK) và các mối quan hệ khóa ngoại (Foreign Key - FK) kèm bản số (1-N) liên kết giữa các bảng.
 

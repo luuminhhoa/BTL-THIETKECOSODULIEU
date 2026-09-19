@@ -1,268 +1,0 @@
-Script started on Sat Sep 12 15:52:13 2026
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add chuong/chuong2_quan_niem/2.4_so_do_thuc_the_lien_ket.tex chuong[7m/[7mchuong2_quan_niem/2.5_trang_thai.tex[27m[K
-[7mGIT_AUTHOR_DATE="2026-08-30T17:30:00" GIT_COMMITTER_DATE="2026-08-30T17:30:00" git commit --author="Luu Minh Hoa <soinuicodon@gm[7ma[7mil.com>" -m "feat(c2): hoan thien mo hinh ERD va bieu do trang thai"[27m[K[3A[12D[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m2[27m_[27mq[27mu[27ma[27mn[27m_[27mn[27mi[27me[27mm[27m/[27m2[27m.[27m4[27m_[27ms[27mo[27m_[27md[27mo[27m_[27mt[27mh[27mu[27mc[27m_[27mt[27mh[27me[27m_[27ml[27mi[27me[27mn[27m_[27mk[27me[27mt[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg/[27mc[27mh[27mu[27mo[27mn[27mg[27m2[27m_[27mq[27mu[27ma[27mn[27m_[27mn[27mi[27me[27mm[27m/[27m2[27m.[27m5[27m_[27mt[27mr[27ma[27mn[27mg[27m_[27mt[27mh[27ma[27mi[27m.[27mt[27me[27mx[1B[27mG[27mI[27mT[27m_[27mA[27mU[27mT[27mH[27mO[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m8[27m-[27m3[27m0[27mT[27m1[27m7[27m:[27m3[27m0[27m:[27m0[27m0[27m"[27m [27mG[27mI[27mT[27m_[27mC[27mO[27mM[27mM[27mI[27mT[27mT[27mE[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m8[27m-[27m3[27m0[27mT[27m1[27m7[27m:[27m3[27m0[27m:[27m0[27m0[27m"[27m [27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27m-[27ma[27mu[27mt[27mh[27mo[27mr[27m=[27m"[27mL[27mu[27mu[27m [27mM[27mi[27mn[27mh[27m [27mH[27mo[27ma[27m [27m<[27ms[27mo[27mi[27mn[27mu[27mi[27mc[27mo[27md[27mo[27mn[27m@[27mg[27mma[27mi[27ml[27m.[27mc[27mo[27mm[27m>[27m"[27m [27m-[27mm[27m [27m"[27mf[27me[27ma[27mt[27m([27mc[27m2[27m)[27m:[27m [27mh[27mo[27ma[27mn[27m [27mt[27mh[27mi[27me[27mn[27m [27mm[27mo[27m [27mh[27mi[27mn[27mh[27m [27mE[27mR[27mD[27m [27mv[27ma[27m [27mb[27mi[27me[27mu[27m [27md[27mo[27m [27mt[27mr[27ma[27mn[27mg[27m [27mt[27mh[27ma[27mi[27m"[?2004l
-[main eb2b6d8] feat(c2): hoan thien mo hinh ERD va bieu do trang thai
- Author: Luu Minh Hoa <soinuicodon@gmail.com>
- 2 files changed, 76 insertions(+)
- create mode 100644 chuong/chuong2_quan_niem/2.5_trang_thai.tex
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add chuong/chuong3_logic/[27m
-[7mGIT_AUTHOR_DATE="2026-09-04T10:05:00" GIT_COMMITTER_DATE="2026-09-04T10:05:00" git commit --author="Luu Minh Hoa <soinuicodon@gm[7ma[7mil.com>" -m "refactor(c3): chuyen doi sang luoc do logic va chuan hoa 3NF"[27m[K[A[A[18D[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m3[27m_[27ml[27mo[27mg[27mi[27mc[27m/[1B[27mG[27mI[27mT[27m_[27mA[27mU[27mT[27mH[27mO[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m9[27m-[27m0[27m4[27mT[27m1[27m0[27m:[27m0[27m5[27m:[27m0[27m0[27m"[27m [27mG[27mI[27mT[27m_[27mC[27mO[27mM[27mM[27mI[27mT[27mT[27mE[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m9[27m-[27m0[27m4[27mT[27m1[27m0[27m:[27m0[27m5[27m:[27m0[27m0[27m"[27m [27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27m-[27ma[27mu[27mt[27mh[27mo[27mr[27m=[27m"[27mL[27mu[27mu[27m [27mM[27mi[27mn[27mh[27m [27mH[27mo[27ma[27m [27m<[27ms[27mo[27mi[27mn[27mu[27mi[27mc[27mo[27md[27mo[27mn[27m@[27mg[27mma[27mi[27ml[27m.[27mc[27mo[27mm[27m>[27m"[27m [27m-[27mm[27m [27m"[27mr[27me[27mf[27ma[27mc[27mt[27mo[27mr[27m([27mc[27m3[27m)[27m:[27m [27mc[27mh[27mu[27my[27me[27mn[27m [27md[27mo[27mi[27m [27ms[27ma[27mn[27mg[27m [27ml[27mu[27mo[27mc[27m [27md[27mo[27m [27ml[27mo[27mg[27mi[27mc[27m [27mv[27ma[27m [27mc[27mh[27mu[27ma[27mn[27m [27mh[27mo[27ma[27m [27m3[27mN[27mF[27m"[?2004l
-On branch main
-Changes not staged for commit:
-  (use "git add/rm <file>..." to update what will be committed)
-  (use "git restore <file>..." to discard changes in working directory)
-	[31mdeleted:    .DS_Store[m
-	[31mmodified:   .gitignore[m
-	[31mdeleted:    chuong/.DS_Store[m
-	[31mmodified:   main.pdf[m
-	[31mmodified:   main.tex[m
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-	[31mSQL[m
-
-no changes added to commit (use "git add" and/or "git commit -a")
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add chuong/chuong3_logic/ chuong/chuong4_vat_ly/ SQL[27m
-[7mGIT_AUTHOR_DATE="2026-09-06T14:30:00" GIT_COMMITTER_DATE="2026-09-06T14:30:00" git commit --author="Luu Minh Hoa <soinuicodon@gm[7ma[7mil.com>" -m "feat: hoan thien mo hinh logic, thiet ke vat ly va ma SQL"[27m[K[A[A[15D[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m3[27m_[27ml[27mo[27mg[27mi[27mc[27m/[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m4[27m_[27mv[27ma[27mt[27m_[27ml[27my[27m/[27m [27mS[27mQ[27mL[1B[27mG[27mI[27mT[27m_[27mA[27mU[27mT[27mH[27mO[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m9[27m-[27m0[27m6[27mT[27m1[27m4[27m:[27m3[27m0[27m:[27m0[27m0[27m"[27m [27mG[27mI[27mT[27m_[27mC[27mO[27mM[27mM[27mI[27mT[27mT[27mE[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m9[27m-[27m0[27m6[27mT[27m1[27m4[27m:[27m3[27m0[27m:[27m0[27m0[27m"[27m [27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27m-[27ma[27mu[27mt[27mh[27mo[27mr[27m=[27m"[27mL[27mu[27mu[27m [27mM[27mi[27mn[27mh[27m [27mH[27mo[27ma[27m [27m<[27ms[27mo[27mi[27mn[27mu[27mi[27mc[27mo[27md[27mo[27mn[27m@[27mg[27mma[27mi[27ml[27m.[27mc[27mo[27mm[27m>[27m"[27m [27m-[27mm[27m [27m"[27mf[27me[27ma[27mt[27m:[27m [27mh[27mo[27ma[27mn[27m [27mt[27mh[27mi[27me[27mn[27m [27mm[27mo[27m [27mh[27mi[27mn[27mh[27m [27ml[27mo[27mg[27mi[27mc[27m,[27m [27mt[27mh[27mi[27me[27mt[27m [27mk[27me[27m [27mv[27ma[27mt[27m [27ml[27my[27m [27mv[27ma[27m [27mm[27ma[27m [27mS[27mQ[27mL[27m"[?2004l
-[main 98cdae2] feat: hoan thien mo hinh logic, thiet ke vat ly va ma SQL
- Author: Luu Minh Hoa <soinuicodon@gmail.com>
- 1 file changed, 25 insertions(+)
- create mode 100644 SQL
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add .gitignore README.md chuong/tong_ket/ main.tex main.pdf[27m
-[7mGIT_AUTHOR_DATE="2026-09-11T20:00:00" GIT_COMMITTER_DATE="2026-09-11T20:00:00" git commit --author="Luu Minh Hoa <soinuicodon@gm[7ma[7mil.com>" -m "docs: hoan thien bao cao tong ket va bien dich main.pdf"[27m[K[A[A[13D[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27m.[27mg[27mi[27mt[27mi[27mg[27mn[27mo[27mr[27me[27m [27mR[27mE[27mA[27mD[27mM[27mE[27m.[27mm[27md[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mt[27mo[27mn[27mg[27m_[27mk[27me[27mt[27m/[27m [27mm[27ma[27mi[27mn[27m.[27mt[27me[27mx[27m [27mm[27ma[27mi[27mn[27m.[27mp[27md[27mf[1B[27mG[27mI[27mT[27m_[27mA[27mU[27mT[27mH[27mO[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m9[27m-[27m1[27m1[27mT[27m2[27m0[27m:[27m0[27m0[27m:[27m0[27m0[27m"[27m [27mG[27mI[27mT[27m_[27mC[27mO[27mM[27mM[27mI[27mT[27mT[27mE[27mR[27m_[27mD[27mA[27mT[27mE[27m=[27m"[27m2[27m0[27m2[27m6[27m-[27m0[27m9[27m-[27m1[27m1[27mT[27m2[27m0[27m:[27m0[27m0[27m:[27m0[27m0[27m"[27m [27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27m-[27ma[27mu[27mt[27mh[27mo[27mr[27m=[27m"[27mL[27mu[27mu[27m [27mM[27mi[27mn[27mh[27m [27mH[27mo[27ma[27m [27m<[27ms[27mo[27mi[27mn[27mu[27mi[27mc[27mo[27md[27mo[27mn[27m@[27mg[27mma[27mi[27ml[27m.[27mc[27mo[27mm[27m>[27m"[27m [27m-[27mm[27m [27m"[27md[27mo[27mc[27ms[27m:[27m [27mh[27mo[27ma[27mn[27m [27mt[27mh[27mi[27me[27mn[27m [27mb[27ma[27mo[27m [27mc[27ma[27mo[27m [27mt[27mo[27mn[27mg[27m [27mk[27me[27mt[27m [27mv[27ma[27m [27mb[27mi[27me[27mn[27m [27md[27mi[27mc[27mh[27m [27mm[27ma[27mi[27mn[27m.[27mp[27md[27mf[27m"[?2004l
-[main 520562b] docs: hoan thien bao cao tong ket va bien dich main.pdf
- Author: Luu Minh Hoa <soinuicodon@gmail.com>
- 3 files changed, 17 insertions(+), 2 deletions(-)
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit push -u origin main --force[27m[31D[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27m-[27mu[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[27m [27m-[27m-[27mf[27mo[27mr[27mc[27me[?2004l
-Enumerating objects: 39, done.
-Counting objects:   2% (1/36)Counting objects:   5% (2/36)Counting objects:   8% (3/36)Counting objects:  11% (4/36)Counting objects:  13% (5/36)Counting objects:  16% (6/36)Counting objects:  19% (7/36)Counting objects:  22% (8/36)Counting objects:  25% (9/36)Counting objects:  27% (10/36)Counting objects:  30% (11/36)Counting objects:  33% (12/36)Counting objects:  36% (13/36)Counting objects:  38% (14/36)Counting objects:  41% (15/36)Counting objects:  44% (16/36)Counting objects:  47% (17/36)Counting objects:  50% (18/36)Counting objects:  52% (19/36)Counting objects:  55% (20/36)Counting objects:  58% (21/36)Counting objects:  61% (22/36)Counting objects:  63% (23/36)Counting objects:  66% (24/36)Counting objects:  69% (25/36)Counting objects:  72% (26/36)Counting objects:  75% (27/36)Counting objects:  77% (28/36)Counting objects:  80% (29/36)Counting objects:  83% (30/36)Counting objects:  86% (31/36)Counting objects:  88% (32/36)Counting objects:  91% (33/36)Counting objects:  94% (34/36)Counting objects:  97% (35/36)Counting objects: 100% (36/36)Counting objects: 100% (36/36), done.
-Delta compression using up to 8 threads
-Compressing objects:   3% (1/29)Compressing objects:   6% (2/29)Compressing objects:  10% (3/29)Compressing objects:  13% (4/29)Compressing objects:  17% (5/29)Compressing objects:  20% (6/29)Compressing objects:  24% (7/29)Compressing objects:  27% (8/29)Compressing objects:  31% (9/29)Compressing objects:  34% (10/29)Compressing objects:  37% (11/29)Compressing objects:  41% (12/29)Compressing objects:  44% (13/29)Compressing objects:  48% (14/29)Compressing objects:  51% (15/29)Compressing objects:  55% (16/29)Compressing objects:  58% (17/29)Compressing objects:  62% (18/29)Compressing objects:  65% (19/29)Compressing objects:  68% (20/29)Compressing objects:  72% (21/29)Compressing objects:  75% (22/29)Compressing objects:  79% (23/29)Compressing objects:  82% (24/29)Compressing objects:  86% (25/29)Compressing objects:  89% (26/29)Compressing objects:  93% (27/29)Compressing objects:  96% (28/29)Compressing objects: 100% (29/29)Compressing objects: 100% (29/29), done.
-Writing objects:   3% (1/29)Writing objects:   6% (2/29)Writing objects:  10% (3/29)Writing objects:  13% (4/29)Writing objects:  17% (5/29)Writing objects:  20% (6/29)Writing objects:  24% (7/29)Writing objects:  27% (8/29)Writing objects:  31% (9/29)Writing objects:  34% (10/29)Writing objects:  37% (11/29)Writing objects:  41% (12/29)Writing objects:  44% (13/29)Writing objects:  48% (14/29)Writing objects:  51% (15/29)Writing objects:  55% (16/29)Writing objects:  58% (17/29)Writing objects:  62% (18/29)Writing objects:  65% (19/29)Writing objects:  68% (20/29)Writing objects:  72% (21/29)Writing objects:  75% (22/29)Writing objects:  79% (23/29)Writing objects:  82% (24/29)Writing objects:  86% (25/29)Writing objects:  89% (26/29)Writing objects:  93% (27/29)Writing objects:  96% (28/29)Writing objects: 100% (29/29)Writing objects: 100% (29/29), 95.24 KiB | 31.75 MiB/s, done.
-Total 29 (delta 14), reused 0 (delta 0), pack-reused 0
-remote: Resolving deltas:   0% (0/14)[Kremote: Resolving deltas:   7% (1/14)[Kremote: Resolving deltas:  14% (2/14)[Kremote: Resolving deltas:  21% (3/14)[Kremote: Resolving deltas:  28% (4/14)[Kremote: Resolving deltas:  35% (5/14)[Kremote: Resolving deltas:  42% (6/14)[Kremote: Resolving deltas:  50% (7/14)[Kremote: Resolving deltas:  57% (8/14)[Kremote: Resolving deltas:  64% (9/14)[Kremote: Resolving deltas:  71% (10/14)[Kremote: Resolving deltas:  78% (11/14)[Kremote: Resolving deltas:  85% (12/14)[Kremote: Resolving deltas:  92% (13/14)[Kremote: Resolving deltas: 100% (14/14)[Kremote: Resolving deltas: 100% (14/14), completed with 4 local objects.[K
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
-   45e81c2..520562b  main -> main
-branch 'main' set up to track 'origin/main'.
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mtouch preface.tex acknowledgements.tex chuong1.tex chuong2.tex chuong3.[7mt[7mex chuong4.tex[27m[K
-[7mmkdir -p images[27m[K
-[7mgit add preface.tex acknowledgements.tex chuong1.tex chuong2.tex chuong3.tex chuong4.tex images/[27m[K
-[7mgit commit -m "chore: setup project layout and root chapter entrypoints"[27m[K
-[7mgit push origin main[27m[K[5A[37C[27mt[27mo[27mu[27mc[27mh[27m [27mp[27mr[27me[27mf[27ma[27mc[27me[27m.[27mt[27me[27mx[27m [27ma[27mc[27mk[27mn[27mo[27mw[27ml[27me[27md[27mg[27me[27mm[27me[27mn[27mt[27ms[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m2[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m3[27m.t[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m4[27m.[27mt[27me[27mx[1B[27mm[27mk[27md[27mi[27mr[27m [27m-[27mp[27m [27mi[27mm[27ma[27mg[27me[27ms[1B[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mp[27mr[27me[27mf[27ma[27mc[27me[27m.[27mt[27me[27mx[27m [27ma[27mc[27mk[27mn[27mo[27mw[27ml[27me[27md[27mg[27me[27mm[27me[27mn[27mt[27ms[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m2[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m3[27m.[27mt[27me[27mx[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m4[27m.[27mt[27me[27mx[27m [27mi[27mm[27ma[27mg[27me[27ms[27m/[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27mc[27mh[27mo[27mr[27me[27m:[27m [27ms[27me[27mt[27mu[27mp[27m [27mp[27mr[27mo[27mj[27me[27mc[27mt[27m [27ml[27ma[27my[27mo[27mu[27mt[27m [27ma[27mn[27md[27m [27mr[27mo[27mo[27mt[27m [27mc[27mh[27ma[27mp[27mt[27me[27mr[27m [27me[27mn[27mt[27mr[27my[27mp[27mo[27mi[27mn[27mt[27ms[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
-[main df9b49e] chore: setup project layout and root chapter entrypoints
- 6 files changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 acknowledgements.tex
- create mode 100644 chuong1.tex
- create mode 100644 chuong2.tex
- create mode 100644 chuong3.tex
- create mode 100644 chuong4.tex
- create mode 100644 preface.tex
-Enumerating objects: 4, done.
-Counting objects:  25% (1/4)Counting objects:  50% (2/4)Counting objects:  75% (3/4)Counting objects: 100% (4/4)Counting objects: 100% (4/4), done.
-Delta compression using up to 8 threads
-Compressing objects:  50% (1/2)Compressing objects: 100% (2/2)Compressing objects: 100% (2/2), done.
-Writing objects:  33% (1/3)Writing objects:  66% (2/3)Writing objects: 100% (3/3)Writing objects: 100% (3/3), 538 bytes | 538.00 KiB/s, done.
-Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
-   520562b..df9b49e  main -> main
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mmv chuong/chuong1_yeu_cau chuong1[27m
-[7mmv chuong/chuong2_quan_niem chuong2[27m[K
-[7mgit add -A[27m[K
-[7mgit commit -m "refactor(c1-c2): reorganize directory structure for chapters 1 and 2"[27m[K
-[7mgit push origin main[27m[K[4A[37C[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m_[27my[27me[27mu[27m_[27mc[27ma[27mu[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m1[1B[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m2[27m_[27mq[27mu[27ma[27mn[27m_[27mn[27mi[27me[27mm[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m2[1B[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27m-[27mA[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27mr[27me[27mf[27ma[27mc[27mt[27mo[27mr[27m([27mc[27m1[27m-[27mc[27m2[27m)[27m:[27m [27mr[27me[27mo[27mr[27mg[27ma[27mn[27mi[27mz[27me[27m [27md[27mi[27mr[27me[27mc[27mt[27mo[27mr[27my[27m [27ms[27mt[27mr[27mu[27mc[27mt[27mu[27mr[27me[27m [27mf[27mo[27mr[27m [27mc[27mh[27ma[27mp[27mt[27me[27mr[27ms[27m [27m1[27m [27ma[27mn[27md[27m [27m2[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
-[main af8ee27] refactor(c1-c2): reorganize directory structure for chapters 1 and 2
- 12 files changed, 43 insertions(+)
- delete mode 100644 .DS_Store
- delete mode 100644 chuong/.DS_Store
- rename {chuong/chuong1_yeu_cau => chuong1}/1.1_tong_quan.tex (100%)
- rename {chuong/chuong1_yeu_cau => chuong1}/1.2_doi_tuong_su_dung.tex (100%)
- rename {chuong/chuong1_yeu_cau => chuong1}/1.3_yeu_cau_du_lieu.tex (100%)
- rename {chuong/chuong1_yeu_cau => chuong1}/1.4_quy_tac_nghiep_vu.tex (100%)
- rename {chuong/chuong2_quan_niem => chuong2}/2.1_thuc_the.tex (100%)
- rename {chuong/chuong2_quan_niem => chuong2}/2.2_thuoc_tinh.tex (100%)
- rename {chuong/chuong2_quan_niem => chuong2}/2.3_moi_quan_he.tex (100%)
- rename {chuong/chuong2_quan_niem => chuong2}/2.4_so_do_thuc_the_lien_ket.tex (100%)
- rename {chuong/chuong2_quan_niem => chuong2}/2.5_trang_thai.tex (100%)
-Enumerating objects: 7, done.
-Counting objects:  14% (1/7)Counting objects:  28% (2/7)Counting objects:  42% (3/7)Counting objects:  57% (4/7)Counting objects:  71% (5/7)Counting objects:  85% (6/7)Counting objects: 100% (7/7)Counting objects: 100% (7/7), done.
-Delta compression using up to 8 threads
-Compressing objects:  25% (1/4)Compressing objects:  50% (2/4)Compressing objects:  75% (3/4)Compressing objects: 100% (4/4)Compressing objects: 100% (4/4), done.
-Writing objects:  25% (1/4)Writing objects:  50% (2/4)Writing objects:  75% (3/4)Writing objects: 100% (4/4)Writing objects: 100% (4/4), 3.27 KiB | 3.27 MiB/s, done.
-Total 4 (delta 2), reused 0 (delta 0), pack-reused 0
-remote: Resolving deltas:   0% (0/2)[Kremote: Resolving deltas:  50% (1/2)[Kremote: Resolving deltas: 100% (2/2)[Kremote: Resolving deltas: 100% (2/2), completed with 2 local objects.[K
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
-   df9b49e..af8ee27  main -> main
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mmv chuong/chuong3_logic chuong3[27m
-[7mmv chuong/chuong4_vat_ly chuong4[27m[K
-[7mmv chuong/images/* images/ 2>/dev/null || true[27m[K
-[7mrm -rf chuong[27m[K
-[7mgit add -A[27m[K
-[7mgit commit -m "refactor(c3-c4): reorganize logic, physical design modules and clean legacy folder"[27m[K
-[7mgit push origin main[27m[K[6A[37C[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m3[27m_[27ml[27mo[27mg[27mi[27mc[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m3[1B[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m4[27m_[27mv[27ma[27mt[27m_[27ml[27my[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m4[1B[27mm[27mv[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m/[27mi[27mm[27ma[27mg[27me[27ms[27m/[27m*[27m [27mi[27mm[27ma[27mg[27me[27ms[27m/[27m [27m2[27m>[27m/[27md[27me[27mv[27m/[27mn[27mu[27ml[27ml[27m [27m|[27m|[27m [27mt[27mr[27mu[27me[1B[27mr[27mm[27m [27m-[27mr[27mf[27m [27mc[27mh[27mu[27mo[27mn[27mg[1B[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27m-[27mA[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27mr[27me[27mf[27ma[27mc[27mt[27mo[27mr[27m([27mc[27m3[27m-[27mc[27m4[27m)[27m:[27m [27mr[27me[27mo[27mr[27mg[27ma[27mn[27mi[27mz[27me[27m [27ml[27mo[27mg[27mi[27mc[27m,[27m [27mp[27mh[27my[27ms[27mi[27mc[27ma[27ml[27m [27md[27me[27ms[27mi[27mg[27mn[27m [27mm[27mo[27md[27mu[27ml[27me[27ms[27m [27ma[27mn[27md[27m [27mc[27ml[27me[27ma[27mn[27m [27ml[27me[27mg[27ma[27mc[27my[27m [27mf[27mo[27ml[27md[27me[27mr[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
-zsh: no matches found: chuong/images/*
-[main fa7163d] refactor(c3-c4): reorganize logic, physical design modules and clean legacy folder
- 11 files changed, 34 insertions(+), 1 deletion(-)
- delete mode 100644 chuong/tong_ket/5.1_ket_qua_dat_duoc.tex
- delete mode 100644 chuong/tong_ket/5.2_han_che_va_phat_trien.tex
- rename {chuong/chuong3_logic => chuong3}/3.1_chuyen_doi_mo_hinh.tex (100%)
- rename {chuong/chuong3_logic => chuong3}/3.2_chuan_hoa_du_lieu.tex (100%)
- rename {chuong/chuong3_logic => chuong3}/3.3_so_do_logic.tex (100%)
- rename {chuong/chuong3_logic => chuong3}/3.4_tu_dien_du_lieu.tex (100%)
- rename {chuong/chuong4_vat_ly => chuong4}/4.1_chon_he_quan_tri.tex (100%)
- rename {chuong/chuong4_vat_ly => chuong4}/4.2_kieu_du_lieu_va_rang_buoc.tex (100%)
- rename {chuong/chuong4_vat_ly => chuong4}/4.3_danh_chi_muc.tex (100%)
- rename {chuong/chuong4_vat_ly => chuong4}/4.4_ma_lenh_tao_bang.tex (100%)
-Enumerating objects: 7, done.
-Counting objects:  14% (1/7)Counting objects:  28% (2/7)Counting objects:  42% (3/7)Counting objects:  57% (4/7)Counting objects:  71% (5/7)Counting objects:  85% (6/7)Counting objects: 100% (7/7)Counting objects: 100% (7/7), done.
-Delta compression using up to 8 threads
-Compressing objects:  20% (1/5)Compressing objects:  40% (2/5)Compressing objects:  60% (3/5)Compressing objects:  80% (4/5)Compressing objects: 100% (5/5)Compressing objects: 100% (5/5), done.
-Writing objects:  20% (1/5)Writing objects:  40% (2/5)Writing objects:  60% (3/5)Writing objects:  80% (4/5)Writing objects: 100% (5/5)Writing objects: 100% (5/5), 1.52 KiB | 1.52 MiB/s, done.
-Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
-remote: Resolving deltas:   0% (0/2)[Kremote: Resolving deltas:  50% (1/2)[Kremote: Resolving deltas: 100% (2/2)[Kremote: Resolving deltas: 100% (2/2), completed with 2 local objects.[K
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
-   af8ee27..fa7163d  main -> main
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add main.tex[27m
-[7mgit commit -m "build: update main document includes matching modular chapter structure"[27m[K
-[7mgit push origin main[27m[K[A[A[37C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mm[27ma[27mi[27mn[27m.[27mt[27me[27mx[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27mb[27mu[27mi[27ml[27md[27m:[27m [27mu[27mp[27md[27ma[27mt[27me[27m [27mm[27ma[27mi[27mn[27m [27md[27mo[27mc[27mu[27mm[27me[27mn[27mt[27m [27mi[27mn[27mc[27ml[27mu[27md[27me[27ms[27m [27mm[27ma[27mt[27mc[27mh[27mi[27mn[27mg[27m [27mm[27mo[27md[27mu[27ml[27ma[27mr[27m [27mc[27mh[27ma[27mp[27mt[27me[27mr[27m [27ms[27mt[27mr[27mu[27mc[27mt[27mu[27mr[27me[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
-On branch main
-Your branch is up to date with 'origin/main'.
-
-Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git restore <file>..." to discard changes in working directory)
-	[31mmodified:   SQL[m
-
-no changes added to commit (use "git add" and/or "git commit -a")
-Everything up-to-date
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add SQL/[27m
-[7mgit commit -m "style: organize database scripts directory"[27m[K
-[7mgit push origin main[27m[K[A[A[37C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mS[27mQ[27mL[27m/[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27ms[27mt[27my[27ml[27me[27m:[27m [27mo[27mr[27mg[27ma[27mn[27mi[27mz[27me[27m [27md[27ma[27mt[27ma[27mb[27ma[27ms[27me[27m [27ms[27mc[27mr[27mi[27mp[27mt[27ms[27m [27md[27mi[27mr[27me[27mc[27mt[27mo[27mr[27my[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
-fatal: pathspec 'SQL/' did not match any files
-On branch main
-Your branch is up to date with 'origin/main'.
-
-Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git restore <file>..." to discard changes in working directory)
-	[31mmodified:   SQL[m
-
-no changes added to commit (use "git add" and/or "git commit -a")
-Everything up-to-date
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add SQL[27m
-[7mgit commit -m "style: finalize database schema scripts"[27m[K
-[7mgit push origin main[27m[K[A[A[37C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mS[27mQ[27mL[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27ms[27mt[27my[27ml[27me[27m:[27m [27mf[27mi[27mn[27ma[27ml[27mi[27mz[27me[27m [27md[27ma[27mt[27ma[27mb[27ma[27ms[27me[27m [27ms[27mc[27mh[27me[27mm[27ma[27m [27ms[27mc[27mr[27mi[27mp[27mt[27ms[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[?2004l
-[main 99cb7ca] style: finalize database schema scripts
- 1 file changed, 51 insertions(+), 1 deletion(-)
-Enumerating objects: 5, done.
-Counting objects:  20% (1/5)Counting objects:  40% (2/5)Counting objects:  60% (3/5)Counting objects:  80% (4/5)Counting objects: 100% (5/5)Counting objects: 100% (5/5), done.
-Delta compression using up to 8 threads
-Compressing objects:  33% (1/3)Compressing objects:  66% (2/3)Compressing objects: 100% (3/3)Compressing objects: 100% (3/3), done.
-Writing objects:  33% (1/3)Writing objects:  66% (2/3)Writing objects: 100% (3/3)Writing objects: 100% (3/3), 1.34 KiB | 1.34 MiB/s, done.
-Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
-remote: Resolving deltas:   0% (0/2)[Kremote: Resolving deltas:  50% (1/2)[Kremote: Resolving deltas: 100% (2/2)[Kremote: Resolving deltas: 100% (2/2), completed with 2 local objects.[K
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
-   fa7163d..99cb7ca  main -> main
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit checkout -b feature/chuong1-yeu-cau[27m[39D[27mg[27mi[27mt[27m [27mc[27mh[27me[27mc[27mk[27mo[27mu[27mt[27m [27m-[27mb[27m [27mf[27me[27ma[27mt[27mu[27mr[27me[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m-[27my[27me[27mu[27m-[27mc[27ma[27mu[?2004l
-Switched to a new branch 'feature/chuong1-yeu-cau'
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add chuong1/1.1_tong_quan.tex[27m
-[7mgit commit -m "docs(c1): hoan thien muc 1.1 tong quan va pham vi OctaPoint"[27m[K
-[7mgit push origin feature/chuong1-yeu-cau[27m[K[A[A[18C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m/[27m1[27m.[27m1[27m_[27mt[27mo[27mn[27mg[27m_[27mq[27mu[27ma[27mn[27m.[27mt[27me[27mx[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27md[27mo[27mc[27ms[27m([27mc[27m1[27m)[27m:[27m [27mh[27mo[27ma[27mn[27m [27mt[27mh[27mi[27me[27mn[27m [27mm[27mu[27mc[27m [27m1[27m.[27m1[27m [27mt[27mo[27mn[27mg[27m [27mq[27mu[27ma[27mn[27m [27mv[27ma[27m [27mp[27mh[27ma[27mm[27m [27mv[27mi[27m [27mO[27mc[27mt[27ma[27mP[27mo[27mi[27mn[27mt[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mf[27me[27ma[27mt[27mu[27mr[27me[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m-[27my[27me[27mu[27m-[27mc[27ma[27mu[?2004l
-[feature/chuong1-yeu-cau 6e51768] docs(c1): hoan thien muc 1.1 tong quan va pham vi OctaPoint
- 1 file changed, 21 insertions(+), 28 deletions(-)
-Enumerating objects: 7, done.
-Counting objects:  14% (1/7)Counting objects:  28% (2/7)Counting objects:  42% (3/7)Counting objects:  57% (4/7)Counting objects:  71% (5/7)Counting objects:  85% (6/7)Counting objects: 100% (7/7)Counting objects: 100% (7/7), done.
-Delta compression using up to 8 threads
-Compressing objects:  25% (1/4)Compressing objects:  50% (2/4)Compressing objects:  75% (3/4)Compressing objects: 100% (4/4)Compressing objects: 100% (4/4), done.
-Writing objects:  25% (1/4)Writing objects:  50% (2/4)Writing objects:  75% (3/4)Writing objects: 100% (4/4)Writing objects: 100% (4/4), 2.52 KiB | 2.52 MiB/s, done.
-Total 4 (delta 2), reused 0 (delta 0), pack-reused 0
-remote: Resolving deltas:   0% (0/2)[Kremote: Resolving deltas:  50% (1/2)[Kremote: Resolving deltas: 100% (2/2)[Kremote: Resolving deltas: 100% (2/2), completed with 2 local objects.[K
-remote: 
-remote: Create a pull request for 'feature/chuong1-yeu-cau' on GitHub by visiting:[K
-remote:      https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU/pull/new/feature/chuong1-yeu-cau[K
-remote: 
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
- * [new branch]      feature/chuong1-yeu-cau -> feature/chuong1-yeu-cau
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add chuong1/[27m
-[7mgit commit -m "docs(c1): fix loi gian chu trong bang va chuan hoa ten file 1.3"[27m[K
-[7mgit push origin feature/chuong1-yeu-cau[27m[K[A[A[18C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m/[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27md[27mo[27mc[27ms[27m([27mc[27m1[27m)[27m:[27m [27mf[27mi[27mx[27m [27ml[27mo[27mi[27m [27mg[27mi[27ma[27mn[27m [27mc[27mh[27mu[27m [27mt[27mr[27mo[27mn[27mg[27m [27mb[27ma[27mn[27mg[27m [27mv[27ma[27m [27mc[27mh[27mu[27ma[27mn[27m [27mh[27mo[27ma[27m [27mt[27me[27mn[27m [27mf[27mi[27ml[27me[27m [27m1[27m.[27m3[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mf[27me[27ma[27mt[27mu[27mr[27me[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m-[27my[27me[27mu[27m-[27mc[27ma[27mu[?2004l
-[feature/chuong1-yeu-cau 396cc42] docs(c1): fix loi gian chu trong bang va chuan hoa ten file 1.3
- 3 files changed, 151 insertions(+), 98 deletions(-)
-Enumerating objects: 11, done.
-Counting objects:   9% (1/11)Counting objects:  18% (2/11)Counting objects:  27% (3/11)Counting objects:  36% (4/11)Counting objects:  45% (5/11)Counting objects:  54% (6/11)Counting objects:  63% (7/11)Counting objects:  72% (8/11)Counting objects:  81% (9/11)Counting objects:  90% (10/11)Counting objects: 100% (11/11)Counting objects: 100% (11/11), done.
-Delta compression using up to 8 threads
-Compressing objects:  16% (1/6)Compressing objects:  33% (2/6)Compressing objects:  50% (3/6)Compressing objects:  66% (4/6)Compressing objects:  83% (5/6)Compressing objects: 100% (6/6)Compressing objects: 100% (6/6), done.
-Writing objects:  16% (1/6)Writing objects:  33% (2/6)Writing objects:  50% (3/6)Writing objects:  66% (4/6)Writing objects:  83% (5/6)Writing objects: 100% (6/6)Writing objects: 100% (6/6), 5.91 KiB | 5.91 MiB/s, done.
-Total 6 (delta 1), reused 0 (delta 0), pack-reused 0
-remote: Resolving deltas:   0% (0/1)[Kremote: Resolving deltas: 100% (1/1)[Kremote: Resolving deltas: 100% (1/1), completed with 1 local object.[K
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
-   6e51768..396cc42  feature/chuong1-yeu-cau -> feature/chuong1-yeu-cau
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit checkout main[27m
-[7mgit pull origin main[27m[K
-[7mgit merge feature/chuong1-yeu-cau[27m[K
-[7mgit push origin main[27m[K
-[7mgit checkout -b feature/chuong2-quan-niem[27m[K[4A[16C[27mg[27mi[27mt[27m [27mc[27mh[27me[27mc[27mk[27mo[27mu[27mt[27m [27mm[27ma[27mi[27mn[1B[27mg[27mi[27mt[27m [27mp[27mu[27ml[27ml[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[1B[27mg[27mi[27mt[27m [27mm[27me[27mr[27mg[27me[27m [27mf[27me[27ma[27mt[27mu[27mr[27me[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m1[27m-[27my[27me[27mu[27m-[27mc[27ma[27mu[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mm[27ma[27mi[27mn[1B[27mg[27mi[27mt[27m [27mc[27mh[27me[27mc[27mk[27mo[27mu[27mt[27m [27m-[27mb[27m [27mf[27me[27ma[27mt[27mu[27mr[27me[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m2[27m-[27mq[27mu[27ma[27mn[27m-[27mn[27mi[27me[27mm[?2004l
-M	SQL
-M	chuong1.tex
-M	main.pdf
-M	main.tex
-Switched to branch 'main'
-Your branch is up to date with 'origin/main'.
-From https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU
- * branch            main       -> FETCH_HEAD
-Already up to date.
-Updating 99cb7ca..396cc42
-Fast-forward
- chuong1/1.1_tong_quan.tex         | 49 [32m+++++++++++++++++++[m[31m-------------------------[m
- chuong1/1.2_doi_tuong_su_dung.tex | 96 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m[31m-----------------------[m
- chuong1/1.3_yeu_cau_du_lieu.tex   | 75 [32m+++++++++++++++++++++++++++++++++++[m[31m---------------------------------[m
- chuong1/1.4_quy_tac_nghiep_vu.tex | 78 [32m++++++++++++++++++++++++++++++++++++[m[31m----------------------------------[m
- 4 files changed, 172 insertions(+), 126 deletions(-)
-Total 0 (delta 0), reused 0 (delta 0), pack-reused 0
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
-   99cb7ca..396cc42  main -> main
-Switched to a new branch 'feature/chuong2-quan-niem'
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h[7mgit add .[27m
-[7mgit commit -m "docs(c2): hoan thien ERD"[27m[K
-[7mgit push origin feature/chuong2-quan-niem[27m[K[A[A[16C[27mg[27mi[27mt[27m [27ma[27md[27md[27m [27m.[1B[27mg[27mi[27mt[27m [27mc[27mo[27mm[27mm[27mi[27mt[27m [27m-[27mm[27m [27m"[27md[27mo[27mc[27ms[27m([27mc[27m2[27m)[27m:[27m [27mh[27mo[27ma[27mn[27m [27mt[27mh[27mi[27me[27mn[27m [27mE[27mR[27mD[27m"[1B[27mg[27mi[27mt[27m [27mp[27mu[27ms[27mh[27m [27mo[27mr[27mi[27mg[27mi[27mn[27m [27mf[27me[27ma[27mt[27mu[27mr[27me[27m/[27mc[27mh[27mu[27mo[27mn[27mg[27m2[27m-[27mq[27mu[27ma[27mn[27m-[27mn[27mi[27me[27mm[?2004l
-[feature/chuong2-quan-niem bee639a] docs(c2): hoan thien ERD
- 12 files changed, 343 insertions(+), 163 deletions(-)
- create mode 100644 chuong2/2.2_moi_quan_he.tex
- delete mode 100644 chuong2/2.2_thuoc_tinh.tex
- delete mode 100644 chuong2/2.3_moi_quan_he.tex
- create mode 100644 chuong2/2.3_so_do_thuc_the_lien_ket.tex
- delete mode 100644 chuong2/2.4_so_do_thuc_the_lien_ket.tex
- delete mode 100644 chuong2/2.5_trang_thai.tex
-Enumerating objects: 19, done.
-Counting objects:   5% (1/18)Counting objects:  11% (2/18)Counting objects:  16% (3/18)Counting objects:  22% (4/18)Counting objects:  27% (5/18)Counting objects:  33% (6/18)Counting objects:  38% (7/18)Counting objects:  44% (8/18)Counting objects:  50% (9/18)Counting objects:  55% (10/18)Counting objects:  61% (11/18)Counting objects:  66% (12/18)Counting objects:  72% (13/18)Counting objects:  77% (14/18)Counting objects:  83% (15/18)Counting objects:  88% (16/18)Counting objects:  94% (17/18)Counting objects: 100% (18/18)Counting objects: 100% (18/18), done.
-Delta compression using up to 8 threads
-Compressing objects:   9% (1/11)Compressing objects:  18% (2/11)Compressing objects:  27% (3/11)Compressing objects:  36% (4/11)Compressing objects:  45% (5/11)Compressing objects:  54% (6/11)Compressing objects:  63% (7/11)Compressing objects:  72% (8/11)Compressing objects:  81% (9/11)Compressing objects:  90% (10/11)Compressing objects: 100% (11/11)Compressing objects: 100% (11/11), done.
-Writing objects:   9% (1/11)Writing objects:  18% (2/11)Writing objects:  27% (3/11)Writing objects:  36% (4/11)Writing objects:  45% (5/11)Writing objects:  54% (6/11)Writing objects:  63% (7/11)Writing objects:  72% (8/11)Writing objects:  81% (9/11)Writing objects:  90% (10/11)Writing objects: 100% (11/11)Writing objects: 100% (11/11), 144.31 KiB | 48.10 MiB/s, done.
-Total 11 (delta 2), reused 0 (delta 0), pack-reused 0
-remote: Resolving deltas:   0% (0/2)[Kremote: Resolving deltas:  50% (1/2)[Kremote: Resolving deltas: 100% (2/2)[Kremote: Resolving deltas: 100% (2/2), completed with 2 local objects.[K
-remote: 
-remote: Create a pull request for 'feature/chuong2-quan-niem' on GitHub by visiting:[K
-remote:      https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU/pull/new/feature/chuong2-quan-niem[K
-remote: 
-To https://github.com/luuminhhoa/BTL-THIETKECOSODULIEU.git
- * [new branch]      feature/chuong2-quan-niem -> feature/chuong2-quan-niem
-[1m[7m%[27m[1m[0m                                                                                                                                [0m[27m[24m[J(base) minhhoa@MacBook-Air-cua-Minh Bai_tap_lon_TKCSDL % [K[?2004h>....                                                                  
-[7m\begin{itemize}[27m[K
-[7m    \item \textbf{Thực thể CreditTransaction (Giao dịch điểm):}[27m[K
-[7m    \begin{itemize}[27m[K
-[7m        \item \texttt{TransactionID} (PK): Mã định danh giao dịch nội bộ.[27m[K
-[7m        \item \texttt{CreditID} (FK, NOT NULL): Liên kết tới ví số dư.[27m[K
-[7m        \item \texttt{CampaignID} (FK, NULL): Phát sinh từ chiến dịch nào.[27m[K
-[7m        \item \texttt{Amount} (NOT NULL): Số điểm biến động (+/-).[27m[K
-[7m        \item \texttt{TransactionType} (NOT NULL): Loại (Earn/Redeem/Refund).[27m[K
-[7m        \item \texttt{SuiTxDigest} (UNIQUE, NULL): Mã băm đối soát trên chuỗi khối Sui.[27m[K
-[7m        \item \texttt{CreatedAt} (NOT NULL): Thời điểm giao dịch.[27m[K
-[7m    \end{itemize}[27m[K
-[7m    [27m[K
-[7m    \item \textbf{Thực thể APICredential (Khóa tích hợp):}[27m[K
-[7m    \begin{itemize}[27m[K
-[7m        \item \texttt{KeyID} (PK): Mã định danh khóa.[27m[K
-[7m        \item \texttt{MerchantID} (FK, NOT NULL): Doanh nghiệp sở hữu khóa.[27m[K
-[7m        \item \texttt{ApiKey} (NOT NULL, UNIQUE): Mã định danh khóa công khai.[27m[K
-[7m        \item \texttt{SecretHash} (NOT NULL): Mã băm của Secret Key.[27m[K
-[7m    \end{itemize}[27m[K
-[7m\end{itemize}[27m[K[19A[27m\[27mb[27me[27mg[27mi[27mn[27m{[27mi[27mt[27me[27mm[27mi[27mz[27me[27m}[1B[27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mb[27mf[27m{[27mT[27mh[27mự[27mc[27m [27mt[27mh[27mể[27m [27mC[27mr[27me[27md[27mi[27mt[27mT[27mr[27ma[27mn[27ms[27ma[27mc[27mt[27mi[27mo[27mn[27m [27m([27mG[27mi[27ma[27mo[27m [27md[27mị[27mc[27mh[27m [27mđ[27mi[27mể[27mm[27m)[27m:[27m}[1B[27m [27m [27m [27m [27m\[27mb[27me[27mg[27mi[27mn[27m{[27mi[27mt[27me[27mm[27mi[27mz[27me[27m}[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mT[27mr[27ma[27mn[27ms[27ma[27mc[27mt[27mi[27mo[27mn[27mI[27mD[27m}[27m [27m([27mP[27mK[27m)[27m:[27m [27mM[27mã[27m [27mđ[27mị[27mn[27mh[27m [27md[27ma[27mn[27mh[27m [27mg[27mi[27ma[27mo[27m [27md[27mị[27mc[27mh[27m [27mn[27mộ[27mi[27m [27mb[27mộ[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mC[27mr[27me[27md[27mi[27mt[27mI[27mD[27m}[27m [27m([27mF[27mK[27m,[27m [27mN[27mO[27mT[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mL[27mi[27mê[27mn[27m [27mk[27mế[27mt[27m [27mt[27mớ[27mi[27m [27mv[27mí[27m [27ms[27mố[27m [27md[27mư[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mC[27ma[27mm[27mp[27ma[27mi[27mg[27mn[27mI[27mD[27m}[27m [27m([27mF[27mK[27m,[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mP[27mh[27má[27mt[27m [27ms[27mi[27mn[27mh[27m [27mt[27mừ[27m [27mc[27mh[27mi[27mế[27mn[27m [27md[27mị[27mc[27mh[27m [27mn[27mà[27mo[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mA[27mm[27mo[27mu[27mn[27mt[27m}[27m [27m([27mN[27mO[27mT[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mS[27mố[27m [27mđ[27mi[27mể[27mm[27m [27mb[27mi[27mế[27mn[27m [27mđ[27mộ[27mn[27mg[27m [27m([27m+[27m/[27m-[27m)[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mT[27mr[27ma[27mn[27ms[27ma[27mc[27mt[27mi[27mo[27mn[27mT[27my[27mp[27me[27m}[27m [27m([27mN[27mO[27mT[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mL[27mo[27mạ[27mi[27m [27m([27mE[27ma[27mr[27mn[27m/[27mR[27me[27md[27me[27me[27mm[27m/[27mR[27me[27mf[27mu[27mn[27md[27m)[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mS[27mu[27mi[27mT[27mx[27mD[27mi[27mg[27me[27ms[27mt[27m}[27m [27m([27mU[27mN[27mI[27mQ[27mU[27mE[27m,[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mM[27mã[27m [27mb[27mă[27mm[27m [27mđ[27mố[27mi[27m [27ms[27mo[27má[27mt[27m [27mt[27mr[27mê[27mn[27m [27mc[27mh[27mu[27mỗ[27mi[27m [27mk[27mh[27mố[27mi[27m [27mS[27mu[27mi[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mC[27mr[27me[27ma[27mt[27me[27md[27mA[27mt[27m}[27m [27m([27mN[27mO[27mT[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mT[27mh[27mờ[27mi[27m [27mđ[27mi[27mể[27mm[27m [27mg[27mi[27ma[27mo[27m [27md[27mị[27mc[27mh[27m.[1B[27m [27m [27m [27m [27m\[27me[27mn[27md[27m{[27mi[27mt[27me[27mm[27mi[27mz[27me[27m}[1B[K[1B[27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mb[27mf[27m{[27mT[27mh[27mự[27mc[27m [27mt[27mh[27mể[27m [27mA[27mP[27mI[27mC[27mr[27me[27md[27me[27mn[27mt[27mi[27ma[27ml[27m [27m([27mK[27mh[27mó[27ma[27m [27mt[27mí[27mc[27mh[27m [27mh[27mợ[27mp[27m)[27m:[27m}[1B[27m [27m [27m [27m [27m\[27mb[27me[27mg[27mi[27mn[27m{[27mi[27mt[27me[27mm[27mi[27mz[27me[27m}[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mK[27me[27my[27mI[27mD[27m}[27m [27m([27mP[27mK[27m)[27m:[27m [27mM[27mã[27m [27mđ[27mị[27mn[27mh[27m [27md[27ma[27mn[27mh[27m [27mk[27mh[27mó[27ma[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mM[27me[27mr[27mc[27mh[27ma[27mn[27mt[27mI[27mD[27m}[27m [27m([27mF[27mK[27m,[27m [27mN[27mO[27mT[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mD[27mo[27ma[27mn[27mh[27m [27mn[27mg[27mh[27mi[27mệ[27mp[27m [27ms[27mở[27m [27mh[27mữ[27mu[27m [27mk[27mh[27mó[27ma[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mA[27mp[27mi[27mK[27me[27my[27m}[27m [27m([27mN[27mO[27mT[27m [27mN[27mU[27mL[27mL[27m,[27m [27mU[27mN[27mI[27mQ[27mU[27mE[27m)[27m:[27m [27mM[27mã[27m [27mđ[27mị[27mn[27mh[27m [27md[27ma[27mn[27mh[27m [27mk[27mh[27mó[27ma[27m [27mc[27mô[27mn[27mg[27m [27mk[27mh[27ma[27mi[27m.[1B[27m [27m [27m [27m [27m [27m [27m [27m [27m\[27mi[27mt[27me[27mm[27m [27m\[27mt[27me[27mx[27mt[27mt[27mt[27m{[27mS[27me[27mc[27mr[27me[27mt[27mH[27ma[27ms[27mh[27m}[27m [27m([27mN[27mO[27mT[27m [27mN[27mU[27mL[27mL[27m)[27m:[27m [27mM[27mã[27m [27mb[27mă[27mm[27m [27mc[27mủ[27ma[27m [27mS[27me[27mc[27mr[27me[27mt[27m [27mK[27me[27my[27m.[1B[27m [27m [27m [27m [27m\[27me[27mn[27md[27m{[27mi[27mt[27me[27mm[27mi[27mz[27me[27m}[1B[27m\[27me[27mn[27md[27m{[27mi[27mt[27me[27mm[27mi[27mz[27me[K          \ [K[19A\subsection{Phân hệ Sổ cái Giao dịch và Kiểm toán (Ledger \& Audit)}[1B\begin{itemize}                                                [1B[58Ditem \textbf{Thực thể CreditTransaction (Giao dịch điểm):}[1B[59D\begin{itemize}                                                      [1B[51DTransactionID} (PK): Mã định danh giao dịch nội bộ.[1B[50Dredit[P[P[10COT NULL): Liên kết tới ví số dư.    [1B[52DCampaignID} (FK, NULL): Phát sinh từ chiến dịch nào.[1B[52DAmount[9P[14CSố điểm biến động (+/-).           [1B[55DTransactionType} (NOT[8CLoại (Earn/Redeem/Refund).          [1B[65DSuiTxDigest} (UNIQUE, NULL): Mã băm đối soát trên chuỗi khối Sui.[1B[83D    \[4C \texttt{CreatedAt} (NOT NULL): Thời điểm giao dịch.[1B[61D\end{itemize}[1B[13D                                                      [1B[53Ditem \textbf{Thực thể APICredential (Khóa tích hợp):}[1B[54D\begin{itemize}                                  [1B[31DKeyID} (PK): Mã định danh khóa.                      [1B[53DMerchantID} (FK, NOT NULL[3CDoanh nghiệp sở hữu khóa.   [1B[56DApiKey[4P[11C, UNIQUE): Mã định danh khóa công khai.[1B[74D    \[4C \texttt{SecretHash} (NOT NULL): Mã băm của Secret Key.[1B[64D\end{itemize}             [K[19A[K[1B\subsection{Phân hệ Sổ cái Giao dịch và Kiểm toán (Ledger \& Audit)}[1B\begin{itemize}                                                [1B[58Ditem \textbf{Thực thể CreditTransaction (Giao dịch điểm):}[1B[59D\begin{itemize}                                                      [1B[51DTransactionID} (PK): Mã định danh giao dịch nội bộ.[1B[50Dredit[P[P[10COT NULL): Liên kết tới ví số dư.    [1B[52DCampaignID} (FK, NULL): Phát sinh từ chiến dịch nào.[1B[5

@@ -1,6 +1,8 @@
 \subsection{Quy tắc nghiệp vụ trọng yếu và Ánh xạ dữ liệu}
 
-\subsubsection*{Các quy tắc nghiệp vụ (Business Rules)}
+\subsubsection{Các quy tắc nghiệp vụ (Business Rules)}
+Các quy tắc nghiệp vụ dưới đây có tác động trực tiếp đến việc xác định các thực thể, bản số mối quan hệ và các ràng buộc toàn vẹn trong ERD.
+
 \begin{description}
     \item[BR-1 Ràng buộc sở hữu Chiến dịch:] Một Chuỗi bán lẻ (Tenant) có thể quản lý nhiều Chiến dịch (Campaign). Mỗi Chiến dịch bắt buộc thuộc về duy nhất một Tenant và có thể được áp dụng linh hoạt cho một, nhiều hoặc toàn bộ các Cửa hàng (Merchant) trong chuỗi thông qua bảng trung gian.
     
@@ -13,19 +15,33 @@
     \item[BR-5 Ràng buộc Mã băm Blockchain:] Giao dịch đã đồng bộ On-chain phải lưu trữ mã băm đối soát (SuiTxDigest) dưới dạng duy nhất (UNIQUE) trên cơ sở dữ liệu để phục vụ kiểm toán.
 \end{description}
 
-\subsubsection*{Ánh xạ Yêu cầu vào Đối tượng Dữ liệu chính}
+\subsubsection{Ánh xạ Yêu cầu vào Đối tượng Dữ liệu chính}
+Dựa trên các yêu cầu chức năng (FR-DB) và nhóm dữ liệu cần quản lý, bảng dưới đây tổng hợp ánh xạ sang các thực thể CSDL cốt lõi:
+
+\vspace{0.3cm}
 \begin{table}[H]
     \centering
     \caption{Ánh xạ Yêu cầu và Nhóm dữ liệu vào Thực thể}
+    \label{tab:anh_xa_du_lieu}
+    \vspace{0.2cm}
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{2.5cm}|p{3cm}|p{9cm}|}
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{8cm}|}
         \hline
-        \textbf{Nhóm Dữ liệu} & \textbf{Mã Yêu cầu} & \textbf{Thực thể quản lý \& Vai trò} \\ \hline
-        Tổ chức \& Dân cư & FR-DB-01, 03 & Tenant, Merchant, Customer: Quản lý định danh và hồ sơ đối tác, khách hàng. \\ \hline
-        Phân quyền & FR-DB-02 & User, Role, Permission: Kiểm soát truy cập RBAC. \\ \hline
-        Loyalty & FR-DB-04, 06 & Credit, Campaign, RewardRule, Campaign\_Merchant: Quy tắc tích điểm, đổi thưởng và phạm vi áp dụng. \\ \hline
-        Giao dịch On/Off & FR-DB-05, 07 & CreditTransaction: Ghi nhận biến động số dư, tham chiếu cửa hàng và mã băm Blockchain. \\ \hline
-        Bảo mật \& Audit & FR-DB-08, 09 & APICredential, AuditLog, FraudEvent: Quản lý API Key, nhật ký hệ thống và chống gian lận. \\ \hline
-        Thương mại & FR-DB-10 & PricingPlan, Subscription, Invoice: Quản lý gói cước và thanh toán của Merchant. \\ \hline
+        \textbf{Nhóm Dữ liệu} & \textbf{Mã Yêu cầu} & \textbf{Thực thể quản lý \& Vai trò} \\
+        \hline
+        Tổ chức \& Dân cư & FR-DB-01, 03 & \texttt{Tenant}, \texttt{Merchant}, \texttt{Customer}: Quản lý định danh và hồ sơ đối tác, khách hàng. \\
+        \hline
+        Phân quyền & FR-DB-02 & \texttt{User}, \texttt{Role}, \texttt{Permission}: Kiểm soát truy cập RBAC. \\
+        \hline
+        Loyalty & FR-DB-04, 06 & \texttt{Credit}, \texttt{Campaign}, \texttt{RewardRule}: Quy tắc tích điểm, đổi thưởng và thời hạn. \\
+        \hline
+        Giao dịch On/Off & FR-DB-05, 07 & \texttt{CreditTransaction}: Ghi nhận biến động số dư và tham chiếu mã băm Blockchain. \\
+        \hline
+        Bảo mật \& Audit & FR-DB-08, 09 & \texttt{APICredential}, \texttt{AuditLog}, \texttt{FraudEvent}: Quản lý API Key, nhật ký hệ thống và chống gian lận. \\
+        \hline
+        Thương mại & FR-DB-10 & \texttt{PricingPlan}, \texttt{Subscription}, \texttt{Invoice}: Quản lý gói cước và thanh toán của Merchant. \\
+        \hline
     \end{tabular}
 \end{table}
+
+\textit{Phạm vi bảng ánh xạ:} Permission, AuditLog, FraudEvent, PricingPlan, Subscription và Invoice chỉ thuộc yêu cầu mở rộng; không có trong ERD, lược đồ logic hay DDL của đồ án. Các mã FR-DB ở bảng này dùng để nhóm yêu cầu dữ liệu, không phải mã FS của bảng chức năng.

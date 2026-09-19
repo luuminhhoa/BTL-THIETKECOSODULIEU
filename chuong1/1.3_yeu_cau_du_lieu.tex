@@ -4,22 +4,22 @@ Các yêu cầu phi chức năng (Non-Functional Requirements - NFR) quy định
 \begin{description}
     \item[NFR-DB-01] \textbf{Toàn vẹn dữ liệu \& Nhất quán (Integrity \& Consistency):} Dữ liệu giữa các bảng phải được duy trì nhất quán sau mỗi giao dịch.
     \begin{itemize}
-        \item \textit{Hàm ý CSDL:} Bảo đảm thiết lập đầy đủ Khóa chính (PK), Khóa ngoại (FK) với chính sách tham chiếu (\texttt{CASCADE}, \texttt{RESTRICT}) và các ràng buộc dữ liệu (\texttt{CHECK}, \texttt{UNIQUE}). Sử dụng khối giao dịch (Transaction) để đồng bộ với Programmable Transaction Blocks (PTBs) trên Sui.
+        \item \textit{Hàm ý CSDL:} Bảo đảm thiết lập đầy đủ Khóa chính (PK), Khóa ngoại (FK) với chính sách tham chiếu (\texttt{NO ACTION}) và các ràng buộc dữ liệu (\texttt{CHECK}, \texttt{UNIQUE}). Ghi lịch sử và cập nhật số dư trong cùng giao dịch SQL ở tầng dịch vụ. Đồng bộ với Sui cần cơ chế đối soát và xử lý thử lại riêng; giao dịch SQL không bao trùm giao dịch blockchain.
     \end{itemize}
 
     \item[NFR-DB-02] \textbf{Bảo mật \& Khả năng truy vết (Security \& Auditability):} Chỉ người dùng có quyền mới được truy cập dữ liệu. Các thay đổi quan trọng phải có khả năng truy vết.
     \begin{itemize}
-        \item \textit{Hàm ý CSDL:} Lưu mã băm API Credential (HMAC-SHA256). Các bảng \texttt{CreditTransaction} và \texttt{AuditLog} phải được thiết kế dưới dạng sổ cái bất biến (Immutable Ledger), chỉ cho phép \texttt{INSERT}, tuyệt đối cấm \texttt{UPDATE}/\texttt{DELETE}.
+        \item \textit{Hàm ý CSDL:} Lưu mã băm API Credential (HMAC-SHA256). Nội dung nghiệp vụ của giao dịch đã hoàn tất phải bất biến. Đây là yêu cầu của tầng dịch vụ và phân quyền, chưa được triển khai bằng trigger hay quyền INSERT-only trong DDL của đồ án. AuditLog thuộc phạm vi mở rộng. Việc bổ sung SuiTxDigest sau đồng bộ phải đi qua luồng được cấp quyền riêng, không cho phép sửa Amount, loại giao dịch hay ví liên quan.
     \end{itemize}
 
     \item[NFR-DB-03] \textbf{Hiệu năng \& Khả năng mở rộng (Performance \& Scalability):} Hỗ trợ truy vấn nhanh đối với số dư, giao dịch; đáp ứng sự gia tăng về merchant, customer.
     \begin{itemize}
-        \item \textit{Hàm ý CSDL:} Tối ưu hóa chỉ mục (B+ Tree Index) trên các bảng cốt lõi để đảm bảo độ trễ truy vấn dưới 100ms (Sub-100ms). Lược đồ phải hỗ trợ kiến trúc Multi-tenant phân tách dữ liệu an toàn.
+        \item \textit{Hàm ý CSDL:} Tối ưu hóa chỉ mục (B+ Tree Index) trên các bảng cốt lõi hướng tới mục tiêu độ trễ truy vấn dưới 100ms (chưa đo kiểm). Lược đồ phải hỗ trợ kiến trúc Multi-tenant phân tách dữ liệu an toàn.
     \end{itemize}
 
     \item[NFR-DB-04] \textbf{Tính sẵn sàng \& Khả năng bảo trì (Availability \& Maintainability):} Dữ liệu duy trì ổn định, cấu trúc rõ ràng, chuẩn hóa và dễ mở rộng.
     \begin{itemize}
-        \item \textit{Hàm ý CSDL:} Hệ thống CSDL phải đạt tối thiểu Dạng chuẩn 3 (3NF) hoặc Boyce-Codd (BCNF) nhằm triệt tiêu hoàn toàn dị thường dữ liệu (anomalies) khi thêm, sửa, xóa.
+        \item \textit{Hàm ý CSDL:} Hệ thống CSDL phải đạt tối thiểu Dạng chuẩn 3 (3NF) hoặc Boyce-Codd (BCNF) nhằm giảm dị thường cập nhật phát sinh từ các phụ thuộc hàm được xét.
     \end{itemize}
 \end{description}
 
@@ -39,7 +39,7 @@ Các yêu cầu phi chức năng (Non-Functional Requirements - NFR) quy định
         \hline
         NFR-DB-01 & Tính toàn vẹn & Bảng \texttt{CREDIT\_TRANSACTION} bất biến, lưu \texttt{SuiTxDigest} từ blockchain \\
         \hline
-        NFR-DB-04 & Khả năng mở rộng & Lược đồ chuẩn 3NF/BCNF hỗ trợ Multi-tenant không gây thắt nút cổ chai \\
+        NFR-DB-04 & Khả năng mở rộng & Lược đồ 3NF/BCNF theo các phụ thuộc hàm đã xét; hiệu năng cần đo kiểm \\
         \hline
     \end{tabular}
 \end{table}
@@ -56,3 +56,5 @@ Các nhóm dữ liệu mở rộng như:
     \item Quản lý gói cước (PricingPlan, Subscription, Invoice)
 \end{itemize}
 thuộc phạm vi mở rộng của hệ thống. Các thực thể này được xác định ở mức yêu cầu tổng quan nhưng sẽ được giản lược khỏi Mô hình quan niệm (ERD) và Mô hình logic nhằm tập trung làm rõ luồng giao dịch tích/tiêu điểm chính của hệ thống CaaS.
+
+\textbf{Giới hạn về toàn vẹn liên bảng và bảo mật:} FK chỉ kiểm tra tham chiếu tồn tại, không tự cô lập dữ liệu theo Merchant. Tầng dịch vụ phải kiểm tra quyền truy cập và Campaign của một giao dịch thuộc cùng Merchant với Credit; người quản lý thuộc phạm vi được phép và không tạo chu trình; cập nhật số dư và ghi sổ cái phải nguyên tử khi có truy cập đồng thời. Những cơ chế này chưa nằm trong script khởi tạo. Dữ liệu Customer dùng chung toàn hệ thống; ví Credit được tách theo Merchant.

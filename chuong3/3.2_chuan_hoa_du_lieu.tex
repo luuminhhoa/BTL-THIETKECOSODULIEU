@@ -16,38 +16,35 @@ Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dự
 \end{align*}
 \textit{Giải thích nghiệp vụ:} 
 \begin{itemize}
-    \item Phụ thuộc hàm (F4) tồn tại vì email đăng nhập của User là duy nhất.
-    \item (F5) và (F6) thể hiện rõ ví điểm và chiến dịch nay thuộc quyền sở hữu cấp cao nhất là Tenant.
-    \item (F7) Giao dịch điểm bắt buộc định danh được Merchant nơi phát sinh.
-    \item Bảng trung gian \texttt{Campaign\_Merchant} chỉ chứa toàn bộ là khóa chính (CampaignID, MerchantID) nên không phát sinh phụ thuộc hàm không tầm thường.
+    \item TENANT: TenantID $\rightarrow R$.
+    \item MERCHANT: MerchantID $\rightarrow R$.
+    \item ROLE: RoleID $\rightarrow R$.
+    \item USER: UserID $\rightarrow R$; Email $\rightarrow R$, với $R$ gồm UserID, MerchantID, Email, PasswordHash, RoleID, ManagerID.
+    \item CUSTOMER: CustomerID $\rightarrow R$.
+    \item CAMPAIGN: CampaignID $\rightarrow R$.
+    \item REWARD\_RULE: RuleID $\rightarrow R$.
+    \item CREDIT: CreditID $\rightarrow R$; (CustomerID, MerchantID) $\rightarrow R$.
+    \item API\_CREDENTIAL: KeyID $\rightarrow R$; ApiKey $\rightarrow R$.
+    \item CREDIT\_TRANSACTION: TransactionID $\rightarrow R$, bao gồm cả CreatedAt.
 \end{itemize}
+Các khóa nghiệp vụ Email của USER, ApiKey và cặp (CustomerID, MerchantID) đều NOT NULL và UNIQUE. WalletAddress và SuiTxDigest chỉ duy nhất trên các dòng khác NULL; không coi chúng là khóa ứng viên của toàn quan hệ theo mô hình quan hệ cổ điển.
 
-\subsection{Tính Bao đóng và Tìm khóa ứng viên}
-Tiến hành kiểm tra việc tìm khóa cho lược đồ \texttt{User(UserID, MerchantID, Email, PasswordHash, RoleID, ManagerID)} bằng thuật toán tính Bao đóng:
-Tập thuộc tính của lược đồ: $U_{User} = \{\text{UserID, MerchantID, Email, PasswordHash, RoleID,  ManagerID}\}$.
+Không giả định RoleName, Customer.Email, CampaignName hoặc (CampaignID, ActionType) duy nhất. Không giả định MerchantID xác định RoleID hoặc ManagerID. Nếu bổ sung phụ thuộc hàm nghiệp vụ khác, cần kiểm tra chuẩn hóa lại.
 
-\textbf{Bước 1: Chọn tập thuộc tính ban đầu} \\
-Thử nghiệm với thuộc tính \texttt{UserID}. Khởi tạo $X = \{\text{UserID}\}$. Tính $X^+$.
+\subsection{Bao đóng và tính tối thiểu}
+Với USER, $\{UserID\}^{+}=R_{User}$ và $\{Email\}^{+}=R_{User}$. Không có phụ thuộc từ tập rỗng, nên cả hai tập đơn đều tối thiểu và là khóa ứng viên.
 
-\textbf{Bước 2: Quét qua tập Phụ thuộc hàm} \\
-Áp dụng (F3): $\text{UserID} \rightarrow \text{MerchantID, Email, PasswordHash, RoleID,  ManagerID}$. \\
-Ta có vế trái $\text{UserID} \subseteq X^+$. 
-Do đó: $X^+ = X^+ \cup \{\text{MerchantID, Email, PasswordHash, RoleID,  ManagerID}\} = U_{User}$.
+Với CREDIT, $\{CreditID\}^{+}=R_{Credit}$ và $\{CustomerID,MerchantID\}^{+}=R_{Credit}$. CustomerID riêng không xác định ví vì một khách có ví ở nhiều Merchant; MerchantID riêng không xác định ví vì một cửa hàng phục vụ nhiều khách. Do đó cặp là khóa ứng viên tối thiểu. CreditID được chọn làm PK để giao dịch tham chiếu gọn hơn; UNIQUE trên cặp vẫn bắt buộc.
 
-\textbf{Kết luận:} Vì $\{\text{UserID}\}^+ = U_{User}$, nên \textbf{UserID là một Siêu khóa (Superkey)}. Hơn nữa, do tập $\{\text{UserID}\}$ chỉ có một phần tử duy nhất, không thể loại bỏ thêm phần tử nào mà vẫn giữ nguyên tính chất siêu khóa. Suy ra \textbf{UserID là một Khóa ứng viên}.
+Với API\_CREDENTIAL, KeyID và ApiKey là hai khóa ứng viên đơn, mỗi khóa có bao đóng bằng toàn quan hệ. Với các bảng còn lại, ID ở dòng tương ứng có bao đóng bằng toàn quan hệ và là khóa ứng viên đơn theo tập phụ thuộc hàm đã xét.
 
-Thực hiện tương tự với $\{\text{Email}\}^+$ qua (F4), ta thu được $\{\text{Email}\}^+ = U_{User}$. Suy ra \textbf{Email cũng là một Khóa ứng viên}. 
-Hệ thống chọn \texttt{UserID} làm Khóa chính (Primary Key).
+\section{Chuẩn hóa Dữ liệu}
+Một quan hệ đạt BCNF nếu mọi phụ thuộc hàm không tầm thường $X \rightarrow Y$ có $X$ là siêu khóa. Trong tập phụ thuộc trên, tất cả vế trái đều là khóa ứng viên của chính quan hệ đó. Theo tập phụ thuộc này, mười quan hệ đáp ứng BCNF.
 
-\section{Chuẩn hóa Dữ liệu (Normalization)}
-\subsection{Kiểm chứng Dạng chuẩn Boyce-Codd (BCNF)}
-Theo định nghĩa, một lược đồ đạt chuẩn BCNF nếu mọi phụ thuộc hàm không tầm thường $X \rightarrow Y$ thì $X$ phải là một Siêu khóa.
-Trong quan hệ \texttt{User}, hai phụ thuộc hàm tồn tại đều có vế trái (\texttt{UserID} và \texttt{Email}) là Khóa ứng viên (và cũng là Siêu khóa). Do đó, lược đồ \texttt{User} \textbf{đạt chuẩn BCNF}.
+Kết luận này giảm dị thường cập nhật do các phụ thuộc hàm đã xét, không thay thế ràng buộc miền giá trị, kiểm soát đồng thời hoặc toàn vẹn liên bảng. AvailableBalance là số dư lưu sẵn để tra cứu; phải được tầng dịch vụ duy trì nhất quán với sổ cái, không thể suy ra tính nhất quán đó chỉ từ BCNF.
 
-Áp dụng phương pháp phân tích bao đóng tương tự cho các lược đồ còn lại, ta nhận thấy:
-\begin{itemize}
-    \item Mọi phụ thuộc hàm $X \rightarrow Y$ đều có vế trái $X$ là Siêu khóa (dạng UUID hoặc mã tự tăng).
-    \item Không tồn tại các phụ thuộc bắc cầu (Transitive Dependency) hay phụ thuộc từng phần (Partial Dependency), thỏa mãn điều kiện 3NF.
-\end{itemize}
 
-Mô hình logic sơ bộ đã thiết kế triệt tiêu được dị thường cập nhật và chính thức đạt Dạng chuẩn BCNF.
+\subsection{Cách kiểm tra dạng chuẩn}
+1NF yêu cầu mỗi ô chứa một giá trị thuộc miền đã chọn, không chứa danh sách lặp. 2NF yêu cầu đạt 1NF và thuộc tính không khóa không phụ thuộc vào một phần thực sự của khóa ứng viên. 3NF yêu cầu với mỗi phụ thuộc hàm không tầm thường, vế trái là siêu khóa hoặc thuộc tính vế phải là thuộc tính khóa. BCNF yêu cầu vế trái luôn là siêu khóa.
+
+Ví dụ, nếu đưa TenantName vào MERCHANT thì xuất hiện MerchantID xác định TenantID và TenantID xác định TenantName. Một tổ chức có nhiều cửa hàng sẽ khiến tên tổ chức bị lưu lặp. Giữ TenantName ở TENANT và tham chiếu bằng TenantID giúp tránh cập nhật tên ở nhiều dòng MERCHANT.

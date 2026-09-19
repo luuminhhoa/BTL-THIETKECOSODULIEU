@@ -1,26 +1,17 @@
-\section{Chiến lược Đánh chỉ mục (Indexing)}
+\section{Chiến lược Đánh chỉ mục}
 
-Chỉ mục (Index) là cấu trúc phụ giúp DBMS tìm khối dữ liệu cần đọc nhanh chóng mà không phải quét toàn bộ bảng. Tuy nhiên, việc lạm dụng chỉ mục sẽ gây tốn không gian lưu trữ và làm chậm các thao tác chèn/cập nhật dữ liệu.
+Chỉ mục giảm chi phí đọc ở một số truy vấn nhưng tăng dung lượng và chi phí ghi. Việc lựa chọn phải dựa trên bộ lọc, phép nối, thứ tự kết quả và số liệu thực thi.
 
-\subsection{Cơ sở lý thuyết và Thuật toán lựa chọn}
-Dựa trên \textbf{Algorithm 4.1 (Quyết định tạo chỉ mục)}, dự án áp dụng các nguyên tắc sau:
-\begin{enumerate}
-    \item \textbf{Ưu tiên Khóa:} Luôn xem xét tạo chỉ mục trên Khóa chính (PK) và Khóa ngoại (FK) trước.
-    \item \textbf{Đánh giá Độ chọn lọc (Selectivity):} Chỉ mục cây B-Tree chỉ hiệu quả khi cột có độ chọn lọc cao (càng nhiều giá trị phân biệt càng tốt). Công thức tính độ chọn lọc được định nghĩa là:
-    $$selectivity(A)=\frac{NDV(A)}{|R|}$$
-    Trong đó, $NDV(A)$ là số giá trị phân biệt của cột $A$, và $|R|$ là tổng số dòng của bảng.
-    \item \textbf{Chi phí ghi:} Hạn chế tối đa việc tạo chỉ mục phụ trên bảng \texttt{CREDIT\_TRANSACTION} vì đây là bảng có tải công việc ghi liên tục (Write-heavy workload).
-\end{enumerate}
-
-\subsection{Thiết kế Chỉ mục cho OctaPoint CaaS}
-Từ các nguyên tắc trên, hệ thống triển khai các loại chỉ mục cụ thể như sau:
-
+\subsection{Chỉ mục triển khai}
 \begin{itemize}
-    \item \textbf{Chỉ mục Cụm (Clustered Index):} Được SQL Server tự động tạo trên Khóa chính của tất cả các bảng. Dữ liệu vật lý được tổ chức theo cấu trúc Cây B-Tree, hỗ trợ tìm kiếm chính xác và tìm kiếm theo khoảng (Range Query) với chi phí $O(\log_p N)$.
-    
-    \item \textbf{Chỉ mục Phụ (Nonclustered Index) trên Khóa ngoại:} Tạo chỉ mục cho các cột FK quan trọng như \texttt{TenantID}, \texttt{MerchantID}, \texttt{CreditID}, \texttt{CampaignID} nhằm tối ưu hóa chi phí cho thuật toán kết nối lồng nhau (Nested-Loop Join) khi thực hiện các truy vấn thống kê nhiều bảng.
-    
-    \item \textbf{Chỉ mục Phụ trên Ràng buộc UNIQUE:} SQL Server tự động tạo Nonclustered Index ngầm định trên các cột được gán ràng buộc UNIQUE. Nhờ vậy, hệ thống được tăng tốc cực nhanh khi truy vấn cột \texttt{Email} (bảng USER) lúc đăng nhập, hoặc cặp \texttt{(CustomerID, TenantID)} (bảng CREDIT) lúc kiểm tra số dư ví chung.
-    
-    \item \textbf{Cột KHÔNG tạo chỉ mục:} Các cột như \texttt{Status} (chỉ có Active/Inactive) hay \texttt{TransactionType} (chỉ có Earn/Burn/Refund) có độ chọn lọc cực thấp. Việc dùng B-Tree cho các cột này không đáng giá vì mỗi giá trị trả về quá nhiều dòng. Dự án quyết định không đánh chỉ mục trên các cột này để tiết kiệm dung lượng lưu trữ đĩa và tối ưu tốc độ ghi dữ liệu.
+    \item Mọi PK được khai báo \texttt{CLUSTERED} trong \texttt{database/schema.sql}. UNIQUE tạo chỉ mục hỗ trợ các khóa nghiệp vụ; không tạo thêm chỉ mục Email trùng chức năng.
+    \item SQL Server không tự tạo chỉ mục cho FK. DDL bổ sung chỉ mục cho TenantID của MERCHANT; MerchantID, RoleID, ManagerID của USER; MerchantID của API\_CREDENTIAL, CAMPAIGN, CREDIT; CampaignID của REWARD\_RULE và CREDIT\_TRANSACTION.
+    \item CREDIT dùng UNIQUE \texttt{(CustomerID, MerchantID)}, đồng thời hỗ trợ tra cứu theo CustomerID ở cột dẫn đầu.
+    \item Chỉ mục \texttt{(CreditID, CreatedAt DESC)} hỗ trợ lọc lịch sử một ví theo thời gian. Không tạo riêng chỉ mục CreditID trùng tiền tố.
+    \item Hai chỉ mục duy nhất có điều kiện bảo vệ WalletAddress và SuiTxDigest khi khác NULL.
 \end{itemize}
+
+\subsection{Đánh giá và giới hạn}
+Tỷ lệ $NDV(A)/|R|$ biểu diễn mức phân biệt giá trị, không phải tỷ lệ dòng thỏa một điều kiện cụ thể. Hiệu quả chỉ mục còn phụ thuộc phân bố dữ liệu, số dòng trả về và chi phí truy cập.
+
+Chưa tạo chỉ mục đơn trên Status (Merchant: Active/Suspended; Campaign: Draft/Active/Expired) hoặc TransactionType (Earn/Redeem/Refund). Miền giá trị nhỏ không có nghĩa chỉ mục luôn vô ích: chỉ mục ghép hoặc có điều kiện vẫn có thể hữu ích với workload phù hợp. Cần kiểm tra execution plan, statistics và chi phí ghi trước khi bổ sung.

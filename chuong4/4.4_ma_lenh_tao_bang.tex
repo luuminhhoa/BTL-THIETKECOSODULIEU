@@ -1,115 +1,104 @@
-\section{Mã lệnh tạo bảng (DDL - Data Definition Language)}
+\subsection{Mã lệnh khởi tạo cơ sở dữ liệu (T-SQL)}
 
-Dựa trên từ điển dữ liệu (Chương 3) và chiến lược thiết kế vật lý, dưới đây là mã lệnh SQL (DDL) sử dụng để khởi tạo cấu trúc cơ sở dữ liệu. Hệ quản trị được sử dụng là SQL Server.
-
-\begin{lstlisting}[style=sqlstyle]
--- 1. BANG DOC LAP (Khong chua khoa ngoai)
-CREATE TABLE TENANT (
-    TenantID VARCHAR(36) PRIMARY KEY,
-    TenantName NVARCHAR(255) NOT NULL,
-    SystemConfig NVARCHAR(MAX) NULL
+\begin{lstlisting}[language=SQL, caption={Script khởi tạo các bảng trên SQL Server}, label={lst:create_tables}]
+-- 1. Tao bang Role (Tao truoc vi User tham chieu den)
+CREATE TABLE Role (
+    RoleID INT NOT NULL PRIMARY KEY,
+    RoleName NVARCHAR(50)
 );
-GO
 
-CREATE TABLE ROLE (
-    RoleID INT PRIMARY KEY,
-    RoleName NVARCHAR(50) NOT NULL
+-- 2. Tao bang Tenant
+CREATE TABLE Tenant (
+    TenantID VARCHAR(36) NOT NULL PRIMARY KEY,
+    TenantName NVARCHAR(255)
 );
-GO
 
-CREATE TABLE CUSTOMER (
-    CustomerID VARCHAR(36) PRIMARY KEY,
-    WalletAddress VARCHAR(100) UNIQUE NULL,
-    Email VARCHAR(255) NULL
+-- 3. Tao bang Customer
+CREATE TABLE Customer (
+    CustomerID VARCHAR(36) NOT NULL PRIMARY KEY,
+    Email VARCHAR(255),
+    WalletAddress VARCHAR(100)
 );
-GO
 
--- 2. BANG PHU THUOC CAP 1
-CREATE TABLE MERCHANT (
-    MerchantID VARCHAR(36) PRIMARY KEY,
+-- 4. Tao bang Merchant
+CREATE TABLE Merchant (
+    MerchantID VARCHAR(36) NOT NULL PRIMARY KEY,
     TenantID VARCHAR(36) NOT NULL,
-    BusinessName NVARCHAR(255) NOT NULL,
-    Status VARCHAR(20) NOT NULL,
-    CONSTRAINT FK_Merchant_Tenant FOREIGN KEY (TenantID) REFERENCES TENANT(TenantID)
+    BusinessName NVARCHAR(255),
+    Status VARCHAR(20),
+    CONSTRAINT FK_Merchant_Tenant FOREIGN KEY (TenantID) REFERENCES Tenant(TenantID)
 );
-GO
 
-CREATE TABLE CAMPAIGN (
-    CampaignID VARCHAR(36) PRIMARY KEY,
-    TenantID VARCHAR(36) NOT NULL,
-    CampaignName NVARCHAR(255) NOT NULL,
-    StartDate DATETIME NOT NULL,
-    EndDate DATETIME NULL,
-    Status VARCHAR(20) NOT NULL,
-    CONSTRAINT FK_Campaign_Tenant FOREIGN KEY (TenantID) REFERENCES TENANT(TenantID)
-);
-GO
-
-CREATE TABLE CREDIT (
-    CreditID VARCHAR(36) PRIMARY KEY,
-    CustomerID VARCHAR(36) NOT NULL,
-    TenantID VARCHAR(36) NOT NULL,
-    AvailableBalance DECIMAL(18,2) NOT NULL DEFAULT 0.00,
-    CONSTRAINT FK_Credit_Customer FOREIGN KEY (CustomerID) REFERENCES CUSTOMER(CustomerID),
-    CONSTRAINT FK_Credit_Tenant FOREIGN KEY (TenantID) REFERENCES TENANT(TenantID),
-    CONSTRAINT UQ_Customer_Tenant UNIQUE (CustomerID, TenantID) -- 1 Khach hang chi co 1 vi tai 1 chuoi
-);
-GO
-
--- 3. BANG PHU THUOC CAP 2
-CREATE TABLE [USER] (
-    UserID VARCHAR(36) PRIMARY KEY,
-    MerchantID VARCHAR(36) NOT NULL,
-    Email VARCHAR(255) UNIQUE NOT NULL,
-    PasswordHash VARCHAR(255) NOT NULL,
+-- 5. Tao bang User (Luu y tu khoa [User] trong SQL Server)
+CREATE TABLE [User] (
+    UserID VARCHAR(36) NOT NULL PRIMARY KEY,
     RoleID INT NOT NULL,
-    ManagerID VARCHAR(36) NULL,
-    CONSTRAINT FK_User_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID),
-    CONSTRAINT FK_User_Role FOREIGN KEY (RoleID) REFERENCES ROLE(RoleID),
-    CONSTRAINT FK_User_Manager FOREIGN KEY (ManagerID) REFERENCES [USER](UserID)
-);
-GO
-
-CREATE TABLE API_CREDENTIAL (
-    KeyID VARCHAR(36) PRIMARY KEY,
+    ManagerID VARCHAR(36) NULL, -- 0..1 relationship
     MerchantID VARCHAR(36) NOT NULL,
-    ApiKey VARCHAR(255) UNIQUE NOT NULL,
-    SecretHash VARCHAR(255) NOT NULL,
-    CONSTRAINT FK_API_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID)
+    Email VARCHAR(255) NOT NULL,
+    PasswordHash VARCHAR(255) NOT NULL,
+    CONSTRAINT FK_User_Role FOREIGN KEY (RoleID) REFERENCES Role(RoleID),
+    CONSTRAINT FK_User_Manager FOREIGN KEY (ManagerID) REFERENCES [User](UserID),
+    CONSTRAINT FK_User_Merchant FOREIGN KEY (MerchantID) REFERENCES Merchant(MerchantID)
 );
-GO
 
-CREATE TABLE CAMPAIGN_MERCHANT (
+-- 6. Tao bang APICredential
+CREATE TABLE APICredential (
+    KeyID VARCHAR(36) NOT NULL PRIMARY KEY,
+    MerchantID VARCHAR(36) NOT NULL,
+    ApiKey VARCHAR(255),
+    SecretHash VARCHAR(255),
+    CONSTRAINT FK_APICredential_Merchant FOREIGN KEY (MerchantID) REFERENCES Merchant(MerchantID)
+);
+
+-- 7. Tao bang Campaign
+CREATE TABLE Campaign (
+    CampaignID VARCHAR(36) NOT NULL PRIMARY KEY,
+    TenantID VARCHAR(36) NOT NULL,
+    Status VARCHAR(20),
+    StartDate DATETIME,
+    EndDate DATETIME,
+    CONSTRAINT FK_Campaign_Tenant FOREIGN KEY (TenantID) REFERENCES Tenant(TenantID)
+);
+
+-- 8. Tao bang MerchantCampaign (Bang trung gian n-n)
+CREATE TABLE MerchantCampaign (
     CampaignID VARCHAR(36) NOT NULL,
     MerchantID VARCHAR(36) NOT NULL,
     PRIMARY KEY (CampaignID, MerchantID),
-    CONSTRAINT FK_CM_Campaign FOREIGN KEY (CampaignID) REFERENCES CAMPAIGN(CampaignID),
-    CONSTRAINT FK_CM_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID)
+    CONSTRAINT FK_MC_Campaign FOREIGN KEY (CampaignID) REFERENCES Campaign(CampaignID),
+    CONSTRAINT FK_MC_Merchant FOREIGN KEY (MerchantID) REFERENCES Merchant(MerchantID)
 );
-GO
 
--- 4. BANG PHU THUOC CAP 3
-CREATE TABLE REWARD_RULE (
-    RuleID VARCHAR(36) PRIMARY KEY,
+-- 9. Tao bang RewardRule
+CREATE TABLE RewardRule (
+    RuleID VARCHAR(36) NOT NULL PRIMARY KEY,
     CampaignID VARCHAR(36) NOT NULL,
-    ActionType VARCHAR(50) NOT NULL,
-    PointsMultiplier DECIMAL(5,2) NOT NULL,
-    CONSTRAINT FK_Rule_Campaign FOREIGN KEY (CampaignID) REFERENCES CAMPAIGN(CampaignID)
+    ActionType VARCHAR(50),
+    PointsMultiplier DECIMAL(5,2),
+    CONSTRAINT FK_RewardRule_Campaign FOREIGN KEY (CampaignID) REFERENCES Campaign(CampaignID)
 );
-GO
 
-CREATE TABLE CREDIT_TRANSACTION (
-    TransactionID VARCHAR(36) PRIMARY KEY,
-    CreditID VARCHAR(36) NOT NULL,
-    CampaignID VARCHAR(36) NULL,
-    MerchantID VARCHAR(36) NOT NULL,
-    Amount DECIMAL(18,2) NOT NULL,
-    TransactionType VARCHAR(50) NOT NULL,
-    SuiTxDigest VARCHAR(100) UNIQUE NULL,
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_Trans_Credit FOREIGN KEY (CreditID) REFERENCES CREDIT(CreditID),
-    CONSTRAINT FK_Trans_Campaign FOREIGN KEY (CampaignID) REFERENCES CAMPAIGN(CampaignID),
-    CONSTRAINT FK_Trans_Merchant FOREIGN KEY (MerchantID) REFERENCES MERCHANT(MerchantID)
+-- 10. Tao bang Credit
+CREATE TABLE Credit (
+    CreditID VARCHAR(36) NOT NULL PRIMARY KEY,
+    CustomerID VARCHAR(36) NOT NULL,
+    CampaignID VARCHAR(36) NOT NULL,
+    AvailableBalance DECIMAL(18,2),
+    CONSTRAINT FK_Credit_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    CONSTRAINT FK_Credit_Campaign FOREIGN KEY (CampaignID) REFERENCES Campaign(CampaignID)
 );
-GO
+
+-- 11. Tao bang CreditTransaction
+CREATE TABLE CreditTransaction (
+    TransactionID VARCHAR(36) NOT NULL PRIMARY KEY,
+    CreditID VARCHAR(36) NOT NULL,
+    MerchantID VARCHAR(36) NOT NULL,
+    Amount DECIMAL(18,2),
+    CreatedAt DATETIME,
+    TransactionType VARCHAR(50),
+    SuiTxDigest VARCHAR(100),
+    CONSTRAINT FK_Transaction_Credit FOREIGN KEY (CreditID) REFERENCES Credit(CreditID),
+    CONSTRAINT FK_Transaction_Merchant FOREIGN KEY (MerchantID) REFERENCES Merchant(MerchantID)
+);
 \end{lstlisting}

@@ -37,7 +37,7 @@ Các yêu cầu phi chức năng (Non-Functional Requirements - NFR) quy định
         \hline
         NFR-DB-02 & Bảo mật & Lưu mã băm API Secret, thiết kế phân quyền RBAC đa khách thuê \\
         \hline
-        NFR-DB-01 & Tính toàn vẹn & Bảng \texttt{CreditTransaction} bất biến, lưu \texttt{tx\_digest} từ blockchain \\
+        NFR-DB-01 & Tính toàn vẹn & Bảng \texttt{CREDIT\_TRANSACTION} bất biến, lưu \texttt{SuiTxDigest} từ blockchain \\
         \hline
         NFR-DB-04 & Khả năng mở rộng & Lược đồ chuẩn 3NF/BCNF hỗ trợ Multi-tenant không gây thắt nút cổ chai \\
         \hline
@@ -45,6 +45,9 @@ Các yêu cầu phi chức năng (Non-Functional Requirements - NFR) quy định
 \end{table}
 \subsection{Giới hạn phạm vi đồ án}
 Mặc dù hệ thống thực tế yêu cầu quản lý đa dạng các luồng thông tin, tuy nhiên trong khuôn khổ của môn học Thiết kế Cơ sở dữ liệu, mô hình thiết kế sẽ tập trung sâu vào các thực thể cốt lõi phục vụ nghiệp vụ chính bao gồm: \textbf{Tổ chức/RBAC} (Tenant, Merchant, User, Role, API\_Credential) và \textbf{Khách hàng thân thiết} (Customer, Credit, Campaign, Reward\_Rule, Credit\_Transaction).
+
+\subsection{Giới hạn phạm vi đồ án}
+Mặc dù hệ thống thực tế yêu cầu quản lý đa dạng các luồng thông tin, tuy nhiên trong khuôn khổ của môn học Thiết kế Cơ sở dữ liệu, mô hình thiết kế sẽ tập trung sâu vào các thực thể cốt lõi phục vụ nghiệp vụ chính bao gồm: \textbf{Tổ chức/RBAC} (TENANT, MERCHANT, USER, ROLE, API\_CREDENTIAL) và \textbf{Khách hàng thân thiết} (CUSTOMER, CREDIT, CAMPAIGN, CAMPAIGN\_MERCHANT, REWARD\_RULE, CREDIT\_TRANSACTION).
 
 Các nhóm dữ liệu mở rộng như:
 \begin{itemize}

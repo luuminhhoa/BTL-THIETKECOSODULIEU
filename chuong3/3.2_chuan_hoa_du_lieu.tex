@@ -8,12 +8,12 @@ Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dự
     \text{TenantID} &\rightarrow \text{TenantName, SystemConfig} \tag{F1} \\
     \text{MerchantID} &\rightarrow \text{TenantID, BusinessName, Status} \tag{F2} \\
     \text{UserID} &\rightarrow \text{MerchantID, Email, PasswordHash, RoleID, ManagerID} \tag{F3} \\
-    \text{Email} &\rightarrow \text{UserID, MerchantID, PasswordHash, RoleID} \tag{F4} \\
+    \text{Email} &\rightarrow \text{UserID, MerchantID, PasswordHash, RoleID, ManagerID} \tag{F4} \\
     \text{CampaignID} &\rightarrow \text{TenantID, CampaignName, StartDate, EndDate, Status} \tag{F5} \\
     \text{CreditID} &\rightarrow \text{CustomerID, TenantID, AvailableBalance} \tag{F6} \\
     \text{TransactionID} &\rightarrow \text{CreditID, CampaignID, MerchantID, Amount,} \nonumber \\
     &\quad \text{TransactionType, SuiTxDigest, CreatedAt} \tag{F7}
-    \end{align*}
+\end{align*}
 \textit{Giải thích nghiệp vụ:} 
 \begin{itemize}
     \item Phụ thuộc hàm (F4) tồn tại vì email đăng nhập của User là duy nhất.

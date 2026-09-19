@@ -8,24 +8,24 @@ Quá trình ánh xạ từ ERD sang Lược đồ Logic tuân thủ các quy t�
 \begin{itemize}
     \item \textbf{Quy tắc 1 (Ánh xạ Thực thể mạnh):} Mỗi thực thể (Entity) mạnh trong ERD được chuyển thành một quan hệ (Bảng - Table) trong Lược đồ Logic. Các thuộc tính đơn trở thành các cột (Columns) của bảng. Khóa định danh của thực thể trở thành Khóa chính (Primary Key - PK).
     
-    \item \textbf{Quy tắc 2 (Ánh xạ mối kết hợp 1:N):} Đối với các mối kết hợp một-nhiều (ví dụ: \texttt{Merchant} - \texttt{Campaign}, \texttt{Customer} - \texttt{Credit}), đưa khóa chính của bảng phía "1" sang bảng phía "N" làm khóa ngoại (Foreign Key - FK).
+    \item \textbf{Quy tắc 2 (Ánh xạ mối kết hợp 1:N):} Đối với các mối kết hợp một-nhiều (ví dụ: \texttt{Tenant} - \texttt{Merchant}, \texttt{Customer} - \texttt{Credit}), đưa khóa chính của bảng phía "1" sang bảng phía "N" làm khóa ngoại (Foreign Key - FK).
     
-    \item \textbf{Quy tắc 3 (Ánh xạ mối kết hợp M:N):} Tạo một quan hệ trung gian cho mối kết hợp nhiều-nhiều (ví dụ quá trình ghi nhận giao dịch điểm). Đưa khóa của hai thực thể vào làm khóa ngoại. Khóa chính thường là tổ hợp của các khóa ngoại này cùng với thuộc tính định danh riêng (nếu có).
+    \item \textbf{Quy tắc 3 (Ánh xạ mối kết hợp M:N):} Tạo một quan hệ trung gian cho mối kết hợp nhiều-nhiều (ví dụ: \texttt{Campaign} - \texttt{Merchant}). Đưa khóa chính của hai thực thể vào làm khóa ngoại. Khóa chính của bảng trung gian thường là tổ hợp của các khóa ngoại này.
 \end{itemize}
 
 \subsection{Danh sách Lược đồ Quan hệ sơ bộ}
-Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc ánh xạ, ta thu được tập hợp 11 lược đồ quan hệ sơ bộ như sau. (Quy ước: Thuộc tính gạch chân là Khóa chính - PK, thuộc tính in nghiêng là Khóa ngoại - FK).
+Dựa trên ERD của OctaPoint CaaS, áp dụng các quy tắc ánh xạ, ta thu được tập hợp các lược đồ quan hệ sơ bộ như sau. (Quy ước: Thuộc tính gạch chân là Khóa chính - PK, thuộc tính in nghiêng là Khóa ngoại - FK).
 
-\begin{description}
-    \item[\texttt{Tenant}] (\underline{TenantID}, TenantName, SystemConfig)
-    \item[\texttt{Merchant}] (\underline{MerchantID}, \textit{TenantID}, BusinessName, Status)
-    \item[\texttt{Role}] (\underline{RoleID}, RoleName)
-    \item[\texttt{User}] (\underline{UserID}, \textit{MerchantID}, Email, PasswordHash, \textit{RoleID}, \textit{ManagerID})
-    \item[\texttt{Campaign}] (\underline{CampaignID}, \textit{TenantID}, CampaignName, StartDate, EndDate, Status)
-    \item[\texttt{Campaign\_Merchant}] (\underline{\textit{CampaignID}}, \underline{\textit{MerchantID}})
-    \item[\texttt{RewardRule}] (\underline{RuleID}, \textit{CampaignID}, ActionType, PointsMultiplier)
-    \item[\texttt{Customer}] (\underline{CustomerID}, WalletAddress, Email)
-    \item[\texttt{Credit}] (\underline{CreditID}, \textit{CustomerID}, \textit{TenantID}, AvailableBalance)
-    \item[\texttt{CreditTransaction}] (\underline{TransactionID}, \textit{CreditID}, \textit{CampaignID}, \textit{MerchantID}, Amount, TransactionType, SuiTxDigest, CreatedAt)
-    \item[\texttt{APICredential}] (\underline{KeyID}, \textit{MerchantID}, ApiKey, SecretHash)
-\end{description}
+\begin{itemize}
+    \item \textbf{Role}(\underline{RoleID}, RoleName)
+    \item \textbf{Tenant}(\underline{TenantID}, TenantName)
+    \item \textbf{Customer}(\underline{CustomerID}, Email, WalletAddress)
+    \item \textbf{Merchant}(\underline{MerchantID}, BusinessName, Status, \textit{TenantID})
+    \item \textbf{User}(\underline{UserID}, Email, PasswordHash, \textit{RoleID}, \textit{MerchantID}, \textit{ManagerID})
+    \item \textbf{APICredential}(\underline{KeyID}, ApiKey, SecretHash, \textit{MerchantID})
+    \item \textbf{Campaign}(\underline{CampaignID}, Status, StartDate, EndDate, \textit{TenantID})
+    \item \textbf{RewardRule}(\underline{RuleID}, ActionType, PointsMultiplier, \textit{CampaignID})
+    \item \textbf{MerchantCampaign}(\underline{\textit{CampaignID}, \textit{MerchantID}})
+    \item \textbf{Credit}(\underline{CreditID}, AvailableBalance, \textit{CustomerID}, \textit{CampaignID})
+    \item \textbf{CreditTransaction}(\underline{TransactionID}, Amount, CreatedAt, TransactionType, SuiTxDigest, \textit{CreditID}, \textit{MerchantID})
+\end{itemize}

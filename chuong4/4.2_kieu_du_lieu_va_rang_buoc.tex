@@ -1,17 +1,13 @@
 \section{Ánh xạ Kiểu dữ liệu và Ràng buộc (Đầu vào)}
 
 Theo quy trình xử lý, đầu vào của thiết kế vật lý bao gồm Lược đồ logic đã được chuẩn hóa (đạt chuẩn BCNF ở Chương 3), cùng với tập hợp các khóa và ràng buộc. Hệ thống OctaPoint tiến hành ánh xạ các yếu tố này sang hệ quản trị SQL Server như sau:
-
-\subsection{Ánh xạ Kiểu dữ liệu (Data Type Mapping)}
 \begin{itemize}
-    \item \textbf{Khóa định danh (ID):} Sử dụng \texttt{VARCHAR(36)} để lưu UUID thay vì số nguyên tự tăng (\texttt{INT IDENTITY}) nhằm hỗ trợ sinh khóa phân tán và bảo mật.
-    \item \textbf{Dữ liệu tài chính:} Các cột \texttt{Amount}, \texttt{AvailableBalance} bắt buộc dùng kiểu \texttt{DECIMAL(18,2)} để tránh sai số dấu phẩy động trong quá trình cộng/trừ điểm thưởng.
-    \item \textbf{Dữ liệu phi cấu trúc:} Cột \texttt{SystemConfig} (bảng TENANT) sử dụng kiểu \texttt{NVARCHAR(MAX)} để lưu trữ cấu trúc JSON, tận dụng khả năng phân tích chuỗi động tích hợp sẵn của SQL Server.
+    \item \textbf{VARCHAR(36)}: Sử dụng để lưu trữ các khóa chính/khóa ngoại dạng UUID/GUID.
+    \item \textbf{NVARCHAR(n)}: Sử dụng cho các trường văn bản có chứa ký tự tiếng Việt hoặc Unicode (ví dụ: \textit{RoleName, BusinessName, TenantName}).
+    \item \textbf{VARCHAR(n)}: Sử dụng cho các trường văn bản không chứa dấu (ví dụ: \textit{Email, PasswordHash, ApiKey}).
+    \item \textbf{INT}: Sử dụng cho các số nguyên tĩnh (ví dụ: \textit{RoleID}).
+    \item \textbf{DECIMAL(p, s)}: Sử dụng cho dữ liệu số có phần thập phân cần độ chính xác cao như số dư (\textit{AvailableBalance}), số tiền (\textit{Amount}) hoặc hệ số (\textit{PointsMultiplier}).
+    \item \textbf{DATETIME}: Sử dụng để lưu trữ thông tin ngày giờ (ví dụ: \textit{StartDate, EndDate, CreatedAt}).
 \end{itemize}
 
-\subsection{Ràng buộc Toàn vẹn (Constraints)}
-\begin{itemize}
-    \item \textbf{Khóa chính (Primary Key - PK):} Bắt buộc tồn tại trên mọi bảng để xác định duy nhất một bản ghi trong khối dữ liệu (SQL Server sẽ tự động tạo Clustered Index trên cột này).
-    \item \textbf{Khóa ngoại (Foreign Key - FK):} Thiết lập ràng buộc tham chiếu chặt chẽ (mặc định \texttt{ON DELETE NO ACTION}) để ngăn chặn việc tạo ra dữ liệu mồ côi (orphan data) khi xóa các thực thể cha như Merchant hay Campaign.
-    \item \textbf{Ràng buộc Unique (Tính duy nhất):} Áp dụng cho \texttt{Email} (bảng USER), \texttt{SuiTxDigest} (bảng CREDIT\_TRANSACTION) để chống trùng lặp. Đặc biệt, thiết lập ràng buộc \texttt{UNIQUE(CustomerID, TenantID)} trên bảng \texttt{CREDIT} để đảm bảo tuân thủ tuyệt đối quy tắc nghiệp vụ: Mỗi khách hàng chỉ có duy nhất 1 ví điểm tại 1 chuỗi bán lẻ.
-\end{itemize}
+Các ràng buộc tính toàn vẹn (Integrity Constraints) bao gồm: \textbf{PRIMARY KEY} để định danh thực thể, \textbf{FOREIGN KEY} để duy trì tính toàn vẹn tham chiếu, và \textbf{NOT NULL} cho các trường thông tin bắt buộc.

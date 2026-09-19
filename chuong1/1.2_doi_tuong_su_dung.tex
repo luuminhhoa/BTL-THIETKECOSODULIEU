@@ -3,8 +3,6 @@ Hệ thống OctaPoint CaaS phục vụ bốn nhóm tác nhân chính: Quản tr
 
 \begin{figure}[H]
     \centering
-    % Nhớ bỏ dấu % ở dòng dưới khi bạn đã thả file so_do_usecase.png vào thư mục images nhé
-    % \includegraphics[width=0.85\textwidth]{images/so_do_usecase.png}
     \caption{Sơ đồ Use Case tổng quan hệ thống OctaPoint}
     \label{fig:usecase_tong_quan}
 \end{figure}
@@ -56,5 +54,8 @@ FS-3. \textbf{Đồng bộ trạng thái On-chain/Off-chain:} Lắng nghe và đ
         FU-1 & End-User & Đăng nhập Web2 qua zkLogin (Không dùng ví Crypto) \\ \hline
         FU-2 & End-User & Tra cứu số dư ví chung của chuỗi và lịch sử giao dịch \\ \hline
         FU-3 & End-User & Tích điểm và tiêu điểm tại điểm bán \\ \hline
+        FS-1 & AI Agent/SDK & Truy vấn ngữ cảnh tự động (MCP Context Retrieval) \\ \hline
+        FS-2 & AI Agent/SDK & Ghi nhận giao dịch thời gian thực (Sub-100ms) \\ \hline
+        FS-3 & AI Agent/SDK & Đồng bộ trạng thái On-chain và Off-chain \\ \hline
     \end{tabular}
 \end{table}

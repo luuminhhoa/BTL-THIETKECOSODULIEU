@@ -5,59 +5,40 @@ Từ điển dữ liệu (Data Dictionary) mô tả chi tiết cấu trúc vật
 \subsection{Bảng TENANT (Đơn vị thuê bao)}
 Lưu trữ thông tin về các đơn vị khách hàng lớn thuê hệ thống OctaPoint CaaS.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         TenantID & VARCHAR(36) & PK, NOT NULL & Mã định danh duy nhất (UUID). \\ \hline
-        TenantName & VARCHAR(255) & NOT NULL & Tên định danh của đơn vị thuê bao. \\ \hline
-        SystemConfig & JSON & Tùy chọn & Cấu hình hệ thống riêng của Tenant. \\ \hline
+        TenantName & NVARCHAR(255) & NOT NULL & Tên định danh của đơn vị thuê bao. \\ \hline
     \end{tabular}
 \end{table}
 
 \subsection{Bảng MERCHANT (Doanh nghiệp đối tác)}
 Lưu trữ thông tin các doanh nghiệp/cửa hàng trực thuộc một Tenant.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         MerchantID & VARCHAR(36) & PK, NOT NULL & Mã định danh duy nhất của Merchant. \\ \hline
         TenantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng TENANT. \\ \hline
-        BusinessName & VARCHAR(255) & NOT NULL & Tên thương hiệu/doanh nghiệp. \\ \hline
+        BusinessName & NVARCHAR(255) & NOT NULL & Tên thương hiệu/doanh nghiệp. \\ \hline
         Status & VARCHAR(20) & NOT NULL & Trạng thái hoạt động (Active, Inactive). \\ \hline
-    \end{tabular}
-\end{table}
-
-\subsection{Bảng USER (Tài khoản nhân sự)}
-Quản lý tài khoản đăng nhập của nhân viên thuộc các Merchant.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
-        \hline
-        \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
-        UserID & VARCHAR(36) & PK, NOT NULL & Mã định danh tài khoản. \\ \hline
-        MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng MERCHANT. \\ \hline
-        Email & VARCHAR(255) & UNIQUE & Email đăng nhập (duy nhất). \\ \hline
-        PasswordHash & VARCHAR(255) & NOT NULL & Chuỗi băm mật khẩu bảo mật. \\ \hline
-        RoleID & INT & FK, NOT NULL & Mã quyền hạn của người dùng. \\ \hline
-        ManagerID & VARCHAR(36) & FK, NULL & Mã người quản lý trực tiếp (tham chiếu đến UserID). \\ \hline
     \end{tabular}
 \end{table}
 
 \subsection{Bảng ROLE (Vai trò)}
 Lưu trữ thông tin các nhóm quyền hạn để phân quyền người dùng trong hệ thống.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+\begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
 \hline
 \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
 RoleID & INT & PK, NOT NULL & Mã định danh vai trò. \\ \hline
@@ -65,76 +46,78 @@ RoleName & NVARCHAR(50) & NOT NULL & Tên hiển thị của vai trò (VD: Admin
 \end{tabular}
 \end{table}
 
-\subsection{Bảng CUSTOMER (Khách hàng)}
-Quản lý thông tin định danh của khách hàng tích điểm.
+\subsection{Bảng USER (Tài khoản nhân sự)}
+Quản lý tài khoản đăng nhập của nhân viên thuộc các Merchant.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
-        CustomerID & VARCHAR(36) & PK, NOT NULL & Mã định danh khách hàng nội bộ. \\ \hline
-        WalletAddress & VARCHAR(100) & UNIQUE, NULL & Địa chỉ ví blockchain (Sui). \\ \hline
-        Email & VARCHAR(255) & NULL & Địa chỉ email (Định danh Web2). \\ \hline
+        UserID & VARCHAR(36) & PK, NOT NULL & Mã định danh tài khoản. \\ \hline
+        RoleID & INT & FK, NOT NULL & Mã quyền hạn của người dùng. \\ \hline
+        ManagerID & VARCHAR(36) & FK, NULL & Mã người quản lý trực tiếp (tham chiếu đến UserID). \\ \hline
+        MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng MERCHANT. \\ \hline
+        Email & VARCHAR(255) & NOT NULL & Email đăng nhập (duy nhất). \\ \hline
+        PasswordHash & VARCHAR(255) & NOT NULL & Chuỗi băm mật khẩu bảo mật. \\ \hline
     \end{tabular}
 \end{table}
 
-\subsection{Bảng CREDIT (Số dư ví điểm)}
-Lưu trữ số dư khả dụng của khách hàng. Mỗi khách hàng chỉ có một ví điểm duy nhất tại một chuỗi.
+\subsection{Bảng API\_CREDENTIAL (Khóa tích hợp)}
+Cung cấp khóa API để tích hợp phần mềm bán hàng của cửa hàng với nền tảng.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
-        CreditID & VARCHAR(36) & PK, NOT NULL & Mã định danh bản ghi số dư. \\ \hline
-        CustomerID & VARCHAR(36) & FK, NOT NULL & Tham chiếu khách hàng. \\ \hline
-        TenantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu chuỗi (Tenant). \\ \hline
-        AvailableBalance & DECIMAL(18,2) & NOT NULL & Số dư khả dụng hiện tại. \\ \hline
+        KeyID & VARCHAR(36) & PK, NOT NULL & Mã định danh khóa. \\ \hline
+        MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng MERCHANT. \\ \hline
+        ApiKey & VARCHAR(255) & NOT NULL & Mã định danh khóa công khai. \\ \hline
+        SecretHash & VARCHAR(255) & NOT NULL & Chuỗi băm của Secret Key. \\ \hline
     \end{tabular}
 \end{table}
 
 \subsection{Bảng CAMPAIGN (Chiến dịch)}
 Quản lý các chương trình khuyến mãi, tích/đổi điểm cấp toàn chuỗi.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         CampaignID & VARCHAR(36) & PK, NOT NULL & Mã định danh chiến dịch. \\ \hline
         TenantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng TENANT. \\ \hline
-        CampaignName & NVARCHAR(255) & NOT NULL & Tên chiến dịch. \\ \hline
+        Status & VARCHAR(20) & NOT NULL & Trạng thái (Draft, Active, Ended). \\ \hline
         StartDate & DATETIME & NOT NULL & Thời gian bắt đầu. \\ \hline
         EndDate & DATETIME & NULL & Thời điểm kết thúc. \\ \hline
-        Status & VARCHAR(20) & NOT NULL & Trạng thái (Draft, Active, Ended). \\ \hline
     \end{tabular}
 \end{table}
 
-\subsection{Bảng CAMPAIGN\_MERCHANT (Phạm vi áp dụng)}
+\subsection{Bảng MERCHANT\_CAMPAIGN (Phạm vi áp dụng)}
 Bảng trung gian quy định chiến dịch nào được phép chạy ở cửa hàng nào.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
-        CampaignID & VARCHAR(36) & PK, FK & Tham chiếu chiến dịch. \\ \hline
-        MerchantID & VARCHAR(36) & PK, FK & Tham chiếu cửa hàng. \\ \hline
+        CampaignID & VARCHAR(36) & PK, FK, NOT NULL & Tham chiếu chiến dịch. \\ \hline
+        MerchantID & VARCHAR(36) & PK, FK, NOT NULL & Tham chiếu cửa hàng. \\ \hline
     \end{tabular}
 \end{table}
 
 \subsection{Bảng REWARD\_RULE (Quy tắc tính điểm)}
 Chi tiết cấu hình quy tắc và hệ số nhân điểm của từng chiến dịch.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         RuleID & VARCHAR(36) & PK, NOT NULL & Mã định danh quy tắc. \\ \hline
@@ -144,38 +127,52 @@ Chi tiết cấu hình quy tắc và hệ số nhân điểm của từng chiế
     \end{tabular}
 \end{table}
 
+\subsection{Bảng CUSTOMER (Khách hàng)}
+Quản lý thông tin định danh của khách hàng tích điểm.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+        \hline
+        \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
+        CustomerID & VARCHAR(36) & PK, NOT NULL & Mã định danh khách hàng nội bộ. \\ \hline
+        Email & VARCHAR(255) & NOT NULL & Địa chỉ email (Định danh Web2). \\ \hline
+        WalletAddress & VARCHAR(100) & NULL & Địa chỉ ví blockchain (Sui). \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection{Bảng CREDIT (Số dư ví điểm)}
+Lưu trữ số dư khả dụng của khách hàng theo từng chiến dịch.
+
+\begin{table}[htbp]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+        \hline
+        \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
+        CreditID & VARCHAR(36) & PK, NOT NULL & Mã định danh bản ghi số dư. \\ \hline
+        CustomerID & VARCHAR(36) & FK, NOT NULL & Tham chiếu khách hàng. \\ \hline
+        CampaignID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến chiến dịch phát hành điểm. \\ \hline
+        AvailableBalance & DECIMAL(18,2) & NOT NULL & Số dư khả dụng hiện tại. \\ \hline
+    \end{tabular}
+\end{table}
+
 \subsection{Bảng CREDIT\_TRANSACTION (Sổ cái giao dịch điểm)}
 Lưu vết toàn bộ các giao dịch cộng/trừ điểm thưởng, có lưu băm trên blockchain.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         TransactionID & VARCHAR(36) & PK, NOT NULL & Mã giao dịch định danh. \\ \hline
         CreditID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến ví điểm. \\ \hline
-        CampaignID & VARCHAR(36) & FK, NULL & Tham chiếu đến chiến dịch. \\ \hline
         MerchantID & VARCHAR(36) & FK, NOT NULL & Cửa hàng phát sinh giao dịch. \\ \hline
         Amount & DECIMAL(18,2) & NOT NULL & Số lượng điểm biến động. \\ \hline
-        TransactionType & VARCHAR(50) & NOT NULL & Loại giao dịch (Earn, Burn). \\ \hline
-        SuiTxDigest & VARCHAR(100) & UNIQUE, NULL & Mã băm trên mạng lưới Sui. \\ \hline
         CreatedAt & DATETIME & NOT NULL & Thời gian phát sinh giao dịch. \\ \hline
-    \end{tabular}
-\end{table}
-
-\subsection{Bảng API\_CREDENTIAL (Khóa tích hợp)}
-Cung cấp khóa API để tích hợp phần mềm bán hàng của cửa hàng với nền tảng.
-
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{2.5cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
-        \hline
-        \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
-        KeyID & VARCHAR(36) & PK, NOT NULL & Mã định danh khóa. \\ \hline
-        MerchantID & VARCHAR(36) & FK, NOT NULL & Tham chiếu đến bảng MERCHANT. \\ \hline
-        ApiKey & VARCHAR(255) & UNIQUE, NOT NULL & Mã định danh khóa công khai. \\ \hline
-        SecretHash & VARCHAR(255) & NOT NULL & Chuỗi băm của Secret Key. \\ \hline
+        TransactionType & VARCHAR(50) & NOT NULL & Loại giao dịch (Earn, Burn). \\ \hline
+        SuiTxDigest & VARCHAR(100) & NULL & Mã băm trên mạng lưới Sui. \\ \hline
     \end{tabular}
 \end{table}

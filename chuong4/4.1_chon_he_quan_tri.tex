@@ -1,13 +1,9 @@
-\section{Đặc tả Workload và Chọn hệ quản trị}
+\subsection{Chọn hệ quản trị cơ sở dữ liệu}
+Hệ thống sử dụng hệ quản trị cơ sở dữ liệu SQL Server. Đây là một hệ quản trị cơ sở dữ liệu quan hệ mạnh mẽ, hỗ trợ tốt cho việc xử lý các giao dịch phức tạp, tính toàn vẹn dữ liệu cao và dễ dàng tích hợp với các hệ thống doanh nghiệp.
 
-\subsection{Đặc tả tải công việc}
-Bảng \texttt{CREDIT\_TRANSACTION} nhận nhiều thao tác ghi khi khách hàng tích/tiêu điểm. Các truy vấn chính gồm tìm ví theo khách hàng và Merchant, xem lịch sử theo thời gian và thống kê theo chiến dịch. Đây là giả định thiết kế; chưa có số liệu tải thực tế để chứng minh độ trễ.
-
-\subsection{Lựa chọn SQL Server}
-Đồ án thống nhất sử dụng \textbf{Microsoft SQL Server 2016 trở lên}, ngôn ngữ \textbf{T-SQL}, phù hợp với DDL và truy vấn mẫu. Đề xuất sản phẩm gốc có lựa chọn hệ quản trị khác; bài môn học được tự chọn hệ quản trị nên sử dụng SQL Server và thống nhất cú pháp T-SQL trong toàn báo cáo.
-\begin{itemize}
-    \item Các bảng dùng rowstore với \texttt{PRIMARY KEY CLUSTERED} khai báo rõ trong DDL. Cấu trúc B+ tree hỗ trợ tìm theo khóa và khoảng trên khóa chỉ mục.
-    \item Giao dịch SQL hỗ trợ tính ACID cho các thay đổi trong cơ sở dữ liệu. Tầng dịch vụ phải gói thao tác ghi lịch sử và cập nhật số dư trong cùng giao dịch, xử lý đồng thời và rollback khi lỗi.
-    \item \texttt{NVARCHAR} lưu văn bản Unicode; \texttt{DECIMAL} lưu điểm chính xác theo hai chữ số thập phân; \texttt{NVARCHAR(MAX)} kèm \texttt{ISJSON} lưu cấu hình JSON.
-\end{itemize}
-Khóa UUID dạng \texttt{VARCHAR(36)} được giữ để đồng bộ với mô hình hiện có. UUID ngẫu nhiên có thể gây phân mảnh và tăng kích thước chỉ mục; cần đo đạc trước khi lựa chọn khóa cụm khác. Không có tổ chức lưu trữ nào bảo đảm hiệu năng tốt cho mọi workload. Giao dịch SQL không tự tạo tính nguyên tử xuyên SQL Server và blockchain Sui.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/physical_diagram.jpg}
+    \caption{Sơ đồ thiết kế vật lý (Physical Diagram)}
+    \label{fig:physical_diagram}
+\end{figure}

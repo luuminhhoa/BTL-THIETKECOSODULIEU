@@ -1,18 +1,13 @@
 \section{Ánh xạ Kiểu dữ liệu và Ràng buộc}
 
-\subsection{Kiểu dữ liệu trên SQL Server}
+Theo quy trình xử lý, đầu vào của thiết kế vật lý bao gồm Lược đồ logic đã được chuẩn hóa (đạt chuẩn BCNF ở Chương 3), cùng với tập hợp các khóa và ràng buộc. Hệ thống OctaPoint tiến hành ánh xạ các yếu tố này sang hệ quản trị SQL Server như sau:
 \begin{itemize}
-    \item ID dùng \texttt{VARCHAR(36)} để lưu UUID do ứng dụng sinh; riêng \texttt{RoleID} dùng \texttt{INT}. UUID không thay thế kiểm soát truy cập.
-    \item Tên hiển thị dùng \texttt{NVARCHAR}; email, mã khóa và mã băm dùng \texttt{VARCHAR}. Mật khẩu được băm, không lưu bản rõ.
-    \item Số dư và biến động dùng \texttt{DECIMAL(18,2)}; hệ số dùng \texttt{DECIMAL(5,2)}. Thời điểm dùng \texttt{DATETIME} theo mô hình hiện tại.
-    \item \texttt{SystemConfig} dùng \texttt{NVARCHAR(MAX)} nullable, kiểm tra JSON object/array bằng \texttt{ISJSON}; không sử dụng kiểu JSON riêng của hệ quản trị khác.
+    \item \textbf{VARCHAR(36)}: Sử dụng để lưu trữ các khóa chính/khóa ngoại dạng UUID/GUID.
+    \item \textbf{NVARCHAR(n)}: Sử dụng cho các trường văn bản có chứa ký tự tiếng Việt hoặc Unicode (ví dụ: \textit{RoleName, BusinessName, TenantName}).
+    \item \textbf{VARCHAR(n)}: Sử dụng cho các trường văn bản không chứa dấu (ví dụ: \textit{Email, PasswordHash, ApiKey}).
+    \item \textbf{INT}: Sử dụng cho các số nguyên tĩnh (ví dụ: \textit{RoleID}).
+    \item \textbf{DECIMAL(p, s)}: Sử dụng cho dữ liệu số có phần thập phân cần độ chính xác cao như số dư (\textit{AvailableBalance}), số tiền (\textit{Amount}) hoặc hệ số (\textit{PointsMultiplier}).
+    \item \textbf{DATETIME}: Sử dụng để lưu trữ thông tin ngày giờ (ví dụ: \textit{StartDate, EndDate, CreatedAt}).
 \end{itemize}
 
-\subsection{Ràng buộc triển khai}
-Mỗi bảng có PK; các FK dùng \texttt{ON DELETE NO ACTION}. \texttt{User.Email} duy nhất toàn hệ thống và không NULL; \texttt{ApiKey} cũng duy nhất và không NULL. Cặp \texttt{(CustomerID, MerchantID)} của CREDIT duy nhất.
-
-\texttt{WalletAddress} và \texttt{SuiTxDigest} nullable dùng \texttt{UNIQUE INDEX ... WHERE ... IS NOT NULL}. UNIQUE thông thường trên một cột nullable của SQL Server chỉ cho phép tối đa một NULL, không phù hợp yêu cầu nhiều bản ghi chưa có định danh.
-
-Các CHECK bảo đảm số dư không âm, hệ số dương, ngày kết thúc không trước ngày bắt đầu và miền trạng thái thống nhất. \texttt{Amount} là biến động có dấu: Earn dương, Redeem âm, Refund khác 0 và mang dấu đảo của giao dịch được hoàn. DDL chưa xác minh giao dịch gốc của Refund. \texttt{ActionType} là mã hành động mở rộng, không áp đặt danh sách đóng khi chưa có đặc tả đầy đủ.
-
-FK tự tham chiếu của \texttt{ManagerID} kiểm tra người quản lý tồn tại; CHECK loại bỏ tự quản lý trực tiếp. Kiểm tra chu trình nhiều cấp và phạm vi Merchant thuộc tầng dịch vụ, chưa được DDL này bảo đảm.
+Các ràng buộc tính toàn vẹn (Integrity Constraints) bao gồm: \textbf{PRIMARY KEY} để định danh thực thể, \textbf{FOREIGN KEY} để duy trì tính toàn vẹn tham chiếu, và \textbf{NOT NULL} cho các trường thông tin bắt buộc.

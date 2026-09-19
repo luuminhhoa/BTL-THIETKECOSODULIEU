@@ -1,9 +1,20 @@
 \section{Phụ thuộc hàm và Khóa ứng viên}
 
-Phân tích được thực hiện trên từng quan hệ, không dùng tên thuộc tính trùng nhau ở nhiều bảng như một thuộc tính chung. Kết luận chuẩn hóa chỉ áp dụng cho tập phụ thuộc hàm nghiệp vụ được nêu dưới đây; việc dùng UUID không tự bảo đảm BCNF.
+Dựa trên lý thuyết thiết kế cơ sở dữ liệu quan hệ, để đảm bảo hệ thống OctaPoint không gặp phải các dị thường dữ liệu (Anomalies) khi Thêm, Xóa, Sửa, chúng ta cần phân tích tập Phụ thuộc hàm và tiến hành chuẩn hóa dữ liệu.
 
-\subsection{Tập phụ thuộc hàm được xét}
-Ký hiệu $R$ là toàn bộ thuộc tính của quan hệ tương ứng. Trong mỗi dòng dưới đây, từng vế trái liệt kê xác định mọi thuộc tính còn lại của $R$.
+\subsubsection{Xác định Tập Phụ thuộc hàm (Functional Dependencies)}
+Gọi $U$ là tập hợp tất cả các thuộc tính của hệ thống. Dựa trên các quy tắc nghiệp vụ, ta xác định được tập Phụ thuộc hàm $F$ cốt lõi như sau:
+\begin{align*}
+    \text{TenantID} &\rightarrow \text{TenantName, SystemConfig} \tag{F1} \\
+    \text{MerchantID} &\rightarrow \text{TenantID, BusinessName, Status} \tag{F2} \\
+    \text{UserID} &\rightarrow \text{MerchantID, Email, PasswordHash, RoleID, ManagerID} \tag{F3} \\
+    \text{Email} &\rightarrow \text{UserID, MerchantID, PasswordHash, RoleID, ManagerID} \tag{F4} \\
+    \text{CampaignID} &\rightarrow \text{TenantID, CampaignName, StartDate, EndDate, Status} \tag{F5} \\
+    \text{CreditID} &\rightarrow \text{CustomerID, TenantID, AvailableBalance} \tag{F6} \\
+    \text{TransactionID} &\rightarrow \text{CreditID, CampaignID, MerchantID, Amount,} \nonumber \\
+    &\quad \text{TransactionType, SuiTxDigest, CreatedAt} \tag{F7}
+\end{align*}
+\textit{Giải thích nghiệp vụ:} 
 \begin{itemize}
     \item TENANT: TenantID $\rightarrow R$.
     \item MERCHANT: MerchantID $\rightarrow R$.

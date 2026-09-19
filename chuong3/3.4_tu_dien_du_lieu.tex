@@ -36,14 +36,14 @@ Lưu trữ thông tin các doanh nghiệp/cửa hàng trực thuộc một Tenan
 Lưu trữ thông tin các nhóm quyền hạn để phân quyền người dùng trong hệ thống.
 
 \begin{table}[htbp]
-\centering
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
-\hline
-\textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
-RoleID & INT & PK, NOT NULL & Mã định danh vai trò. \\ \hline
-RoleName & NVARCHAR(50) & NOT NULL & Tên hiển thị của vai trò (VD: Admin, Staff). \\ \hline
-\end{tabularx}
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
+        \hline
+        \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
+        RoleID & INT & PK, NOT NULL & Mã định danh vai trò. \\ \hline
+        RoleName & NVARCHAR(50) & NOT NULL & Tên hiển thị của vai trò (VD: Admin, Staff). \\ \hline
+    \end{tabular}
 \end{table}
 
 \subsection{Bảng USER (Tài khoản nhân sự)}

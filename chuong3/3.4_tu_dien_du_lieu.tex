@@ -8,7 +8,7 @@ Lưu trữ thông tin về các đơn vị khách hàng lớn thuê hệ thống
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         TenantID & VARCHAR(36) & PK, NOT NULL & Mã định danh duy nhất (UUID). \\ \hline
@@ -22,7 +22,7 @@ Lưu trữ thông tin các doanh nghiệp/cửa hàng trực thuộc một Tenan
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         MerchantID & VARCHAR(36) & PK, NOT NULL & Mã định danh duy nhất của Merchant. \\ \hline
@@ -38,7 +38,7 @@ Lưu trữ thông tin các nhóm quyền hạn để phân quyền người dùn
 \begin{table}[htbp]
 \centering
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+\begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
 \hline
 \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
 RoleID & INT & PK, NOT NULL & Mã định danh vai trò. \\ \hline
@@ -52,7 +52,7 @@ Quản lý tài khoản đăng nhập của nhân viên thuộc các Merchant.
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         UserID & VARCHAR(36) & PK, NOT NULL & Mã định danh tài khoản. \\ \hline
@@ -70,7 +70,7 @@ Cung cấp khóa API để tích hợp phần mềm bán hàng của cửa hàng
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         KeyID & VARCHAR(36) & PK, NOT NULL & Mã định danh khóa. \\ \hline
@@ -86,7 +86,7 @@ Quản lý các chương trình khuyến mãi, tích/đổi điểm cấp toàn 
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         CampaignID & VARCHAR(36) & PK, NOT NULL & Mã định danh chiến dịch. \\ \hline
@@ -103,7 +103,7 @@ Bảng trung gian quy định chiến dịch nào được phép chạy ở cử
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         CampaignID & VARCHAR(36) & PK, FK, NOT NULL & Tham chiếu chiến dịch. \\ \hline
@@ -117,7 +117,7 @@ Chi tiết cấu hình quy tắc và hệ số nhân điểm của từng chiế
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         RuleID & VARCHAR(36) & PK, NOT NULL & Mã định danh quy tắc. \\ \hline
@@ -133,7 +133,7 @@ Quản lý thông tin định danh của khách hàng tích điểm.
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         CustomerID & VARCHAR(36) & PK, NOT NULL & Mã định danh khách hàng nội bộ. \\ \hline
@@ -148,7 +148,7 @@ Lưu trữ số dư khả dụng của khách hàng theo từng chiến dịch.
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         CreditID & VARCHAR(36) & PK, NOT NULL & Mã định danh bản ghi số dư. \\ \hline
@@ -164,7 +164,7 @@ Lưu vết toàn bộ các giao dịch cộng/trừ điểm thưởng, có lưu 
 \begin{table}[htbp]
     \centering
     \renewcommand{\arraystretch}{1.3}
-    \begin{tabular}{|p{3cm}|p{3.2cm}|p{2.5cm}|p{5.5cm}|}
+    \begin{tabular}{|p{3cm}|p{3.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}p{4.8cm}|}
         \hline
         \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc} & \textbf{Mô tả} \\ \hline
         TransactionID & VARCHAR(36) & PK, NOT NULL & Mã giao dịch định danh. \\ \hline
